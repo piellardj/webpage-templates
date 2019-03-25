@@ -1,2 +1,2 @@
 # webpage-template
-static webpage generatorEJS/SASS/TS based 
+Static webpage generator based on EJS/SASS/TS
