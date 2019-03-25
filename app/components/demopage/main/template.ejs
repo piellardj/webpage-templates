@@ -1,0 +1,33 @@
+<main>
+    <div class="intro">
+        <h1>#=(title)</h1>
+
+        <div class="description">
+            #include('paragraphs', {paragraphs: introduction})
+
+            <br>
+
+            #include('link', {href: "https://github.com/piellardj/" + githubProjectName, text: "More on GitHub"})
+
+            # if (additionalLinks.length > 0) {
+                <br/>
+                # for (let link of additionalLinks) {
+                    <br/>
+                    #include('link', link)
+                # }
+            # }
+        </div>
+    </div>
+
+    <div id="error-messages">
+        <noscript>
+        You need to enable Javascript to run this experiment.
+        </noscript>
+    </div>
+
+    <input type="checkbox" id="fullscreen-checkbox-id" class="hidden">
+    <div class="demo">
+        #include('demopage/canvas', { indicators: indicators, enableFullscreen: canvas.enableFullscreen })
+        #include('demopage/controls-block', { controlsSections: controlsSections })
+    </div>
+</main>

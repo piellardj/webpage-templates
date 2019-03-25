@@ -1,0 +1,17 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": "google",
+    "globals": {
+    },
+    "parserOptions": {
+        "ecmaVersion": 6
+    },
+    "rules": {
+        "indent": ["warn", 4],
+        "quotes": ["warn", "double"],
+        "prefer-rest-params": 0
+    }
+}

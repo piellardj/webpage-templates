@@ -1,0 +1,41 @@
+@import 'common/colors';
+
+html {
+    display: flex; // to make footer stick to bottom if short page
+    min-height: 100%; // to make footer stick to bottom if short page
+    background: $color-background;
+    background-attachment: fixed;
+    background-image: url('../images/noise.png');
+    color: $color-text;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0px;
+}
+
+main {
+    display: block; // for IE to see background image
+    flex-grow: 1;
+    padding-bottom: 32px;
+}
+
+hr {
+    border-color: $color-line;
+}
+
+h1 {
+    color: $color-title;
+}
+
+h2 {
+    color: $color-subtitle;
+}
+
+h3 {
+    color: $color-subsubtitle;
+}

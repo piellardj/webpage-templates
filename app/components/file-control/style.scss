@@ -1,0 +1,78 @@
+@import 'common/colors';
+@import 'common/utils';
+
+.file-control {
+    & > input[type=file] {
+        display: none;
+    }
+
+    & > .file-control-button {
+        display: inline-block;
+        position: relative;
+        padding: 6px 12px 6px 2em;
+        border-width: 2px;
+        border-style: solid;
+        border-radius: 4px;
+        font-size: 87.5%;
+        font-weight: bold;
+        cursor: pointer;
+
+        @include box-sizing(border-box);
+
+        & > svg {
+            position: absolute;
+            top: 0;
+            left: .2em;
+            width: 1.5em;
+            height: 100%;
+        }
+    }
+
+    &.compact > .file-control-button {
+        padding: 4px 12px 4px 2em;
+        font-size: 75%;
+    }
+}
+
+.file-control > .file-control-button {
+    & {
+        border-color: $color-medium;
+        background: none;
+        color: $color-medium;
+
+        & > svg {
+            fill: $color-medium;
+        }
+    }
+
+    &:focus,
+    &:hover:not(:disabled) {
+        border-color: $color-lighten-1;
+        background: none;
+        color: $color-lighten-1;
+
+        & > svg {
+            fill: $color-lighten-1;
+        }
+    }
+
+    &:active:not(:disabled) {
+        border-color: $color-darken-1;
+        background: $grey-lighten-4;
+        color: $color-darken-1;
+
+        & > svg {
+            fill: $color-darken-1;
+        }
+    }
+
+    &:disabled {
+        border-color: $grey-lighten-1;
+        background: none;
+        color: $grey-lighten-1;
+
+        & > svg {
+            fill: $grey-lighten-1;
+        }
+    }
+}

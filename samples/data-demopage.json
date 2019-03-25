@@ -1,0 +1,272 @@
+{
+    "title": "TEST_PROJECT_TITLE",
+    "description": "TEST_PROJECT_DESCRIPTION",
+    "introduction": [
+        "This is a long description of the project. Describe here usage and basic techniques used.",
+        "It can be split into several paragraphs if needed."
+    ],
+    "githubProjectName": "GITHUB_PROJECTNAME",
+    "additionalLinks": [
+        {
+            "href": "link1",
+            "text": "first link"
+        },
+        {
+            "href": "link2",
+            "text": "second link"
+        }
+    ],
+    "indicators": [
+        "FPS",
+        "Particles"
+    ],
+    "canvas": {
+        "width": 768,
+        "height": 512,
+        "enableFullscreen": true
+    },
+    "controlsSections": [
+        {
+            "title": "Files",
+            "controls": [
+                {
+                    "type": "file-upload",
+                    "id": "file-upload-id0",
+                    "defaultMessage": "Choose an image...",
+                    "accept": [
+                        "image/bmp",
+                        "image/png",
+                        "image/jpeg"
+                    ]
+                },
+                {
+                    "title": "Upload",
+                    "type": "file-upload",
+                    "id": "file-upload-id",
+                    "defaultMessage": "Choose a file"
+                },
+                {
+                    "type": "file-download",
+                    "id": "file-download-id0",
+                    "label": "Choose an image..."
+                },
+                {
+                    "title": "Download",
+                    "type": "file-download",
+                    "id": "file-download-id",
+                    "label": "Download result"
+                }
+            ]
+        },
+        {
+            "title": "Checkboxes",
+            "controls": [
+                {
+                    "title": "Checkbox 1",
+                    "type": "checkbox",
+                    "id": "checkbox-1-id"
+                },
+                {
+                    "title": "Checkbox 2",
+                    "type": "checkbox",
+                    "id": "checkbox-2-id",
+                    "checked": true
+                },
+                {
+                    "title": "Checkbox 3",
+                    "type": "checkbox",
+                    "id": "checkbox-3-id",
+                    "checked": false,
+                    "enabled": false
+                },
+                {
+                    "title": "Checkbox 4",
+                    "type": "checkbox",
+                    "id": "checkbox-4-id",
+                    "checked": true,
+                    "enabled": false
+                }
+            ]
+        },
+        {
+            "title": "Sliders",
+            "controls": [
+                {
+                    "title": "Range 1",
+                    "type": "range",
+                    "id": "range-1-slider",
+                    "min": 0,
+                    "max": 100,
+                    "value": 50,
+                    "step": 1
+                },
+                {
+                    "title": "Range 2",
+                    "type": "range",
+                    "id": "range-2-slider",
+                    "min": 0,
+                    "max": 100,
+                    "value": 75,
+                    "step": 1,
+                    "enabled": false
+                }
+            ]
+        },
+        {
+            "title": "Tabs",
+            "controls": [
+                {
+                    "type": "tabs",
+                    "group": "tabs-0",
+                    "unique": true,
+                    "options": [
+                        {
+                            "value": "V1",
+                            "label": "Option 1",
+                            "checked": true
+                        },
+                        {
+                            "value": "V2",
+                            "label": "Option 2"
+                        }
+                    ]
+                },
+                {
+                    "title": "Tabs 1",
+                    "type": "tabs",
+                    "group": "tabs-1",
+                    "options": [
+                        {
+                            "value": "V1",
+                            "label": "v1",
+                            "checked": true
+                        },
+                        {
+                            "value": "V2",
+                            "label": "v2"
+                        },
+                        {
+                            "value": "V3",
+                            "label": "v3",
+                            "enabled": false
+                        }
+                    ]
+                },
+                {
+                    "title": "Tabs 2",
+                    "type": "tabs",
+                    "group": "tabs-2",
+                    "options": [
+                        {
+                            "value": "V1",
+                            "label": "v1"
+                        },
+                        {
+                            "value": "V2",
+                            "label": "v2",
+                            "checked": true,
+                            "enabled": false
+                        },
+                        {
+                            "value": "V3",
+                            "label": "v3",
+                            "enabled": false
+                        },
+                        {
+                            "value": "V4",
+                            "label": "v4"
+                        }
+                    ]
+                },
+                {
+                    "title": "Tabs 3 unique",
+                    "type": "tabs",
+                    "group": "tabs-3",
+                    "unique": true,
+                    "options": [
+                        {
+                            "value": "V1",
+                            "label": "v1"
+                        },
+                        {
+                            "value": "V2",
+                            "label": "v2"
+                        },
+                        {
+                            "value": "V3",
+                            "label": "v3",
+                            "checked": true,
+                            "enabled": false
+                        }
+                    ]
+                },
+                {
+                    "title": "Tabs 4 unique",
+                    "type": "tabs",
+                    "group": "tabs-4",
+                    "unique": true,
+                    "options": [
+                        {
+                            "value": "V1",
+                            "label": "v1",
+                            "checked": true
+                        },
+                        {
+                            "value": "V2",
+                            "label": "v2"
+                        },
+                        {
+                            "value": "V4",
+                            "label": "v4",
+                            "enabled": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Buttons",
+            "controls": [
+                {
+                    "type": "button",
+                    "id": "button-0-id",
+                    "label": "Clear"
+                },
+                {
+                    "type": "button",
+                    "id": "button-00-id",
+                    "label": "Clear",
+                    "flat": true
+                },
+                {
+                    "title": "Button 1",
+                    "type": "button",
+                    "id": "button-1-id",
+                    "label": "Clear"
+                },
+                {
+                    "title": "Button 2",
+                    "type": "button",
+                    "id": "button-2-id",
+                    "label": "Clear",
+                    "flat": true
+                },
+                {
+                    "title": "Button 3",
+                    "type": "button",
+                    "id": "button-3-id",
+                    "label": "Clear",
+                    "enabled": false
+                },
+                {
+                    "title": "Button 4",
+                    "type": "button",
+                    "id": "button-4-id",
+                    "label": "Clear",
+                    "enabled": false,
+                    "flat": true
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,103 @@
+@import 'common/colors';
+@import 'common/utils';
+@import 'demopage/controls-pane';
+
+$border-color: $grey-lighten-3;
+
+$border-radius: 8px;
+$max-width: 36em;
+$section-margin: 12px;
+
+.controls-block {
+    flex: 1;
+    max-width: $max-width;
+    margin: 16px 8px;
+    padding: $section-margin 0;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    background: $color-background;
+    z-index: 0;
+
+    @media only screen and (min-width: 540px) {
+        margin: 16px;
+    }
+
+    & > hr {
+        margin: $section-margin 0;
+        clear: both;
+        
+        border-width: 1px 0 0;
+        border-style: solid;
+        border-color: $border-color;
+    }
+}
+
+.controls-section {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    margin: 0 16px;
+
+    & > h2 {
+        display: flex;
+        width: 7em;
+        margin: 0;
+        font-size: medium;
+        font-weight: bold;
+        line-height: 2em;
+    }
+
+    & > .controls-list {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+    }
+}
+
+.controls-list {
+    & > .control {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        min-width: 300px;
+        padding: 3px 0;
+    }
+}
+
+.control > label {
+    $font-size: 95%;
+
+    min-width: 8em;
+    font-size: $font-size;
+    line-height: $font-size;
+    text-align: left;    
+}
+
+#fullscreen-checkbox-id:checked + .demo #side-pane-checkbox-id {
+    & ~ .controls-block {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 100%;
+        width: $controls-pane-width;
+        max-height: 100%;
+        margin: 0;
+        border-width: 1px;
+        border-radius: 0;
+        z-index: 50;
+        overflow-x: hidden;
+        overflow-y: scroll;
+
+        @include transition(transform $controls-pane-transition-time)
+    }
+
+    &:checked ~ .controls-block {
+        @include transform(translateX(-100%));
+
+        & .tooltip {
+            @include transform(translateX(-100vw) translateX(400px));
+        }
+    }
+}

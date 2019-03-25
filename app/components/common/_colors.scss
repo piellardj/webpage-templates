@@ -1,0 +1,26 @@
+@import 'colors/colors-blue';
+@import 'colors/colors-green';
+@import 'colors/colors-indigo';
+@import 'colors/colors-orange';
+@import 'colors/colors-red';
+@import 'colors/colors-teal';
+
+@import 'grey';
+
+$color-lighten-5: $color-teal-lighten-5;
+$color-lighten-4: $color-teal-lighten-4;
+$color-lighten-3: $color-teal-lighten-3;
+$color-lighten-2: $color-teal-lighten-2;
+$color-lighten-1: $color-teal-lighten-1;
+$color-medium:    $color-teal-medium;
+$color-darken-1:  $color-teal-darken-1;
+$color-darken-2:  $color-teal-darken-2;
+$color-darken-3:  $color-teal-darken-3;
+$color-darken-4:  $color-teal-darken-4;
+
+$color-background: #eeeeee;
+$color-text: $grey-darken-2;
+$color-title: $grey-darken-4;
+$color-subtitle: $grey-darken-3;
+$color-subsubtitle: $grey-darken-2;
+$color-line: $grey-medium;

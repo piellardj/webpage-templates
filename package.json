@@ -1,0 +1,51 @@
+{
+  "name": "webpage-templates",
+  "version": "1.0.0",
+  "description": "Static webpage generator based on EJS/SASS/TS",
+  "repository": "github:piellardj/webpage-templates",
+
+  "main": "build/index.js",
+  "scripts": {
+    "build": "npm run sass && npm run tsc  && npm run build-handlers",
+    "build-handlers": "node app/build-handlers.js",
+    "rebuild": "npm run lint && npm run clean && npm run build",
+
+    "sass": "node-sass app/components --include-path app/components --output build/components --recursive --quiet --output-style compressed",
+    "tsc": "tsc -p app/config/tsconfig.json",
+
+    "clean": "shx rm -rf build/ test-demopage/ test-homepage/",
+
+    "lint": "npm run ts-lint && npm run sass-lint && npm run js-lint",
+    "js-lint": "eslint -c app/config/.eslintrc.json app/**/*.js",
+    "sass-lint": "sass-lint -c app/config/.sass-lint.yml -v",
+    "ts-lint": "tslint -c app/config/tslint.json -p app/config/tsconfig.json",
+
+    "test": "npm run lint && npm run rebuild && npm run test-demopage && npm run test-homepage",
+    "test-demopage": "node build/test.js --page=demopage --data=samples/data-demopage.json --outdir=test-demopage",
+    "test-homepage": "node build/test.js --page=homepage --data=samples/data-homepage.json --outdir=test-homepage"
+  },
+
+  "author": "“Jérémie PIELLARD <jeremie.piellard@gmail.com> (https://github.com/piellardj)",
+  "license": "ISC",
+
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "fs-extra": "^7.0.1",
+    "pretty": "^2.0.0",
+    "shx": "^0.3.2"
+  },
+  "devDependencies": {
+    "@types/ejs": "^2.6.3",
+    "@types/fs-extra": "^5.0.5",
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^11.9.5",
+    "eslint": "^5.15.1",
+    "eslint-config-google": "^0.12.0",
+    "minimist": "^1.2.0",
+    "node-sass": "^4.11.0",
+    "sass-lint": "^1.12.1",
+    "tslint": "^5.13.0",
+    "typescript": "^3.3.3333",
+    "uglify-es": "^3.3.9"
+  }
+}

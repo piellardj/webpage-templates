@@ -1,0 +1,22 @@
+<div class="card-frame" style="background-image:url('#=(background)');">
+    <div class="card-content card-reveal">
+        <div class="card-title">#=(title)</div>
+        <div class="card-body">
+            #include('paragraphs', { paragraphs: body })
+        </div>
+        <div class="card-footer">
+            # if (githubLink) {
+            <div>
+                # const link = {href: "https://github.com/piellardj/" + projectName + "/", text: "GitHub"};
+                #include('link', link)
+            </div>
+            # }
+            # if (liveLink) {
+            <div>
+                # const link = {href: "https://piellardj.github.io/" + projectName + "/", text: "See live"};
+                #include('link', link)
+            </div>
+            # }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,132 @@
+@import 'common/colors';
+@import 'common/shadows';
+@import 'common/utils';
+
+$text-color: $color-medium;
+$text-color-selected: white;
+$text-color-disabled: $grey-lighten-1;
+
+$button-color-hover: $grey-lighten-4;
+$button-color-active: $grey-lighten-3;
+$button-color-disabled: $grey-lighten-1;
+
+$button-color-selected: $color-medium;
+$button-color-selected-hover: $color-lighten-1;
+$button-color-selected-active: $color-darken-1;
+
+$tabs-border-width: 2px;
+$tabs-border-color: $grey-lighten-3;
+$tabs-border-radius: 4px;
+
+$tabs-transition: .1s ease-in-out;
+
+.tabs {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    width: auto;
+    border-radius: $tabs-border-radius;
+    background: none;
+    overflow: hidden;
+
+    &::after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: $tabs-border-width solid $tabs-border-color;
+        border-radius: $tabs-border-radius;
+        content: '';
+        z-index: 1;
+
+        @include box-sizing(border-box);
+    }
+
+    &.compact > input + label {
+        padding: 6px 14px;
+        font-size: 75%;
+    }
+
+    & > input {
+        display: none;
+
+        & {
+            & + label {
+                flex: 1;
+                padding: 8px 14px;
+                font-size: 87.5%;
+                font-weight: bold;
+                text-align: center;
+                cursor: pointer;
+                z-index: 2;
+
+                // @include transition($tabs-transition);
+            }
+        }
+
+        &:disabled,
+        &[type=radio]:checked {
+            & + label {
+                cursor: default;
+            }
+        }
+
+        // Colors common to checkbox and radio ====================================
+        & + label {
+            background: none;
+            color: $text-color;
+        }
+
+        &:checked + label {
+            background: $button-color-selected;
+            color: $text-color-selected;
+        }
+
+        &:disabled {
+            & + label {
+                background: none;
+                color: $button-color-disabled;
+            }
+
+            &:checked + label {
+                background: $button-color-disabled;
+                color: $text-color-selected;
+            }
+        }
+
+        &[type=checkbox]:not(:disabled) {
+            &:hover {
+                & + label {
+                    background: $button-color-hover;
+                }
+
+                &:checked  + label {
+                    background: $button-color-selected-hover;
+                }
+            }
+
+            &:active {
+                & + label {
+                    background: $button-color-active;
+                }
+
+                &:checked  + label {
+                    background: $button-color-selected-active;
+                }
+            }
+        }
+
+        &[type=radio]:not(:disabled):not(:checked) {
+            &:hover + label {
+                background: $button-color-hover;
+            }
+
+            &:active + label {
+                background: $button-color-active;
+            }
+        }
+    }
+}

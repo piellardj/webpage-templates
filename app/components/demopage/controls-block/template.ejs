@@ -1,0 +1,45 @@
+<div class="controls-block">
+    # let firstSection = true;
+    # for (section of controlsSections) {
+        # if (!firstSection) {
+            <hr/>
+        # }
+        # firstSection = false;
+
+        <section class="controls-section">
+            <h2>#=(section.title)</h2>
+
+            <div class="controls-list">
+                
+                # for(let control of section.controls) {
+                    <div class="control">
+                        # const fullLine = (typeof control.title === 'undefined');
+                        # if (!fullLine) {
+                            <label>#=(control.title):</label>
+                        # }
+                        # if (control.type === "tabs") {
+                            # control.compact = !fullLine;
+                            #include('tabs', control)
+                        # } else if (control.type === "checkbox") {
+                            # control.label = "";
+                            #include('checkbox', control)
+                        # } else if (control.type === "range") {
+                            #include('range', control)
+                        # } else if (control.type === "button") {
+                            # control.compact = !fullLine;
+                            #include('button', control)
+                        # } else if (control.type === "file-upload") {
+                            # control.compact = !fullLine;
+                            # control.action = "upload";
+                            #include('file-control', control)
+                        # } else if (control.type === "file-download") {
+                            # control.compact = !fullLine;
+                            # control.action = "download";
+                            #include('file-control', control)
+                        # }
+                    </div>
+                # }
+            </div>
+        </section>
+    # }
+</div>

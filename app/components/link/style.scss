@@ -1,0 +1,16 @@
+@import 'common/colors';
+@import 'common/utils';
+
+a {
+    //font-family: Sans-Serif;
+    //text-transform: uppercase;
+    color: $color-medium;
+    font-weight: bold;
+    text-decoration: none;
+    @include box-sizing(border-box);
+
+    &:focus,
+    &:hover {
+        border-bottom: 2px solid $color-medium;
+    }
+}

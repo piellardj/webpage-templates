@@ -1,0 +1,7 @@
+# { let initialState = IsTrue(checked) ? "checked" : "";
+# initialState += IsFalse(enabled) ? " disabled" : "";
+<div class="checkbox">
+    <input type="checkbox" id="#=(id)" #=(initialState)>
+    <label for="#=(id)" class="checkmark">#=(label)</label>
+</div>
+# }

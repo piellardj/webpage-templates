@@ -1,0 +1,125 @@
+@import 'common/colors';
+@import 'common/shadows';
+@import 'common/utils';
+
+$card-size: 256px;
+
+$card-border-radius: 4px;
+
+$card-title-height: 36px;
+$card-action-height: 36px;
+$card-padding: 12px;
+
+$card-title-text-size: 125%;
+$card-body-text-size: 90%;
+$card-action-text-size: 100%;
+
+$card-background-color: white;
+$card-delimitor-color: $grey-lighten-4;
+
+$card-transition-time: .2s ease-in-out;
+
+
+// Sets the shadow, size and margin
+// ::after shadow
+.card-frame {
+    position: relative;
+    width: $card-size;
+    height: $card-size;
+
+    border-radius: $card-border-radius;
+    background-color: $card-background-color;
+    background-position: center;
+    background-size: cover;
+    box-shadow: $shadow-pop-1;
+
+    overflow: hidden;
+}
+
+.card-content {
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+
+    &.card-reveal {
+        @include transform(translateY(100%) translateY(-$card-title-height));
+        @include transition($card-transition-time)
+    }
+}
+
+.card-title,
+.card-body,
+.card-footer {
+    padding: 0 $card-padding;
+}
+
+.card-title {
+    flex: none;
+    height: $card-title-height;
+    background-color: $color-medium;
+    color: white;
+    font-size: $card-title-text-size;
+    line-height: $card-title-height;
+    text-align: left;
+}
+
+.card-frame:hover {
+    & > .card-content.card-reveal {
+        @include transform(translateY(0));
+
+        & > .card-title::after {
+            @include transform(rotate(225deg));
+        }
+    }
+}
+
+.card-content.card-reveal >.card-title {
+    &::before {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 28px + $card-title-height;
+        height: $card-title-height;
+        background: linear-gradient(to right, rgba($color-medium, 0) 0, $color-medium 28px);
+        content: '';
+    }
+
+    &::after {
+        position: absolute;
+        top: 8px;
+        right: 11px;
+        width: 12px;
+        height: 12px;
+        border-top: 2px solid white;
+        border-left: 2px solid white;
+
+        content: '';
+
+        @include transform(translateY(6px) rotate(45deg));
+        @include transition(0.2s ease-in-out);
+    }
+}
+
+.card-body {
+    flex: 1;
+    background-color: white;
+    color: #353535;
+    font-size: $card-body-text-size;
+    text-align: justify;
+    text-indent: 1em;
+    overflow-y: auto;
+}
+
+.card-footer {
+    display: flex;
+    flex: none;
+    flex-direction: line;
+    align-items: center;
+    justify-content: space-between;
+    height: $card-action-height;
+    border-top: 1px solid $card-delimitor-color;
+    background-color: white;
+    font-size: $card-action-text-size;
+}

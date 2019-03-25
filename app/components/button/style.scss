@@ -1,0 +1,102 @@
+@import 'common/colors';
+@import 'common/shadows';
+@import 'common/utils';
+
+$button-color: $color-medium;
+$button-color-hover: $color-lighten-1;
+$button-color-active: $color-darken-1;
+$button-color-disabled: $grey-lighten-1;
+
+$button-flat-border: 2px;
+
+$button-flat-text-color: $color-medium;
+$button-flat-color-hover: none;
+$button-flat-color-active: $grey-lighten-4;
+
+$button-padding-y: 8px;
+$button-padding-x: 14px;
+$button-compact-padding-y: 6px;
+
+$button-border-radius: 4px;
+
+$button-transition: .1s ease-in-out;
+
+// sass-lint:disable-block no-mergeable-selectors
+.button {
+    & {
+        position: relative;
+        padding: $button-padding-y $button-padding-x;
+        border: none;
+        border-radius: $button-border-radius;
+        font-size: 87.5%;
+        font-weight: bold;
+        cursor: pointer;
+        // @include transition($button-transition);
+    }
+
+    &.compact {
+        padding: $button-compact-padding-y $button-padding-x;
+        font-size: 75%;
+    }
+}
+
+.button.flat {
+    padding: #{$button-padding-y - $button-flat-border} #{$button-padding-x - $button-flat-border};
+    border-width: $button-flat-border;
+    border-style: solid;
+    @include box-sizing(border-box);
+
+    &.compact {
+        padding: #{$button-compact-padding-y - $button-flat-border} #{$button-padding-x - $button-flat-border};
+    }
+}
+
+.button {
+    & {
+        background: $button-color;
+        color: white;
+    }
+
+    &:focus,
+    &:hover:not(:disabled) {
+        outline: 0px;
+        background: $button-color-hover;
+    }
+
+    &:active:not(:disabled) {
+        outline: 0px;
+        background: $button-color-active;
+    }
+
+    &:disabled {
+        background: $button-color-disabled;
+        cursor: default;
+    }
+}
+
+.button.flat {
+    & {
+        border-color: $button-color;
+        background: none;
+        color: $button-flat-text-color;
+    }
+
+    &:focus,
+    &:hover:not(:disabled) {
+        border-color: $button-color-hover;
+        background: $button-flat-color-hover;
+        color: $button-color-hover;
+    }
+
+    &:active:not(:disabled) {
+        border-color: $button-color-active;
+        background: $button-flat-color-active;
+        color: $button-color-active;
+    }
+
+    &:disabled {
+        border-color: $button-color-disabled;
+        background: none;
+        color: $button-color-disabled;
+    }
+}

@@ -1,0 +1,23 @@
+@mixin transition($time) {
+    transition:         $time;
+    -webkit-transition: $time;
+}
+
+@mixin box-sizing ($sizing) {
+    box-sizing:         $sizing;
+    -moz-box-sizing:    $sizing;
+    -webkit-box-sizing: $sizing;
+}
+
+@mixin user-select($param) {
+    user-select:            $param;
+    -webkit-user-select:    $param;
+    -moz-user-select:       $param;
+    -ms-user-select:        $param;
+}
+
+@mixin transform($t) {
+    transform:          $t;
+    -webkit-transform:  $t;
+    -ms-transform:      $t;
+}

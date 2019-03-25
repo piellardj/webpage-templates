@@ -1,0 +1,42 @@
+@import 'common/colors';
+@import 'common/utils';
+
+$badge-size: 32px;
+$badge-color: $grey-darken-4;
+$badge-color-hover: $grey-darken-1;
+
+.badge {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    margin: 8px 6px;
+    border: none;
+
+    & > svg {
+        width: 32px;
+        height: 32px;
+        fill: $badge-color;
+    }
+
+    &:focus {
+        & > svg {
+            fill: $badge-color;
+        }
+    }
+
+    &:hover,
+    &:focus {
+        border: none;
+    }
+
+    &:hover,
+    &:active {
+        & > svg {
+            fill: $badge-color-hover;
+        }
+    }
+}
+
+.badge-shelf {
+    margin-top: 2px;
+}
