@@ -190,7 +190,6 @@ const Canvas = (function() {
                 callObservers(mouseDragObservers, dX, dY);
             }
 
-            console.log(newX + " : " + newY);
             callObservers(mouseMoveObservers, newX, newY);
         });
 
@@ -323,16 +322,3 @@ const Canvas = (function() {
         },
     });
 })();
-
-Canvas.Observers.mouseDown.push(function() {
-    console.log("mousedown");
-});
-Canvas.Observers.mouseUp.push(function() {
-    console.log("mouseup");
-});
-Canvas.Observers.mouseMove.push(function(x, y) {
-    console.log("moved (" + x + " ; " + y + ")");
-});
-Canvas.Observers.mouseDrag.push(function(x, y) {
-    console.log("dragged (" + x + " ; " + y + ")");
-});
