@@ -54,14 +54,14 @@ const Canvas = (function() {
                 fullscreenCheckbox.addEventListener("change", function() {
                     hideOverflow(fullscreenCheckbox.checked);
                 });
-            });
+            }, false);
 
             if (sidePaneCheckbox) {
                 fullscreenCheckbox.addEventListener("change", function() {
                     if (fullscreenCheckbox.checked) {
                         sidePaneCheckbox.checked = false;
                     }
-                });
+                }, false);
             }
         }
     })();
@@ -125,9 +125,9 @@ const Canvas = (function() {
         }
     }
 
-    window.addEventListener("load", updateCanvasSize);
-    fullscreenCheckbox.addEventListener("change", updateCanvasSize);
-    window.addEventListener("resize", updateCanvasSize);
+    window.addEventListener("load", updateCanvasSize, false);
+    fullscreenCheckbox.addEventListener("change", updateCanvasSize, false);
+    window.addEventListener("resize", updateCanvasSize, false);
 
     const lastMousePosition = [];
     let isMouseDown = false;
@@ -146,7 +146,7 @@ const Canvas = (function() {
         fullscreenCheckbox.addEventListener("change", function() {
             callObservers(fullscreenToggleObservers,
                 fullscreenCheckbox.checked);
-        });
+        }, false);
     }
 
     /* Bind canvas events */
@@ -156,15 +156,15 @@ const Canvas = (function() {
                 isMouseDown = true;
                 callObservers(mouseDownObservers);
             }
-        });
+        }, false);
 
         canvas.addEventListener("mouseenter", function() {
             callObservers(mouseEnterObservers);
-        });
+        }, false);
 
         canvas.addEventListener("mouseleave", function() {
             callObservers(mouseLeaveObservers);
-        });
+        }, false);
 
         canvas.addEventListener("wheel", function(event) {
             if (mouseWheelObservers.length > 0) {
@@ -173,7 +173,7 @@ const Canvas = (function() {
                 return false;
             }
             return true;
-        });
+        }, false);
 
         window.addEventListener("mousemove", function(event) {
             const rect = canvas.getBoundingClientRect();
@@ -190,8 +190,8 @@ const Canvas = (function() {
                 callObservers(mouseDragObservers, dX, dY);
             }
 
-            callObservers(mouseMoveObservers,
-                lastMousePosition[0], lastMousePosition[1]);
+            console.log(newX + " : " + newY);
+            callObservers(mouseMoveObservers, newX, newY);
         });
 
         window.addEventListener("mouseup", function(event) {
@@ -323,3 +323,16 @@ const Canvas = (function() {
         },
     });
 })();
+
+Canvas.Observers.mouseDown.push(function() {
+    console.log("mousedown");
+});
+Canvas.Observers.mouseUp.push(function() {
+    console.log("mouseup");
+});
+Canvas.Observers.mouseMove.push(function(x, y) {
+    console.log("moved (" + x + " ; " + y + ")");
+});
+Canvas.Observers.mouseDrag.push(function(x, y) {
+    console.log("dragged (" + x + " ; " + y + ")");
+});

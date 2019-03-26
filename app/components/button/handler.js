@@ -25,7 +25,7 @@ const Button = (function() {
                 elt.addEventListener("click", function(event) {
                     event.stopPropagation();
                     observer();
-                });
+                }, false);
                 return true;
             }
 

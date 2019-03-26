@@ -54,7 +54,7 @@ const FileControl = (function() {
                 const span = label.querySelector("span");
                 input.addEventListener("change", function(event) {
                     span.innerText = truncate(input.files[0].name);
-                });
+                }, false);
             }
         });
     });
@@ -71,7 +71,7 @@ const FileControl = (function() {
                 elt.addEventListener("click", function() {
                     event.stopPropagation();
                     observer();
-                });
+                }, false);
                 return true;
             }
 
@@ -89,7 +89,7 @@ const FileControl = (function() {
                 input.addEventListener("change", function() {
                     event.stopPropagation();
                     observer(input.files);
-                });
+                }, false);
                 return true;
             }
 

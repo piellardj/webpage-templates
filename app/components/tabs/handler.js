@@ -42,7 +42,7 @@ const Tabs = (function() {
                     input.addEventListener("change", function(event) {
                         event.stopPropagation();
                         observer(getSelectedValues(divWrapper));
-                    });
+                    }, false);
                 });
                 return true;
             }

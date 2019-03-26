@@ -25,7 +25,7 @@ const Checkbox = (function() {
                 elt.addEventListener("change", function(event) {
                     event.stopPropagation();
                     observer(event.target.checked);
-                });
+                }, false);
                 return true;
             }
 

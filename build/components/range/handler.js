@@ -33,7 +33,7 @@ const Range = (function() {
             elt.addEventListener(eventName, function(event) {
                 event.stopPropagation();
                 observer(+elt.value);
-            });
+            }, false);
             return true;
         }
 
@@ -71,11 +71,11 @@ const Range = (function() {
             if (isRangeElement(range)) {
                 range.parentNode.addEventListener("mouseenter", function() {
                     updateTooltipPosition(range, tooltip);
-                });
+                }, false);
 
                 range.addEventListener("input", function() {
                     updateTooltipPosition(range, tooltip);
-                });
+                }, false);
             }
         });
     });
