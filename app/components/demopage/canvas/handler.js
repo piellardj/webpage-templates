@@ -73,7 +73,7 @@ const Canvas = (function() {
     function callObservers(observersList) {
         const args = Array.prototype.slice.call(arguments, 1);
         for (let i = 0; i < observersList.length; ++i) {
-            observersList[i].apply(args);
+            observersList[i].apply(null, args);
         }
     }
 
