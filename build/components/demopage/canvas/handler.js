@@ -151,10 +151,65 @@ const Canvas = (function() {
 
     /* Bind canvas events */
     if (canvas) {
+        /**
+         * @param {number} clientX
+         * @param {number} clientY
+         * @return {number[]}
+         */
+        function clientToRelative(clientX, clientY) {
+            const rect = canvas.getBoundingClientRect();
+            return [
+                (clientX - rect.left) / rect.width,
+                (clientY - rect.top) / rect.height,
+            ];
+        }
+
+        /**
+         * @param {number} clientX
+         * @param {number} clientY
+         */
+        function mouseDown(clientX, clientY) {
+            const pos = clientToRelative(clientX, clientY);
+
+            lastMousePosition[0] = pos[0];
+            lastMousePosition[1] = pos[1];
+
+            isMouseDown = true;
+            callObservers(mouseDownObservers);
+        }
+
+        /**
+         */
+        function mouseUp() {
+            if (isMouseDown) {
+                isMouseDown = false;
+                callObservers(mouseUpObservers);
+            }
+        }
+
+        /**
+         * @param {number} clientX
+         * @param {number} clientY
+         */
+        function mouseMove(clientX, clientY) {
+            const newPos = clientToRelative(clientX, clientY);
+
+            const dX = newPos[0] - lastMousePosition[0];
+            const dY = newPos[1] - lastMousePosition[1];
+
+            lastMousePosition[0] = newPos[0];
+            lastMousePosition[1] = newPos[1];
+
+            if (isMouseDown) {
+                callObservers(mouseDragObservers, dX, dY);
+            }
+
+            callObservers(mouseMoveObservers, newPos[0], newPos[1]);
+        }
+
         canvas.addEventListener("mousedown", function(event) {
             if (event.button === 0) {
-                isMouseDown = true;
-                callObservers(mouseDownObservers);
+                mouseDown(event.clientX, event.clientY);
             }
         }, false);
 
@@ -176,29 +231,44 @@ const Canvas = (function() {
         }, false);
 
         window.addEventListener("mousemove", function(event) {
-            const rect = canvas.getBoundingClientRect();
-            const newX = (event.clientX - rect.left) / rect.width;
-            const newY = (event.clientY - rect.top) / rect.height;
-
-            const dX = newX - lastMousePosition[0];
-            const dY = newY - lastMousePosition[1];
-
-            lastMousePosition[0] = newX;
-            lastMousePosition[1] = newY;
-
-            if (isMouseDown) {
-                callObservers(mouseDragObservers, dX, dY);
-            }
-
-            callObservers(mouseMoveObservers, newX, newY);
+            mouseMove(event.clientX, event.clientY);
         });
 
         window.addEventListener("mouseup", function(event) {
-            if (event.button === 0 && isMouseDown) {
-                isMouseDown = false;
-                callObservers(mouseUpObservers);
+            if (event.button === 0) {
+                mouseUp();
             }
         });
+
+        let currentTouchId = null;
+        canvas.addEventListener("touchstart", function(event) {
+            if (currentTouchId === null) {
+                const touch = event.changedTouches[0];
+                currentTouchId = touch.identifier;
+                mouseDown(touch.clientX, touch.clientY);
+            }
+        }, false);
+        window.addEventListener("touchend", function(event) {
+            const touches = event.changedTouches;
+            for (let i = 0; i < touches.length; ++i) {
+                if (touches[i].identifier === currentTouchId) {
+                    currentTouchId = null;
+                    mouseUp();
+                }
+            }
+        });
+        window.addEventListener("touchmove", function(event) {
+            const touches = event.changedTouches;
+            for (let i = 0; i < touches.length; ++i) {
+                const touch = touches[i];
+                if (touch.identifier === currentTouchId) {
+                    if (isMouseDown) {
+                        event.preventDefault();
+                    }
+                    mouseMove(touch.clientX, touch.clientY);
+                }
+            }
+        }, {passive: false});
     }
 
     return Object.freeze({
