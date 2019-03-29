@@ -66,7 +66,7 @@ const Range = (function() {
 
     window.addEventListener("load", function() {
         const tooltips = document.querySelectorAll(".tooltip");
-        tooltips.forEach(function(tooltip) {
+        Array.prototype.forEach.call(tooltips, function(tooltip) {
             const range = tooltip.previousElementSibling;
             if (isRangeElement(range)) {
                 range.parentNode.addEventListener("mouseenter", function() {

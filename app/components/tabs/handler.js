@@ -19,8 +19,8 @@ const Tabs = (function() {
      */
     function getSelectedValues(tabsElt) {
         const values = [];
-
-        tabsElt.querySelectorAll("input").forEach(function(input) {
+        const inputs = tabsElt.querySelectorAll("input");
+        Array.prototype.forEach.call(inputs, function(input) {
             if (input.checked) {
                 values.push(input.value);
             }
@@ -38,7 +38,8 @@ const Tabs = (function() {
         addObserver: function(tabsGroup, observer) {
             const divWrapper = getTabsByGroup(tabsGroup);
             if (divWrapper) {
-                divWrapper.querySelectorAll("input").forEach(function(input) {
+                const inputs = divWrapper.querySelectorAll("input");
+                Array.prototype.forEach.call(inputs, function(input) {
                     input.addEventListener("change", function(event) {
                         event.stopPropagation();
                         observer(getSelectedValues(divWrapper));
@@ -70,7 +71,8 @@ const Tabs = (function() {
          */
         setValues: function(tabsGroup, values) {
             const divWrapper = getTabsByGroup(tabsGroup);
-            divWrapper.querySelectorAll("input").forEach(function(input) {
+            const inputs = divWrapper.querySelectorAll("input");
+            Array.prototype.forEach.call(inputs, function(input) {
                 input.checked = false;
             });
 

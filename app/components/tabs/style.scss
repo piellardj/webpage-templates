@@ -23,9 +23,8 @@ $tabs-transition: .1s ease-in-out;
 .tabs {
     display: flex;
     position: relative;
-    flex-direction: row;
+    flex-flow: row wrap;
     flex-grow: 1;
-    flex-wrap: wrap;
     width: auto;
     border-radius: $tabs-border-radius;
     background: none;

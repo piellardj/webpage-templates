@@ -102,22 +102,22 @@ const Canvas = (function() {
      */
     function updateCanvasSize() {
         canvasContainer.style["width"] = "100vw";
-        let [curWidth, curHeight] = getCanvasSize();
+        const size = getCanvasSize();
 
         if (fullscreenCheckbox.checked) {
             canvasContainer.style["height"] = "100%";
             canvasContainer.style["max-width"] = "";
             canvasContainer.style["max-height"] = "";
         } else {
-            curHeight = curWidth * maxHeight / maxWidth;
+            size[1] = size[0] * maxHeight / maxWidth;
 
-            canvasContainer.style["height"] = inPx(curHeight);
+            canvasContainer.style["height"] = inPx(size[1]);
             canvasContainer.style["max-width"] = inPx(maxWidth);
             canvasContainer.style["max-height"] = inPx(maxHeight);
         }
 
-        if (curWidth !== lastCanvasSize[0] ||
-            curHeight !== lastCanvasSize[1]) {
+        if (size[0] !== lastCanvasSize[0] ||
+            size[1] !== lastCanvasSize[1]) {
             lastCanvasSize = getCanvasSize();
 
             callObservers(canvasResizeObservers,

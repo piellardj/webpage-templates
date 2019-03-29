@@ -9,9 +9,9 @@ $max-width: 36em;
 $section-margin: 12px;
 
 .controls-block {
-    flex: 1;
+    flex: 1 0 0;
     max-width: $max-width;
-    margin: 16px 8px;
+    margin: 16px 0;
     padding: $section-margin 0;
     border: 1px solid $border-color;
     border-radius: $border-radius;
@@ -34,32 +34,30 @@ $section-margin: 12px;
 
 .controls-section {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     align-items: baseline;
     margin: 0 16px;
 
     & > h2 {
-        display: flex;
         width: 7em;
         margin: 0;
         font-size: medium;
         font-weight: bold;
         line-height: 2em;
+        text-align: left;
     }
 
     & > .controls-list {
         display: flex;
-        flex: 1;
         flex-direction: column;
+        flex-grow: 1;
     }
 }
 
 .controls-list {
     & > .control {
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
+        flex-flow: row wrap;
         align-items: center;
         min-width: 300px;
         padding: 3px 0;

@@ -4,8 +4,7 @@ $grid-margin: 8px;
 
 .projects {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     justify-content: flex-start;
 
     width: 100%;

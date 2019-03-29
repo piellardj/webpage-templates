@@ -48,7 +48,7 @@ const FileControl = (function() {
     const labelsSelector = ".file-control.upload > label";
     window.addEventListener("load", function() {
         const labels = document.querySelectorAll(labelsSelector);
-        labels.forEach(function(label) {
+        Array.prototype.forEach.call(labels, function(label) {
             const input = getUploadInputById(label.htmlFor);
             if (input) {
                 const span = label.querySelector("span");

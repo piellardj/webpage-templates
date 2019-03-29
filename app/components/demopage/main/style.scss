@@ -6,10 +6,10 @@ body {
 }
 
 .intro {
-    margin: 8px 8px 0;
+    margin: 0;
     padding: 16px;
     border: 1px solid $grey-lighten-3;
-    border-radius: 8px;
+    border-radius: 0 0 8px 8px;
     background: $color-background;
 
     & h1 {
@@ -20,6 +20,7 @@ body {
         max-width: 512px;
         margin: 16px auto;
         border-width: 1px;
+        border-radius: 8px;
     }
 }
 
@@ -38,8 +39,7 @@ body {
 
 .demo {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     align-items: flex-start;
     justify-content: center;
 
