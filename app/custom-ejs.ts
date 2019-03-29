@@ -2,7 +2,7 @@ import ejs = require("ejs");
 import fs = require("fs");
 import path = require("path");
 
-const COMPONENTS_DIR = path.join("app", "components");
+const COMPONENTS_DIR = path.posix.join("app", "components");
 const COMPONENTS_DIR_ABSOLUTE = path.resolve(__dirname, "..", COMPONENTS_DIR);
 
 const loadedComponents: Set<string> = new Set();
@@ -13,7 +13,7 @@ function registerComponent(componentName: string): void {
 function resolvePartialPath(name: string) {
     /* Custom components */
     if (path.extname(name) === "") {
-        return path.join(COMPONENTS_DIR_ABSOLUTE, name, "template.ejs");
+        return path.posix.join(COMPONENTS_DIR_ABSOLUTE, name, "template.ejs").replace(/\\/g, "/");
     }
 
     return name;
@@ -47,7 +47,6 @@ ejs.fileLoader = (filepath: string) => {
     return processEjs(rawStr);
 };
 
-const originalResolveInclude = ejs.resolveInclude;
 ejs.resolveInclude = (name: string, filename: string, isDir: boolean) => {
     /* Check if it's a custom component, and if so, remember its name */
     const dirname = path.dirname(name);
@@ -57,7 +56,7 @@ ejs.resolveInclude = (name: string, filename: string, isDir: boolean) => {
         registerComponent(componentName);
     }
 
-    return originalResolveInclude(name, filename, isDir);
+    return name;
 };
 
 function loadComponent(componentName: string): string {
@@ -66,6 +65,10 @@ function loadComponent(componentName: string): string {
 }
 
 function render(ejsStr: string, data: any): string {
+    /* Need to provide a fake file name for Windows because of a bug in EJS. */
+    if (process.platform === "win32") {
+        return ejs.render(ejsStr, data, {filename: "FAKE"});
+    }
     return ejs.render(ejsStr, data);
 }
 
