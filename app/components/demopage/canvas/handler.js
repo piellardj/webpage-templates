@@ -313,7 +313,7 @@ const Canvas = (function() {
                 }
             }
 
-            if (isMouseDown) {
+            if (isMouseDown && mouseWheelObservers.length > 0) {
                 event.preventDefault();
             }
 
