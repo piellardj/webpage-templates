@@ -33,9 +33,7 @@ function buildLoadedComponents(dstDir) {
     });
     fs.writeFileSync(path.join(cssDir, "page.css"), concatenatedCssStr);
 }
-function buildComponentsHandlers(minify, removeComments) {
-    if (minify === void 0) { minify = false; }
-    if (removeComments === void 0) { removeComments = true; }
+function buildComponentsHandlers(minify) {
     var filename = (minify) ? "handler.min.js" : "handler.js";
     var concatenatedJsStr = "";
     CustomEjs.loadedComponents.forEach(function (component) {
@@ -45,9 +43,6 @@ function buildComponentsHandlers(minify, removeComments) {
             concatenatedJsStr += fs.readFileSync(jsFilepath) + "\n";
         }
     });
-    if (removeComments) {
-        return concatenatedJsStr.replace(/(\n?.*)\/\*((?!\*\/).\n?)*\*\//g, "");
-    }
     return concatenatedJsStr;
 }
 exports.buildComponentsHandlers = buildComponentsHandlers;

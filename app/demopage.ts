@@ -5,8 +5,6 @@ import path = require("path");
 import IPage from "./components/page/IPage";
 import * as Builder from "./page-builder";
 
-const PAGE_JS_PATH = "script/page.js";
-
 function buildPageData(jsonData: any): IPage {
     const mainEjs = Builder.CustomEjs.loadComponent(path.join("demopage", "main"));
     const mainStr = Builder.CustomEjs.render(mainEjs, jsonData);
@@ -30,17 +28,23 @@ function build(dstDir: string, jsonDataFilepath: string, debug: boolean = false)
     const jsonData: any = JSON.parse(fs.readFileSync(jsonDataFilepath).toString());
     const pageData: IPage = buildPageData(jsonData);
 
-    let pageJsStr = Builder.buildComponentsHandlers(debug, true);
-    if (isNumber(jsonData.canvas.width) && isNumber(jsonData.canvas.height)) {
-        pageJsStr += "Canvas.setMaxSize(" + jsonData.canvas.width +
-            "," + jsonData.canvas.height + ");";
-    } else {
+    if (!isNumber(jsonData.canvas.width) || !isNumber(jsonData.canvas.height)) {
         console.error("ERROR: provide canvas dimensions with canvas.width and canvas.height.");
     }
 
-    pageData.scriptFiles.unshift(PAGE_JS_PATH);
+    const setSizeStr = "Canvas.setMaxSize(" + jsonData.canvas.width +
+            "," + jsonData.canvas.height + ");";
+
+    const pageJsStr = Builder.buildComponentsHandlers(true) + setSizeStr;
+    const pageJsMinStr = Builder.buildComponentsHandlers(false) + setSizeStr;
+
+    const PAGE_JS_PATH = "script/page.js";
+    const PAGE_JS_MIN_PATH = "script/page.min.js";
+
+    pageData.scriptFiles.unshift((debug) ? PAGE_JS_PATH : PAGE_JS_MIN_PATH);
     fse.ensureDirSync(path.join(dstDir, "script"));
     fs.writeFileSync(path.join(dstDir, PAGE_JS_PATH), pageJsStr);
+    fs.writeFileSync(path.join(dstDir, PAGE_JS_MIN_PATH), pageJsMinStr);
 
     Builder.buildPage(dstDir, pageData);
 }

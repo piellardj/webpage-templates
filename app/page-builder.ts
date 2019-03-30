@@ -32,7 +32,7 @@ function buildLoadedComponents(dstDir: string): void {
     fs.writeFileSync(path.join(cssDir, "page.css"), concatenatedCssStr);
 }
 
-function buildComponentsHandlers(minify: boolean = false, removeComments: boolean = true): string {
+function buildComponentsHandlers(minify: boolean): string {
     const filename = (minify) ? "handler.min.js" : "handler.js";
 
     let concatenatedJsStr = "";
@@ -44,9 +44,6 @@ function buildComponentsHandlers(minify: boolean = false, removeComments: boolea
         }
     });
 
-    if (removeComments) {
-        return concatenatedJsStr.replace(/(\n?.*)\/\*((?!\*\/).\n?)*\*\//g, "");
-    }
     return concatenatedJsStr;
 }
 
