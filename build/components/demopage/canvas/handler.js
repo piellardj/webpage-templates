@@ -223,7 +223,7 @@ const Canvas = (function() {
 
         canvas.addEventListener("wheel", function(event) {
             if (mouseWheelObservers.length > 0) {
-                callObservers(mouseWheelObservers, Math.sign(event.deltaY));
+                callObservers(mouseWheelObservers, (event.deltaY > 0) ? 1 : -1);
                 event.preventDefault();
                 return false;
             }
