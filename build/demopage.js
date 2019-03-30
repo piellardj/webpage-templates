@@ -36,8 +36,8 @@ function build(dstDir, jsonDataFilepath, debug) {
     }
     var setSizeStr = "Canvas.setMaxSize(" + jsonData.canvas.width +
         "," + jsonData.canvas.height + ");";
-    var pageJsStr = Builder.buildComponentsHandlers(true) + setSizeStr;
-    var pageJsMinStr = Builder.buildComponentsHandlers(false) + setSizeStr;
+    var pageJsStr = Builder.buildComponentsHandlers(false) + setSizeStr;
+    var pageJsMinStr = Builder.buildComponentsHandlers(true) + setSizeStr;
     var PAGE_JS_PATH = "script/page.js";
     var PAGE_JS_MIN_PATH = "script/page.min.js";
     pageData.scriptFiles.unshift((debug) ? PAGE_JS_PATH : PAGE_JS_MIN_PATH);

@@ -35,8 +35,8 @@ function build(dstDir: string, jsonDataFilepath: string, debug: boolean = false)
     const setSizeStr = "Canvas.setMaxSize(" + jsonData.canvas.width +
             "," + jsonData.canvas.height + ");";
 
-    const pageJsStr = Builder.buildComponentsHandlers(true) + setSizeStr;
-    const pageJsMinStr = Builder.buildComponentsHandlers(false) + setSizeStr;
+    const pageJsStr = Builder.buildComponentsHandlers(false) + setSizeStr;
+    const pageJsMinStr = Builder.buildComponentsHandlers(true) + setSizeStr;
 
     const PAGE_JS_PATH = "script/page.js";
     const PAGE_JS_MIN_PATH = "script/page.min.js";
