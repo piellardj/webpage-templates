@@ -80,6 +80,8 @@ const Range = (function() {
         });
     });
 
+    const isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+
     return Object.freeze({
         /**
          * Callback will be called every time the value changes.
@@ -88,7 +90,11 @@ const Range = (function() {
          * @return {boolean} Whether or not the observer was added
          */
         addObserver: function(rangeId, observer) {
-            return addObserver(rangeId, observer, "input");
+            if (isIE11) { // bug in IE 11, input event is never fired
+                return addObserver(rangeId, observer, "change");
+            } else {
+                return addObserver(rangeId, observer, "input");
+            }
         },
 
         /**
