@@ -31,5 +31,16 @@ const Button = (function() {
 
             return false;
         },
+
+        /**
+         * @param {string} buttonId
+         * @param {string} label
+         */
+        setLabel: function(buttonId, label) {
+            const elt = getButtonById(buttonId);
+            if (elt) {
+                elt.innerText = label;
+            }
+        },
     });
 })();
