@@ -18,7 +18,8 @@
     ],
     "indicators": [
         "FPS",
-        "Particles"
+        "Particles",
+        "Third one"
     ],
     "canvas": {
         "width": 768,

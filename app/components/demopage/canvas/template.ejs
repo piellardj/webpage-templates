@@ -5,11 +5,11 @@
     <div id="indicators">
         # let firstOne = true;
         # for(let indicator of indicators) {
-            <span id="#=(indicator)-indicator-id">#=(indicator):</span>
-            #  if (firstOne) {
+            #  if (!firstOne) {
                 <br/>
-                # firstOne = false;
             # }
+            <span id="#=(indicator)-indicator-id">#=(indicator):</span>
+            # firstOne = false;
         # }
     </div>
     # const buttonsClass = (enableFullscreen) ? "" : "class=\"hidden\"";
