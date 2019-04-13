@@ -15,7 +15,7 @@
     "js-lint": "eslint -c app/config/.eslintrc.json app/**/*.js",
     "sass-lint": "sass-lint -c app/config/.sass-lint.yml -v",
     "ts-lint": "tslint -c app/config/tslint.json -p app/config/tsconfig.json",
-    "test": "npm run lint && npm run rebuild && npm run test-demopage && npm run test-homepage",
+    "test": "npm run rebuild && npm run test-demopage && npm run test-homepage",
     "test-demopage": "node build/test.js --page=demopage --data=samples/data-demopage.json --outdir=test-demopage",
     "test-homepage": "node build/test.js --page=homepage --data=samples/data-homepage.json --outdir=test-homepage"
   },
