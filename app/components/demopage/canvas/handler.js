@@ -439,6 +439,15 @@ const Canvas = (function() {
         },
 
         /**
+         * @param {string} text
+         */
+        setLoaderText: function(text) {
+            if (loader) {
+                loader.querySelector("span").innerText = text;
+            }
+        },
+
+        /**
          * @param {boolean} show
          */
         showLoader: function(show) {

@@ -17,6 +17,20 @@ $anim: 1.1s linear;//cubic-bezier(.5, .2, .5, .8);
     height: $size;
     margin: auto;
 
+    & > span {
+        color: white;
+        font-size: 32px;
+        line-height: $size;
+        text-shadow: 1px 1px black, -1px 1px black, 1px -1px black, -1px -1px black, 1px 0 black, -1px 0 black, 0 1px black, 0 -1px black;
+    }
+}
+
+.loader-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: $size;
+    height: $size;
     animation: spin $anim infinite;
 
     &:before {
