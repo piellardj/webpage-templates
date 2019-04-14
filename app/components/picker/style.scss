@@ -1,0 +1,75 @@
+@import 'common/colors';
+@import 'common/utils';
+
+.inline-picker {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    min-height: 32px;
+    user-select: none;
+
+    & span {
+        flex-shrink: 1;
+        align-self: center;
+        padding: 0 4px;
+    }
+
+    & .picker-button {
+        display: inline-block;
+        width: 18px;
+        line-height: 32px;
+        cursor: pointer;
+
+        &.disabled {
+            cursor: default;
+        }
+
+        &::after {
+            position: absolute;
+            top: calc(50% - 6px);
+            width: 12px;
+            height: 12px;
+            border-width: 0 3px 3px 0;
+            border-style: solid;
+            border-color: $color-medium;
+            background: none;
+            content: '';
+            @include box-sizing(border-box);
+        }
+
+        &:hover::after {
+            border-color: $color-lighten-1;
+        }
+
+        &:active::after {
+            border-color: $color-darken-1;
+        }
+
+        &.disabled::after {
+            border-color: $grey-medium;
+        }
+
+        &.left::after {
+            left: 3px;
+            @include transform(rotate(135deg));
+        }
+
+        &.right::after {
+            right: 3px;
+            @include transform(rotate(-45deg));
+        }
+    }
+
+    &.compact {
+        min-height: 26px;
+        font-size: 95%;
+
+        & .picker-button {
+            line-height: 26px;
+        }
+    }
+
+    & input {
+        display: none;
+    }
+}
