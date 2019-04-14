@@ -32,17 +32,7 @@ const Picker = (function() {
                 return i;
             }
         }
-
         return -1;
-    }
-
-    /**
-     * @param {object} picker
-     * @return {string|null}
-     */
-    function getSelectedValue(picker) {
-        const index = getIndexOfCheckedInput(picker);
-        return (index >= 0) ? picker.inputs[index].value : null;
     }
 
     /**
@@ -62,10 +52,17 @@ const Picker = (function() {
      *  @param {object} picker
      */
     function updateVisibleValue(picker) {
-        const selectedValue = getSelectedValue(picker);
-        picker.span.innerText = selectedValue ||
-            picker.wrapper.dataset.placeholder ||
-            "";
+        const index = getIndexOfCheckedInput(picker);
+        let selectedLabel;
+        let selectedValue = null;
+        if (index >= 0) {
+            selectedLabel = picker.inputs[index].dataset.label;
+            selectedValue = picker.inputs[index].value;
+        } else {
+            selectedLabel = picker.wrapper.dataset.placeholder || "";
+        }
+
+        picker.span.innerText = selectedLabel;
 
         if (picker.inputs.length < 0) {
             enableButton(picker.leftButton, false);
@@ -141,7 +138,12 @@ const Picker = (function() {
          * @return {string}
          */
         getValue: function(id) {
-            return getSelectedValue(pickersDictionary[id]);
+            const picker = pickersDictionary[id];
+            const index = getIndexOfCheckedInput(picker);
+            if (index >= 0) {
+                return picker.inputs[index].value;
+            }
+            return null;
         },
 
         /**
