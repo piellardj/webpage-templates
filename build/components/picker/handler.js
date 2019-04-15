@@ -32,7 +32,6 @@ const Picker = (function() {
                 return i;
             }
         }
-
         return -1;
     }
 
@@ -122,7 +121,7 @@ const Picker = (function() {
         updateVisibleValue(picker);
     }
 
-    window.addEventListener("load", buildPickersDictionary);
+    buildPickersDictionary();
 
     return Object.freeze({
         /**

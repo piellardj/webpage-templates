@@ -121,7 +121,7 @@ const Picker = (function() {
         updateVisibleValue(picker);
     }
 
-    window.addEventListener("load", buildPickersDictionary);
+    buildPickersDictionary();
 
     return Object.freeze({
         /**
