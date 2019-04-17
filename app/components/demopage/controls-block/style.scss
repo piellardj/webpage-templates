@@ -97,5 +97,27 @@ $section-margin: 12px;
         & .tooltip {
             @include transform(translateX(-100vw) translateX(400px));
         }
+
+        & > #side-pane-close-toggle-id {
+            display: block;
+        }
+    }
+}
+
+#side-pane-close-toggle-id {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    stroke-linecap: 'round';
+    stroke-width: '2';
+    stroke: $grey-darken-2;
+
+    &:hover {
+        stroke: $grey-darken-1;
+    }
+
+    &:active {
+        stroke: $grey-darken-3;
     }
 }

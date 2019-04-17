@@ -49,12 +49,9 @@
 
 #fullscreen-toggle-id {
     display: block;
-    width: $canvas-button-size;
-    height: $canvas-button-size;
     background-image: url('../images/resize.svg');
     background-position: 0 0;
     background-size: 200%;
-    cursor: pointer;
 
     &:hover {
         background-position-x: 100%;
@@ -63,10 +60,7 @@
 
 #side-pane-toggle-id {
     display: none;
-    width: $canvas-button-size;
-    height: $canvas-button-size;
     background-image: url('../images/gear.svg');
-    cursor: pointer;
     @include transition(transform .1s ease-in-out);
 
     &:hover {
