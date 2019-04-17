@@ -86,7 +86,7 @@ $section-margin: 12px;
         border-radius: 0;
         z-index: 50;
         overflow-x: hidden;
-        overflow-y: scroll;
+        overflow-y: auto;
 
         @include transition(transform $controls-pane-transition-time)
     }
