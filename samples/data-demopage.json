@@ -118,7 +118,7 @@
             "controls": [
                 {
                     "type": "tabs",
-                    "group": "tabs-0",
+                    "id": "tabs-0",
                     "unique": true,
                     "options": [
                         {
@@ -135,7 +135,7 @@
                 {
                     "title": "Tabs 1",
                     "type": "tabs",
-                    "group": "tabs-1",
+                    "id": "tabs-1",
                     "options": [
                         {
                             "value": "V1",
@@ -156,7 +156,7 @@
                 {
                     "title": "Tabs 2",
                     "type": "tabs",
-                    "group": "tabs-2",
+                    "id": "tabs-2",
                     "options": [
                         {
                             "value": "V1",
@@ -182,7 +182,7 @@
                 {
                     "title": "Tabs 3 unique",
                     "type": "tabs",
-                    "group": "tabs-3",
+                    "id": "tabs-3",
                     "unique": true,
                     "options": [
                         {
@@ -204,7 +204,7 @@
                 {
                     "title": "Tabs 4 unique",
                     "type": "tabs",
-                    "group": "tabs-4",
+                    "id": "tabs-4",
                     "unique": true,
                     "options": [
                         {

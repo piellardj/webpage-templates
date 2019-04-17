@@ -1,16 +1,15 @@
 # { const style = IsFalse(compact) ? "" : "compact";
-<div class="tabs #=(style)" id="#=(group)-id">
+<div class="tabs #=(style)" id="#=(id)-id">
     # for (let option of options) {
-        # const id = group + "-" + option.value + "-id";
+        # const optionId = id + "-" + option.value + "-id";
         # let initialState = (option.checked === true) ? "checked" : "";
         # if (option.enabled === false) { initialState += " disabled"; }
         # if (IsTrue(unique)) {
-            <input type="radio" name="#=(group)" value="#=(option.value)" id="#=(id)" #=(initialState)/>
-            <label for="#=(id)">#=(option.label)</label>
+            <input type="radio" name="#=(id)" value="#=(option.value)" id="#=(optionId)" #=(initialState)/>
         # } else {
-            <input type="checkbox" value="#=(option.value)" id="#=(id)" #=(initialState)/>
-            <label for="#=(id)">#=(option.label)</label>
+            <input type="checkbox" value="#=(option.value)" id="#=(optionId)" #=(initialState)/>
         # }
+        <label for="#=(optionId)">#=(option.label)</label>
     # }
 </div>
 # }

@@ -19,7 +19,7 @@
             <div class="controls-list">
                 
                 # for(let control of section.controls) {
-                    <div class="control">
+                    <div class="control" id="control-#=(control.id)">
                         # const fullLine = (typeof control.title === 'undefined');
                         # if (!fullLine) {
                             <label>#=(control.title):</label>

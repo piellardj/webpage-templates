@@ -1,11 +1,11 @@
 /* exported Tabs */
 const Tabs = (function() {
     /**
-     * @param {string} group
+     * @param {string} id
      * @return {Object} Html node or null if not found
      */
-    function getTabsByGroup(group) {
-        const selector = "div.tabs[id=" + group + "-id]";
+    function getTabsById(id) {
+        const selector = "div.tabs[id=" + id + "-id]";
         const elt = document.querySelector(selector);
         if (!elt) {
             console.error("Cannot find tabs '" + selector + "'.");
@@ -31,12 +31,12 @@ const Tabs = (function() {
 
     return Object.freeze({
         /**
-         * @param {string} tabsGroup
+         * @param {string} tabsId
          * @param {Object} observer Callback method
          * @return {boolean} Whether or not the observer was added
          */
-        addObserver: function(tabsGroup, observer) {
-            const divWrapper = getTabsByGroup(tabsGroup);
+        addObserver: function(tabsId, observer) {
+            const divWrapper = getTabsById(tabsId);
             if (divWrapper) {
                 const inputs = divWrapper.querySelectorAll("input");
                 Array.prototype.forEach.call(inputs, function(input) {
@@ -52,11 +52,11 @@ const Tabs = (function() {
         },
 
         /**
-         * @param {string} tabsGroup
+         * @param {string} tabsId
          * @return {string[]}
          */
-        getValues: function(tabsGroup) {
-            const divWrapper = getTabsByGroup(tabsGroup);
+        getValues: function(tabsId) {
+            const divWrapper = getTabsById(tabsId);
             if (!divWrapper) {
                 return [];
             }
@@ -65,19 +65,19 @@ const Tabs = (function() {
         },
 
         /**
-         * @param {sting} tabsGroup
+         * @param {sting} tabsId
          * @param {string[]} values
          * @return {void}
          */
-        setValues: function(tabsGroup, values) {
-            const divWrapper = getTabsByGroup(tabsGroup);
+        setValues: function(tabsId, values) {
+            const divWrapper = getTabsById(tabsId);
             const inputs = divWrapper.querySelectorAll("input");
             Array.prototype.forEach.call(inputs, function(input) {
                 input.checked = false;
             });
 
             for (let i = 0; i < values.length; ++i) {
-                const id = tabsGroup + "-" + values[i] + "-id";
+                const id = tabsId + "-" + values[i] + "-id";
                 divWrapper.querySelector("input[id=" + id + "]").checked = true;
             }
         },
