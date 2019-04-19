@@ -17,7 +17,7 @@ const Controls = (function() {
          * @param {string} id
          * @param {boolean} visible
          */
-        toggleVisibility: function(id, visible) {
+        setVisibility: function(id, visible) {
             const control = getElementBySelector("div#control-" + id);
             if (control) {
                 control.style.display = visible ? "" : "none";
