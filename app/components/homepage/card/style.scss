@@ -115,7 +115,7 @@ $card-transition-time: .2s ease-in-out;
 .card-footer {
     display: flex;
     flex: none;
-    flex-direction: line;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     height: $card-action-height;
