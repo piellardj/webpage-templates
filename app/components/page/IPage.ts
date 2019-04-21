@@ -2,7 +2,7 @@ interface IPage {
     description: string;
     title: string;
 
-    mainStr: string;
+    bodyStr: string;
 
     cssFiles: string[];
     scriptFiles: string[];

@@ -6,15 +6,15 @@ import IPage from "./components/page/IPage";
 import * as Builder from "./page-builder";
 
 function buildPageData(jsonData: any): IPage {
-    const mainEjs = Builder.CustomEjs.loadComponent(path.join("demopage", "main"));
-    const mainStr = Builder.CustomEjs.render(mainEjs, jsonData);
+    const bodyEjs = Builder.CustomEjs.loadComponent(path.join("demopage", "body"));
+    const bodyStr = Builder.CustomEjs.render(bodyEjs, jsonData);
 
     return {
+        bodyStr,
         cssFiles: [
             "css/page.css",
         ],
         description: jsonData.description,
-        mainStr,
         scriptFiles: jsonData.scriptFiles || [],
         title: jsonData.title,
     };

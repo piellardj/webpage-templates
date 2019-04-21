@@ -1,0 +1,60 @@
+@import 'common/colors';
+@import 'common/utils';
+
+$logo-size: 64px;
+$logo-border-width: 1px;
+
+main {
+    display: block; // for IE
+    align-items: center;
+    margin: auto;
+    padding-top: 32px;
+
+    @media only screen and (min-width: 560px) {
+        padding-top: 64px;
+    }
+}
+
+#logo {
+    display: block;
+    position: relative;
+    width: $logo-size;
+    height: $logo-size;
+    margin: 8px auto 16px;
+    border-radius: 50%;
+    background: $color-medium;
+    text-align: center;
+    user-select: none;
+
+    &.dynamic-logo {
+        &::after,
+        &::before {
+            position: absolute;
+            top: $logo-border-width;
+            left: $logo-border-width;
+            width: #{$logo-size - 2 * $logo-border-width};
+            height: #{$logo-size - 2 * $logo-border-width};
+        }
+
+        &::after {
+            color: $color-medium;
+            font-weight: normal;
+            line-height: #{$logo-size - 2 * $logo-border-width};
+            content: 'random';
+            z-index: 1;
+        }
+
+        &::before {
+            border-radius: 50%;
+            background: $color-background;
+            content: '';
+            z-index: 0;
+            @include transform(scale(0));
+            @include transition(.1s ease);
+        }
+
+        &:hover::before {
+            @include transform(scale(1));
+        }
+    }
+}

@@ -1,0 +1,103 @@
+@import 'common/colors';
+@import 'common/utils';
+
+$logo-size: 64px;
+$logo-border-width: 1px;
+
+body {
+    text-align: center;
+}
+
+.logo {
+    display: block;
+    position: relative;
+    width: $logo-size;
+    height: $logo-size;
+    margin: 8px auto 16px;
+    border: $logo-border-width solid $color-medium;
+    border-radius: 50%;
+    background: $color-background;
+    user-select: none;
+
+    &::before,
+    &::after {
+        position: absolute;
+        top: -$logo-border-width;
+        left: -$logo-border-width;
+        width: $logo-size;
+        height: $logo-size;
+    }
+
+    &::before {
+        border-radius: 50%;
+        background: $color-medium;
+        content: '';
+        z-index: 0;
+        @include transform(scale(0));
+        @include transition(.1s ease);
+    }
+
+    &::after {
+        color: $color-medium;
+        font-weight: normal;
+        line-height: $logo-size;
+        content: 'home';
+        z-index: 1;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+        border-width: 1px; // counteract a's bottom border
+    }
+
+    &:hover {
+        &::before {
+            @include transform(scale(1));
+        }
+
+        &::after {
+            color: white;
+        }
+    }
+}
+
+
+.intro {
+    margin: auto;
+    padding: 16px;
+    border: 1px solid $grey-lighten-3;
+    border-radius: 8px;
+    background: $color-background;
+
+    & h1 {
+        margin-top: 0;
+    }
+
+    @media only screen and (min-width: 560px) {
+        max-width: 512px;
+        border-width: 1px;
+    }
+}
+
+.description {
+    justify-content: center;
+    line-height: 125%;
+    text-align: justify;
+    text-indent: 1em;
+}
+
+#error-messages {
+    margin: 32px 8px;
+    color: red;
+    font-weight: bold;
+}
+
+.demo {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-start;
+    justify-content: center;
+
+    @include user-select(none);
+}

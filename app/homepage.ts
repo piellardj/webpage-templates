@@ -1,19 +1,23 @@
 import fs = require("fs");
+import fse = require("fs-extra");
 import path = require("path");
 
 import IPage from "./components/page/IPage";
 import * as Builder from "./page-builder";
 
+const PAGE_JS_PATH = "script/page.js";
+const PAGE_JS_MIN_PATH = "script/page.min.js";
+
 function buildPageData(jsonData: any): IPage {
     const mainData = { sections: jsonData.sections };
-    const mainEjs = Builder.CustomEjs.loadComponent(path.join("homepage", "main"));
-    const mainStr = Builder.CustomEjs.render(mainEjs, mainData);
+    const bodyEjs = Builder.CustomEjs.loadComponent(path.join("homepage", "body"));
+    const bodyStr = Builder.CustomEjs.render(bodyEjs, mainData);
 
     return {
+        bodyStr,
         cssFiles: ["css/page.css"],
         description: jsonData.description,
-        mainStr,
-        scriptFiles: [],
+        scriptFiles: [PAGE_JS_MIN_PATH],
         title: jsonData.title,
     };
 }
@@ -23,6 +27,16 @@ function build(dstDir: string, jsonDataFilepath: string): void {
     const pageData: IPage = buildPageData(jsonData);
 
     Builder.buildPage(dstDir, pageData);
+    buildHandlers(dstDir);
+}
+
+function buildHandlers(dstDir: string) {
+    const pageJsStr = Builder.buildComponentsHandlers(false);
+    const pageJsMinStr = Builder.buildComponentsHandlers(true);
+
+    fse.ensureDirSync(path.join(dstDir, "script"));
+    fs.writeFileSync(path.join(dstDir, PAGE_JS_PATH), pageJsStr);
+    fs.writeFileSync(path.join(dstDir, PAGE_JS_MIN_PATH), pageJsMinStr);
 }
 
 export { build };

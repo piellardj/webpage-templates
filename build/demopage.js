@@ -12,14 +12,14 @@ var fse = require("fs-extra");
 var path = require("path");
 var Builder = __importStar(require("./page-builder"));
 function buildPageData(jsonData) {
-    var mainEjs = Builder.CustomEjs.loadComponent(path.join("demopage", "main"));
-    var mainStr = Builder.CustomEjs.render(mainEjs, jsonData);
+    var bodyEjs = Builder.CustomEjs.loadComponent(path.join("demopage", "body"));
+    var bodyStr = Builder.CustomEjs.render(bodyEjs, jsonData);
     return {
+        bodyStr: bodyStr,
         cssFiles: [
             "css/page.css",
         ],
         description: jsonData.description,
-        mainStr: mainStr,
         scriptFiles: jsonData.scriptFiles || [],
         title: jsonData.title,
     };
