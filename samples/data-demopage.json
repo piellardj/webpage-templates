@@ -17,9 +17,18 @@
         }
     ],
     "indicators": [
-        "FPS",
-        "Particles",
-        "Third one"
+        {
+            "id": "fps",
+            "label": "FPS"
+        },
+        {
+            "id": "particles",
+            "label": "Particles"
+        },
+        {
+            "id": "third-indicator",
+            "label": "Third one"
+        }
     ],
     "canvas": {
         "width": 768,

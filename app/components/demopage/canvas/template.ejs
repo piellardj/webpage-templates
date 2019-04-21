@@ -3,14 +3,11 @@
     <canvas id="canvas"></canvas>
     #include('loader')
     <div id="indicators">
-        # let firstOne = true;
-        # for(let indicator of indicators) {
-            #  if (!firstOne) {
-                <br/>
-            # }
-            <span id="#=(indicator)-indicator-id">#=(indicator):</span>
-            # firstOne = false;
-        # }
+        # indicators.forEach(function(indicator) {
+            <div id="#=(indicator.id)-indicator-id">
+                #=(indicator.label): <span>123456</span>
+            </div>
+        # });
     </div>
     # const buttonsClass = (enableFullscreen) ? "" : "class=\"hidden\"";
     <div id="canvas-buttons-column" #=(buttonsClass)>

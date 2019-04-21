@@ -20,22 +20,21 @@
     & > .loader {
         display: none;
     }
+}
 
-    & > #indicators {
-        position: absolute;
-        top: 1px;
-        left: 1px;
-        color: white;
-        font-family: 'Lucida Console', Monaco, monospace;
-        text-align: left;
-        z-index: 20;
+#indicators {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    color: white;
+    font-family: 'Lucida Console', Monaco, monospace;
+    text-align: left;
+    z-index: 20;
 
-        & > span {
-            display: inline-block;
-            margin: 1px;
-            padding: 0 4px;
-            background: black;
-        }
+    & > div {
+        margin: 1px 1px 2px;
+        padding: 0 4px;
+        background: black;
     }
 }
 

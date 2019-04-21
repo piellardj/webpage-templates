@@ -402,13 +402,10 @@ const Canvas = (function() {
          */
         setIndicatorText: function(id, text) {
             const fullId = id + "-indicator-id";
-            const indicator = document.getElementById(fullId);
-            if (!indicator) {
-                console.error("Cannot find indicator '" + fullId + "'.");
-                return;
+            const indicator = getElementBySelector("#" + fullId + " span");
+            if (indicator) {
+                indicator.innerText = text;
             }
-
-            indicator.innerText = id + ": " + text;
         },
 
         /**
