@@ -275,41 +275,41 @@
                 {
                     "type": "button",
                     "id": "button-0-id",
-                    "label": "Clear"
+                    "label": "Clear",
+                    "flat": false
                 },
                 {
                     "type": "button",
                     "id": "button-00-id",
-                    "label": "Clear",
-                    "flat": true
+                    "label": "Clear"
                 },
                 {
                     "title": "Button 1",
                     "type": "button",
                     "id": "button-1-id",
-                    "label": "Clear"
+                    "label": "Clear",
+                    "flat": false
                 },
                 {
                     "title": "Button 2",
                     "type": "button",
                     "id": "button-2-id",
-                    "label": "Clear",
-                    "flat": true
+                    "label": "Clear"
                 },
                 {
                     "title": "Button 3",
                     "type": "button",
                     "id": "button-3-id",
                     "label": "Clear",
-                    "enabled": false
+                    "enabled": false,
+                    "flat": false
                 },
                 {
                     "title": "Button 4",
                     "type": "button",
                     "id": "button-4-id",
                     "label": "Clear",
-                    "enabled": false,
-                    "flat": true
+                    "enabled": false
                 }
             ]
         }

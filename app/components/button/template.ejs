@@ -1,5 +1,5 @@
 # { let style = IsFalse(compact) ? "" : " compact";
-# style += IsTrue(flat) ? " flat" : "";
+# style += IsFalse(flat) ? "" : " flat";
 # const initialState = IsFalse(enabled) ? " disabled" : "";
 <button class="button #=(style)" id="#=(id)" #=(initialState)>#=(label)</button>
 # }
