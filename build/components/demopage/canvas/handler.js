@@ -400,7 +400,8 @@ const Canvas = (function() {
          * @return {number[]}
          */
         getMousePosition: function() {
-            return lastMousePosition;
+            // return copy of array
+            return lastMousePosition.slice();
         },
 
         /**
