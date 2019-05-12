@@ -370,6 +370,13 @@ const Canvas = (function() {
         },
 
         /**
+         * @return {Object} Html canvas container node
+         */
+        getCanvasContainer: function() {
+            return canvasContainer;
+        },
+
+        /**
          * @return {number[]}
          */
         getSize: getCanvasSize,
