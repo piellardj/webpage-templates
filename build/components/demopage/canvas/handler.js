@@ -484,7 +484,14 @@ const Canvas = (function() {
                 const needToUpdate = fullscreen != fullscreenCheckbox.checked;
                 if (needToUpdate) {
                     fullscreenCheckbox.checked = fullscreen;
-                    fullscreenCheckbox.onchange();
+
+                    if (typeof window.CustomEvent === "function" ) {
+                        fullscreenCheckbox.dispatchEvent(new CustomEvent("change"));
+                    } else if (typeof CustomEvent.prototype.initCustomEvent === "function") {
+                        const changeEvent = document.createEvent("CustomEvent");
+                        changeEvent.initCustomEvent("change", false, false, undefined);
+                        fullscreenCheckbox.dispatchEvent(changeEvent);
+                    }
                 }
             }
         },
