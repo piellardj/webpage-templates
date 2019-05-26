@@ -13,6 +13,7 @@
         "indent": ["warn", 4],
         "quotes": ["warn", "double"],
         "prefer-rest-params": 0,
-        "linebreak-style": 0
+        "linebreak-style": 0,
+        "max-len": ["warn", { "code": 100 }]
     }
 }
