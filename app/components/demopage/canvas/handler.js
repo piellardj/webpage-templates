@@ -149,6 +149,12 @@ const Canvas = (function() {
         }, false);
     }
 
+    document.addEventListener("keydown", function(event) {
+        if (event.keyCode == 27) {
+            Canvas.toggleFullscreen(false);
+        }
+    });
+
     /* Bind canvas events */
     if (canvas) {
         /**
