@@ -52,8 +52,10 @@ const FileControl = (function() {
             const input = getUploadInputById(label.htmlFor);
             if (input) {
                 const span = label.querySelector("span");
-                input.addEventListener("change", function(event) {
-                    span.innerText = truncate(input.files[0].name);
+                input.addEventListener("change", function() {
+                    if (input.files.length === 1) {
+                        span.innerText = truncate(input.files[0].name);
+                    }
                 }, false);
             }
         });
@@ -88,7 +90,9 @@ const FileControl = (function() {
             if (input) {
                 input.addEventListener("change", function() {
                     event.stopPropagation();
-                    observer(input.files);
+                    if (input.files.length === 1) {
+                        observer(input.files);
+                    }
                 }, false);
                 return true;
             }
