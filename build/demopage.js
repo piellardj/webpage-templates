@@ -38,12 +38,14 @@ function build(dstDir, jsonDataFilepath, debug) {
         "," + jsonData.canvas.height + ");";
     var pageJsStr = Builder.buildComponentsHandlers(false) + setSizeStr;
     var pageJsMinStr = Builder.buildComponentsHandlers(true) + setSizeStr;
-    var PAGE_JS_PATH = "script/page.js";
-    var PAGE_JS_MIN_PATH = "script/page.min.js";
-    pageData.scriptFiles.unshift((debug) ? PAGE_JS_PATH : PAGE_JS_MIN_PATH);
-    fse.ensureDirSync(path.join(dstDir, "script"));
-    fs.writeFileSync(path.join(dstDir, PAGE_JS_PATH), pageJsStr);
-    fs.writeFileSync(path.join(dstDir, PAGE_JS_MIN_PATH), pageJsMinStr);
+    if (pageJsStr) {
+        var PAGE_JS_PATH = "script/page.js";
+        var PAGE_JS_MIN_PATH = "script/page.min.js";
+        pageData.scriptFiles.unshift((debug) ? PAGE_JS_PATH : PAGE_JS_MIN_PATH);
+        fse.ensureDirSync(path.join(dstDir, "script"));
+        fs.writeFileSync(path.join(dstDir, PAGE_JS_PATH), pageJsStr);
+        fs.writeFileSync(path.join(dstDir, PAGE_JS_MIN_PATH), pageJsMinStr);
+    }
     Builder.buildPage(dstDir, pageData);
 }
 exports.build = build;

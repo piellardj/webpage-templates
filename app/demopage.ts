@@ -33,18 +33,20 @@ function build(dstDir: string, jsonDataFilepath: string, debug: boolean = false)
     }
 
     const setSizeStr = "Canvas.setMaxSize(" + jsonData.canvas.width +
-            "," + jsonData.canvas.height + ");";
+        "," + jsonData.canvas.height + ");";
 
     const pageJsStr = Builder.buildComponentsHandlers(false) + setSizeStr;
     const pageJsMinStr = Builder.buildComponentsHandlers(true) + setSizeStr;
 
-    const PAGE_JS_PATH = "script/page.js";
-    const PAGE_JS_MIN_PATH = "script/page.min.js";
+    if (pageJsStr) {
+        const PAGE_JS_PATH = "script/page.js";
+        const PAGE_JS_MIN_PATH = "script/page.min.js";
 
-    pageData.scriptFiles.unshift((debug) ? PAGE_JS_PATH : PAGE_JS_MIN_PATH);
-    fse.ensureDirSync(path.join(dstDir, "script"));
-    fs.writeFileSync(path.join(dstDir, PAGE_JS_PATH), pageJsStr);
-    fs.writeFileSync(path.join(dstDir, PAGE_JS_MIN_PATH), pageJsMinStr);
+        pageData.scriptFiles.unshift((debug) ? PAGE_JS_PATH : PAGE_JS_MIN_PATH);
+        fse.ensureDirSync(path.join(dstDir, "script"));
+        fs.writeFileSync(path.join(dstDir, PAGE_JS_PATH), pageJsStr);
+        fs.writeFileSync(path.join(dstDir, PAGE_JS_MIN_PATH), pageJsMinStr);
+    }
 
     Builder.buildPage(dstDir, pageData);
 }

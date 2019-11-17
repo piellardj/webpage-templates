@@ -30,13 +30,15 @@ function build(dstDir: string, jsonDataFilepath: string, debug: boolean = false)
     const pageJsStr = Builder.buildComponentsHandlers(false);
     const pageJsMinStr = Builder.buildComponentsHandlers(true);
 
-    const PAGE_JS_PATH = "script/page.js";
-    const PAGE_JS_MIN_PATH = "script/page.min.js";
+    if (pageJsStr) {
+        const PAGE_JS_PATH = "script/page.js";
+        const PAGE_JS_MIN_PATH = "script/page.min.js";
 
-    pageData.scriptFiles.unshift((debug) ? PAGE_JS_PATH : PAGE_JS_MIN_PATH);
-    fse.ensureDirSync(path.join(dstDir, "script"));
-    fs.writeFileSync(path.join(dstDir, PAGE_JS_PATH), pageJsStr);
-    fs.writeFileSync(path.join(dstDir, PAGE_JS_MIN_PATH), pageJsMinStr);
+        pageData.scriptFiles.unshift((debug) ? PAGE_JS_PATH : PAGE_JS_MIN_PATH);
+        fse.ensureDirSync(path.join(dstDir, "script"));
+        fs.writeFileSync(path.join(dstDir, PAGE_JS_PATH), pageJsStr);
+        fs.writeFileSync(path.join(dstDir, PAGE_JS_MIN_PATH), pageJsMinStr);
+    }
 
     Builder.buildPage(dstDir, pageData);
 }
