@@ -9,5 +9,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Demopage = __importStar(require("./demopage"));
 exports.Demopage = Demopage;
+var DemopageEmpty = __importStar(require("./demopage-empty"));
+exports.DemopageEmpty = DemopageEmpty;
 var Homepage = __importStar(require("./homepage"));
 exports.Homepage = Homepage;

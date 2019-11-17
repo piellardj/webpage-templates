@@ -1,5 +1,5 @@
 import minimist = require("minimist");
-import {Demopage, Homepage} from "./index";
+import {Demopage, DemopageEmpty, Homepage} from "./index";
 
 function IsStringNullOrEmpty(str: any): boolean {
     return typeof str !== "string" || str.length === 0;
@@ -40,6 +40,9 @@ if (argv.page === "homepage") {
 } else if (argv.page === "demopage") {
     const debug = argv.debug === 1;
     Demopage.build(argv.outdir, argv.data, debug);
+} else if (argv.page === "demopage-empty") {
+    const debug = argv.debug === 1;
+    DemopageEmpty.build(argv.outdir, argv.data, debug);
 } else {
     outputErrorInvalidValue("page", argv.page);
     exitAndDisplayHelp(100);

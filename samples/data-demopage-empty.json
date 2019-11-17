@@ -1,0 +1,23 @@
+{
+    "title": "TEST_PROJECT_TITLE",
+    "description": "TEST_PROJECT_DESCRIPTION",
+    "introduction": [
+        "This is a long description of the project. Describe here usage and basic techniques used.",
+        "It can be split into several paragraphs if needed."
+    ],
+    "githubProjectName": "GITHUB_PROJECTNAME",
+    "additionalLinks": [
+        {
+            "href": "link1",
+            "text": "first link"
+        },
+        {
+            "href": "link2",
+            "text": "second link"
+        }
+    ],
+    "cssFiles": [
+        "css/additionalCss.css"
+    ],
+    "body": "<div>This is my body<button>Button</button></div>"
+}

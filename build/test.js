@@ -38,6 +38,10 @@ else if (argv.page === "demopage") {
     var debug = argv.debug === 1;
     index_1.Demopage.build(argv.outdir, argv.data, debug);
 }
+else if (argv.page === "demopage-empty") {
+    var debug = argv.debug === 1;
+    index_1.DemopageEmpty.build(argv.outdir, argv.data, debug);
+}
 else {
     outputErrorInvalidValue("page", argv.page);
     exitAndDisplayHelp(100);
