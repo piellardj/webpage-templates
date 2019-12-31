@@ -48,7 +48,7 @@ ejs.resolveInclude = function (name, filename, isDir) {
 };
 function loadComponent(componentName) {
     registerComponent(componentName);
-    return ejs.fileLoader(componentName);
+    return ejs.fileLoader(componentName).toString();
 }
 exports.loadComponent = loadComponent;
 function render(ejsStr, data) {

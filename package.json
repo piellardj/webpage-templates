@@ -1,6 +1,6 @@
 {
   "name": "webpage-templates",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Static webpage generator based on EJS/SASS/TS",
   "repository": "github:piellardj/webpage-templates",
   "main": "build/index.js",
@@ -23,23 +23,23 @@
   "author": "“Jérémie PIELLARD <jeremie.piellard@gmail.com> (https://github.com/piellardj)",
   "license": "ISC",
   "dependencies": {
-    "ejs": "^2.7.2",
+    "ejs": "^3.0.1",
     "fs-extra": "^8.1.0",
     "pretty": "^2.0.0",
     "shx": "^0.3.2"
   },
   "devDependencies": {
-    "@types/ejs": "^2.6.3",
+    "@types/ejs": "^3.0.0",
     "@types/fs-extra": "^8.0.1",
     "@types/minimist": "^1.2.0",
-    "@types/node": "^12.12.8",
-    "eslint": "^6.6.0",
+    "@types/node": "^13.1.2",
+    "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
     "minimist": "^1.2.0",
     "node-sass": "^4.13.0",
     "sass-lint": "^1.13.1",
     "tslint": "^5.20.1",
-    "typescript": "^3.7.2",
+    "typescript": "^3.7.4",
     "uglify-es": "^3.3.9"
   }
 }

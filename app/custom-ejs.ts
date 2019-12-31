@@ -47,7 +47,7 @@ ejs.fileLoader = (filepath: string) => {
     return processEjs(rawStr);
 };
 
-ejs.resolveInclude = (name: string, filename: string, isDir: boolean) => {
+ejs.resolveInclude = (name: string, filename: string, isDir?: boolean) => {
     /* Check if it's a custom component, and if so, remember its name */
     const dirname = path.dirname(name);
     const i = name.indexOf(COMPONENTS_DIR);
@@ -61,7 +61,7 @@ ejs.resolveInclude = (name: string, filename: string, isDir: boolean) => {
 
 function loadComponent(componentName: string): string {
     registerComponent(componentName);
-    return ejs.fileLoader(componentName);
+    return ejs.fileLoader(componentName).toString();
 }
 
 function render(ejsStr: string, data: any): string {
