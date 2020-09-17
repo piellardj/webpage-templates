@@ -57,14 +57,14 @@ function build(dstDir, jsonDataFilepath, debug) {
     if (pageJsStr) {
         var SCRIPT_FOLDER = "script";
         var PAGE_JS_NAME = "page";
-        var pageJsPath = path.join(SCRIPT_FOLDER, PAGE_JS_NAME + ".js");
-        var pageJsMinPath = path.join(SCRIPT_FOLDER, PAGE_JS_NAME + ".min.js");
-        var pageJsDeclarationPath = path.join(SCRIPT_FOLDER, PAGE_JS_NAME + ".d.ts");
-        pageData.scriptFiles.unshift((debug) ? pageJsPath : pageJsMinPath);
+        var pageJsName = PAGE_JS_NAME + ".js";
+        var pageJsMinName = PAGE_JS_NAME + ".min.js";
+        var pageJsDeclarationName = PAGE_JS_NAME + ".d.ts";
+        pageData.scriptFiles.unshift(SCRIPT_FOLDER + "/" + ((debug) ? pageJsName : pageJsMinName));
         fse.ensureDirSync(path.join(dstDir, SCRIPT_FOLDER));
-        fs.writeFileSync(path.join(dstDir, pageJsPath), pageJsStr);
-        fs.writeFileSync(path.join(dstDir, pageJsMinPath), pageJsMinStr);
-        fs.writeFileSync(path.join(dstDir, pageJsDeclarationPath), pageJsDeclaration);
+        fs.writeFileSync(path.join(dstDir, SCRIPT_FOLDER, pageJsName), pageJsStr);
+        fs.writeFileSync(path.join(dstDir, SCRIPT_FOLDER, pageJsMinName), pageJsMinStr);
+        fs.writeFileSync(path.join(dstDir, SCRIPT_FOLDER, pageJsDeclarationName), pageJsDeclaration);
     }
     Builder.buildPage(dstDir, pageData);
 }

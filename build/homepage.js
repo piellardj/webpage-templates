@@ -44,11 +44,12 @@ function build(dstDir, jsonDataFilepath) {
     var pageJsMinStr = Builder.buildComponentsHandlers(true);
     var SCRIPT_FOLDER = "script";
     var PAGE_JS_NAME = "page";
-    var pageJsPath = path.join(SCRIPT_FOLDER, PAGE_JS_NAME + ".js");
-    var pageJsMinPath = path.join(SCRIPT_FOLDER, PAGE_JS_NAME + ".min.js");
+    var pageJsName = PAGE_JS_NAME + ".js";
+    var pageJsMinName = PAGE_JS_NAME + ".min.js";
+    pageData.scriptFiles.unshift(SCRIPT_FOLDER + "/" + pageJsMinName);
     fse.ensureDirSync(path.join(dstDir, SCRIPT_FOLDER));
-    fs.writeFileSync(path.join(dstDir, pageJsPath), pageJsStr);
-    fs.writeFileSync(path.join(dstDir, pageJsMinPath), pageJsMinStr);
+    fs.writeFileSync(path.join(dstDir, SCRIPT_FOLDER, pageJsName), pageJsStr);
+    fs.writeFileSync(path.join(dstDir, SCRIPT_FOLDER, pageJsMinName), pageJsMinStr);
     Builder.buildPage(dstDir, pageData);
 }
 exports.build = build;

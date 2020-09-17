@@ -30,12 +30,13 @@ function build(dstDir: string, jsonDataFilepath: string): void {
     const SCRIPT_FOLDER = "script";
     const PAGE_JS_NAME = "page";
 
-    const pageJsPath = path.join(SCRIPT_FOLDER, PAGE_JS_NAME + ".js");
-    const pageJsMinPath = path.join(SCRIPT_FOLDER, PAGE_JS_NAME + ".min.js");
+    const pageJsName = PAGE_JS_NAME + ".js";
+    const pageJsMinName = PAGE_JS_NAME + ".min.js";
 
+    pageData.scriptFiles.unshift(SCRIPT_FOLDER + "/" + pageJsMinName);
     fse.ensureDirSync(path.join(dstDir, SCRIPT_FOLDER));
-    fs.writeFileSync(path.join(dstDir, pageJsPath), pageJsStr);
-    fs.writeFileSync(path.join(dstDir, pageJsMinPath), pageJsMinStr);
+    fs.writeFileSync(path.join(dstDir, SCRIPT_FOLDER, pageJsName), pageJsStr);
+    fs.writeFileSync(path.join(dstDir, SCRIPT_FOLDER, pageJsMinName), pageJsMinStr);
 
     Builder.buildPage(dstDir, pageData);
 }
