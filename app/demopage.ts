@@ -39,15 +39,21 @@ function build(dstDir: string, jsonDataFilepath: string, debug = false): void {
 
     const pageJsStr = Builder.buildComponentsHandlers(false) + setSizeStr;
     const pageJsMinStr = Builder.buildComponentsHandlers(true) + setSizeStr;
+    const pageJsDeclaration = Builder.buildComponentsDeclaration();
 
     if (pageJsStr) {
-        const PAGE_JS_PATH = "script/page.js";
-        const PAGE_JS_MIN_PATH = "script/page.min.js";
+        const SCRIPT_FOLDER = "script";
+        const PAGE_JS_NAME = "page";
 
-        pageData.scriptFiles.unshift((debug) ? PAGE_JS_PATH : PAGE_JS_MIN_PATH);
-        fse.ensureDirSync(path.join(dstDir, "script"));
-        fs.writeFileSync(path.join(dstDir, PAGE_JS_PATH), pageJsStr);
-        fs.writeFileSync(path.join(dstDir, PAGE_JS_MIN_PATH), pageJsMinStr);
+        const pageJsPath = path.join(SCRIPT_FOLDER, PAGE_JS_NAME + ".js");
+        const pageJsMinPath = path.join(SCRIPT_FOLDER, PAGE_JS_NAME + ".min.js");
+        const pageJsDeclarationPath = path.join(SCRIPT_FOLDER, PAGE_JS_NAME + ".d.ts");
+
+        pageData.scriptFiles.unshift((debug) ? pageJsPath : pageJsMinPath);
+        fse.ensureDirSync(path.join(dstDir, SCRIPT_FOLDER));
+        fs.writeFileSync(path.join(dstDir, pageJsPath), pageJsStr);
+        fs.writeFileSync(path.join(dstDir, pageJsMinPath), pageJsMinStr);
+        fs.writeFileSync(path.join(dstDir, pageJsDeclarationPath), pageJsDeclaration);
     }
 
     Builder.buildPage(dstDir, pageData);

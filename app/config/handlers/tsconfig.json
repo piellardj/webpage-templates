@@ -7,7 +7,7 @@
         "module": "none",
         "outDir": "../../../build",
         "rootDir": "../..",
-        "declaration": false,
+        "declaration": true,
         "sourceMap": false
     }
 }

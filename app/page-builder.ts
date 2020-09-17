@@ -32,19 +32,25 @@ function buildLoadedComponents(dstDir: string): void {
     fs.writeFileSync(path.join(cssDir, "page.css"), concatenatedCssStr);
 }
 
-function buildComponentsHandlers(minify: boolean): string {
-    const filename = (minify) ? "handler.min.js" : "handler.js";
-
+function concatenateComponentsParts(partName: string): string {
     let concatenatedJsStr = "";
     CustomEjs.loadedComponents.forEach((component) => {
-        /* Build CSS */
-        const jsFilepath = path.join(BUILD_DIR, "components", component, filename);
+        const jsFilepath = path.join(BUILD_DIR, "components", component, partName);
         if (fs.existsSync(jsFilepath)) {
             concatenatedJsStr += fs.readFileSync(jsFilepath) + "\n";
         }
     });
 
     return concatenatedJsStr;
+}
+
+function buildComponentsDeclaration(): string {
+    return concatenateComponentsParts("handler.d.ts");
+}
+
+function buildComponentsHandlers(minify: boolean): string {
+    const filename = (minify) ? "handler.min.js" : "handler.js";
+    return concatenateComponentsParts(filename);
 }
 
 function buildPageHtml(dstDir: string, pageData: IPage): void {
@@ -61,6 +67,7 @@ function buildPage(dstDir: string, pageData: IPage): void {
 }
 
 export {
+    buildComponentsDeclaration,
     buildComponentsHandlers,
     buildPage,
     CustomEjs,

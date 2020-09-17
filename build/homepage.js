@@ -24,8 +24,6 @@ var fs = require("fs");
 var fse = require("fs-extra");
 var path = require("path");
 var Builder = __importStar(require("./page-builder"));
-var PAGE_JS_PATH = "script/page.js";
-var PAGE_JS_MIN_PATH = "script/page.min.js";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function buildPageData(jsonData) {
     var mainData = { sections: jsonData.sections };
@@ -35,21 +33,22 @@ function buildPageData(jsonData) {
         bodyStr: bodyStr,
         cssFiles: ["css/page.css"],
         description: jsonData.description,
-        scriptFiles: [PAGE_JS_MIN_PATH],
+        scriptFiles: jsonData.scriptFiles || [],
         title: jsonData.title,
     };
 }
 function build(dstDir, jsonDataFilepath) {
     var jsonData = JSON.parse(fs.readFileSync(jsonDataFilepath).toString());
     var pageData = buildPageData(jsonData);
-    Builder.buildPage(dstDir, pageData);
-    buildHandlers(dstDir);
-}
-exports.build = build;
-function buildHandlers(dstDir) {
     var pageJsStr = Builder.buildComponentsHandlers(false);
     var pageJsMinStr = Builder.buildComponentsHandlers(true);
-    fse.ensureDirSync(path.join(dstDir, "script"));
-    fs.writeFileSync(path.join(dstDir, PAGE_JS_PATH), pageJsStr);
-    fs.writeFileSync(path.join(dstDir, PAGE_JS_MIN_PATH), pageJsMinStr);
+    var SCRIPT_FOLDER = "script";
+    var PAGE_JS_NAME = "page";
+    var pageJsPath = path.join(SCRIPT_FOLDER, PAGE_JS_NAME + ".js");
+    var pageJsMinPath = path.join(SCRIPT_FOLDER, PAGE_JS_NAME + ".min.js");
+    fse.ensureDirSync(path.join(dstDir, SCRIPT_FOLDER));
+    fs.writeFileSync(path.join(dstDir, pageJsPath), pageJsStr);
+    fs.writeFileSync(path.join(dstDir, pageJsMinPath), pageJsMinStr);
+    Builder.buildPage(dstDir, pageData);
 }
+exports.build = build;

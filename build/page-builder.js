@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CustomEjs = exports.buildPage = exports.buildComponentsHandlers = void 0;
+exports.CustomEjs = exports.buildPage = exports.buildComponentsHandlers = exports.buildComponentsDeclaration = void 0;
 var fs = require("fs");
 var fse = require("fs-extra");
 var path = require("path");
@@ -46,17 +46,23 @@ function buildLoadedComponents(dstDir) {
     });
     fs.writeFileSync(path.join(cssDir, "page.css"), concatenatedCssStr);
 }
-function buildComponentsHandlers(minify) {
-    var filename = (minify) ? "handler.min.js" : "handler.js";
+function concatenateComponentsParts(partName) {
     var concatenatedJsStr = "";
     CustomEjs.loadedComponents.forEach(function (component) {
-        /* Build CSS */
-        var jsFilepath = path.join(BUILD_DIR, "components", component, filename);
+        var jsFilepath = path.join(BUILD_DIR, "components", component, partName);
         if (fs.existsSync(jsFilepath)) {
             concatenatedJsStr += fs.readFileSync(jsFilepath) + "\n";
         }
     });
     return concatenatedJsStr;
+}
+function buildComponentsDeclaration() {
+    return concatenateComponentsParts("handler.d.ts");
+}
+exports.buildComponentsDeclaration = buildComponentsDeclaration;
+function buildComponentsHandlers(minify) {
+    var filename = (minify) ? "handler.min.js" : "handler.js";
+    return concatenateComponentsParts(filename);
 }
 exports.buildComponentsHandlers = buildComponentsHandlers;
 function buildPageHtml(dstDir, pageData) {
