@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 var RangeControl;
 (function (RangeControl) {
     function isRangeElement(elt) {
@@ -52,7 +53,7 @@ var RangeControl;
         }
         return false;
     }
-    var isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+    var isIE11 = !!window.MSInputMethodContext && !!document["documentMode"];
     /**
      * Callback will be called every time the value changes.
      * @return {boolean} Whether or not the observer was added

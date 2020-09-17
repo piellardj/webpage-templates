@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Button {
     function getButtonById(id: string): HTMLButtonElement | null {
         const selector = "button[id=" + id + "]";

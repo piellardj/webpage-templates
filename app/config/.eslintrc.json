@@ -1,19 +1,68 @@
 {
-    "env": {
-        "browser": true,
-        "es6": true
-    },
-    "extends": "google",
-    "globals": {
-    },
-    "parserOptions": {
-        "ecmaVersion": 6
-    },
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "plugin:@typescript-eslint/recommended"
+    ],
     "rules": {
-        "indent": ["warn", 4],
-        "quotes": ["warn", "double"],
-        "prefer-rest-params": 0,
-        "linebreak-style": 0,
-        "max-len": ["warn", { "code": 100 }]
+        "@typescript-eslint/brace-style": [
+            "error",
+            "1tbs"
+        ],
+        "@typescript-eslint/comma-spacing": [
+            "error",
+            {
+                "before": false,
+                "after": true
+            }
+        ],
+        "@typescript-eslint/explicit-function-return-type": "error",
+        "@typescript-eslint/explicit-member-accessibility": "error",
+        "@typescript-eslint/explicit-module-boundary-types": [
+            "error"
+        ],
+        "@typescript-eslint/func-call-spacing": [
+            "error",
+            "never"
+        ],
+        "@typescript-eslint/indent": [
+            "warn",
+            4
+        ],
+        "@typescript-eslint/keyword-spacing": [
+            "error",
+            {
+                "before": true,
+                "after": true
+            }
+        ],
+        "@typescript-eslint/no-dupe-class-members": "error",
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/no-inferrable-types": [
+            "error",
+            {
+                "ignoreParameters": true,
+                "ignoreProperties": false
+            }
+        ],
+        "@typescript-eslint/no-invalid-this": "error",
+        "@typescript-eslint/no-namespace": "off",
+        "@typescript-eslint/quotes": [
+            "warn",
+            "double"
+        ],
+        "linebreak-style": [
+            "warn",
+            "windows"
+        ],
+        "max-len": [
+            "warn",
+            {
+                "code": 120
+            }
+        ]
     }
 }

@@ -10,7 +10,7 @@ function registerComponent(componentName: string): void {
     loadedComponents.add(componentName);
 }
 
-function resolvePartialPath(name: string) {
+function resolvePartialPath(name: string): string {
     /* Custom components */
     if (path.extname(name) === "") {
         return path.posix.join(COMPONENTS_DIR_ABSOLUTE, name, "template.ejs").replace(/\\/g, "/");
@@ -41,13 +41,13 @@ function processEjs(rawEjs: string): string {
     return processedStr;
 }
 
-ejs.fileLoader = (filepath: string) => {
+ejs.fileLoader = (filepath: string): string => {
     const resolvedPath = resolvePartialPath(filepath);
     const rawStr: string = fs.readFileSync(resolvedPath).toString();
     return processEjs(rawStr);
 };
 
-ejs.resolveInclude = (name: string, filename: string, isDir?: boolean) => {
+ejs.resolveInclude = (name: string): string => {
     /* Check if it's a custom component, and if so, remember its name */
     const dirname = path.dirname(name);
     const i = name.indexOf(COMPONENTS_DIR);
@@ -64,7 +64,7 @@ function loadComponent(componentName: string): string {
     return ejs.fileLoader(componentName).toString();
 }
 
-function render(ejsStr: string, data: any): string {
+function render(ejsStr: string, data: ejs.Data): string {
     /* Need to provide a fake file name for Windows because of a bug in EJS. */
     if (process.platform === "win32") {
         return ejs.render(ejsStr, data, {filename: "FAKE"});

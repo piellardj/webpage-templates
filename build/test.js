@@ -16,6 +16,7 @@ function exitAndDisplayHelp(code) {
 function outputErrorInvalidValue(name, value) {
     console.error("Invalid value '" + value + "' for parameter '--" + name + "'.");
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function checkArgs(providedArgs) {
     var argsToCheck = ["page", "data", "outdir"];
     var i = 0;

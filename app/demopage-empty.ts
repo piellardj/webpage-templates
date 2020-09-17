@@ -5,6 +5,7 @@ import path = require("path");
 import IPage from "./components/page/IPage";
 import * as Builder from "./page-builder";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function buildPageData(jsonData: any): IPage {
     const bodyEjs = Builder.CustomEjs.loadComponent(path.join("demopage", "body-empty"));
     const bodyStr = Builder.CustomEjs.render(bodyEjs, jsonData);
@@ -24,7 +25,7 @@ function buildPageData(jsonData: any): IPage {
 }
 
 function build(dstDir: string, jsonDataFilepath: string, debug: boolean = false): void {
-    const jsonData: any = JSON.parse(fs.readFileSync(jsonDataFilepath).toString());
+    const jsonData: unknown = JSON.parse(fs.readFileSync(jsonDataFilepath).toString());
     const pageData: IPage = buildPageData(jsonData);
 
     const pageJsStr = Builder.buildComponentsHandlers(false);

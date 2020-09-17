@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 var Tabs;
 (function (Tabs) {
     function getTabsById(id) {

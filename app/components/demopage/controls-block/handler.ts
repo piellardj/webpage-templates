@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Controls {
     function getElementBySelector(selector: string): HTMLElement | null {
         const elt = document.querySelector(selector);

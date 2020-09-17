@@ -8,6 +8,7 @@ import * as Builder from "./page-builder";
 const PAGE_JS_PATH = "script/page.js";
 const PAGE_JS_MIN_PATH = "script/page.min.js";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function buildPageData(jsonData: any): IPage {
     const mainData = { sections: jsonData.sections };
     const bodyEjs = Builder.CustomEjs.loadComponent(path.join("homepage", "body"));
@@ -23,14 +24,14 @@ function buildPageData(jsonData: any): IPage {
 }
 
 function build(dstDir: string, jsonDataFilepath: string): void {
-    const jsonData: any = JSON.parse(fs.readFileSync(jsonDataFilepath).toString());
+    const jsonData: unknown = JSON.parse(fs.readFileSync(jsonDataFilepath).toString());
     const pageData: IPage = buildPageData(jsonData);
 
     Builder.buildPage(dstDir, pageData);
     buildHandlers(dstDir);
 }
 
-function buildHandlers(dstDir: string) {
+function buildHandlers(dstDir: string): void {
     const pageJsStr = Builder.buildComponentsHandlers(false);
     const pageJsMinStr = Builder.buildComponentsHandlers(true);
 

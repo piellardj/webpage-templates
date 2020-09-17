@@ -1,13 +1,13 @@
 import minimist = require("minimist");
 import {Demopage, DemopageEmpty, Homepage} from "./index";
 
-function IsStringNullOrEmpty(str: any): boolean {
+function IsStringNullOrEmpty(str: unknown): boolean {
     return typeof str !== "string" || str.length === 0;
 }
 
 function displayHelp(): void {
     console.log("\nUsage:");
-    console.log ("--page=[homepage | demopage] --data=%JSON_FILE% --outdir=%OUT_DIR% [--debug=1]");
+    console.log("--page=[homepage | demopage] --data=%JSON_FILE% --outdir=%OUT_DIR% [--debug=1]");
 }
 
 function exitAndDisplayHelp(code: number): void {
@@ -15,10 +15,11 @@ function exitAndDisplayHelp(code: number): void {
     process.exit(code);
 }
 
-function outputErrorInvalidValue(name: string, value: any): void {
+function outputErrorInvalidValue(name: string, value: unknown): void {
     console.error("Invalid value '" + value + "' for parameter '--" + name + "'.");
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function checkArgs(providedArgs: any): void {
     const argsToCheck = ["page", "data", "outdir"];
     let i = 0;

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Picker {
     type PickerObserver = (selectedValue: string | null) => unknown;
 

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Canvas {
     function getElementBySelector(selector: string): HTMLElement | null {
         const elt = document.querySelector(selector);
@@ -25,7 +26,7 @@ namespace Canvas {
     let maxWidth = 512;
     let maxHeight = 512;
 
-    function bindCanvasButtons() {
+    function bindCanvasButtons(): void {
         function hideOverflow(value: boolean): void {
             document.body.style.overflow = value ? "hidden" : "auto";
         }
@@ -242,6 +243,7 @@ namespace Canvas {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     namespace Touch {
         interface ITouch {
             id: number;
@@ -419,7 +421,7 @@ namespace Canvas {
         indicators.style.display = visible ? "block" : "none";
     }
 
-    export function setMaxSize(newMaxWidth: number, newMaxHeight: number) {
+    export function setMaxSize(newMaxWidth: number, newMaxHeight: number): void {
         maxWidth = newMaxWidth;
         maxHeight = newMaxHeight;
 

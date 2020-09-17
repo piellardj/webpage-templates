@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 var Checkbox;
 (function (Checkbox) {
     function getCheckboxFromId(id) {

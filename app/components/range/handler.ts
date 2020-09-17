@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace RangeControl {
     function isRangeElement(elt: unknown): boolean {
         return (elt as HTMLInputElement).type && (elt as HTMLInputElement).type.toLowerCase() === "range";
@@ -65,7 +66,7 @@ namespace RangeControl {
         return false;
     }
 
-    const isIE11 = !!window.MSInputMethodContext && !!(document as any).documentMode;
+    const isIE11 = !!window.MSInputMethodContext && !!document["documentMode"];
 
     /**
      * Callback will be called every time the value changes.

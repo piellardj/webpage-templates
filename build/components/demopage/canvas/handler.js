@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 var Canvas;
 (function (Canvas) {
     function getElementBySelector(selector) {
@@ -207,6 +208,7 @@ var Canvas;
             });
         }
     })(Mouse || (Mouse = {}));
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     var Touch;
     (function (Touch) {
         var currentTouches = [];

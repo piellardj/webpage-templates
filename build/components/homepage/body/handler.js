@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 var Homepage;
 (function (Homepage) {
     /* Retrieve projects URLs from DOM, in their order of appearance */

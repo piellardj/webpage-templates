@@ -5,6 +5,7 @@ import path = require("path");
 import IPage from "./components/page/IPage";
 import * as Builder from "./page-builder";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function buildPageData(jsonData: any): IPage {
     const bodyEjs = Builder.CustomEjs.loadComponent(path.join("demopage", "body"));
     const bodyStr = Builder.CustomEjs.render(bodyEjs, jsonData);
@@ -20,11 +21,12 @@ function buildPageData(jsonData: any): IPage {
     };
 }
 
-function isNumber(v: any): boolean {
+function isNumber(v: unknown): boolean {
     return typeof v === "number";
 }
 
-function build(dstDir: string, jsonDataFilepath: string, debug: boolean = false): void {
+function build(dstDir: string, jsonDataFilepath: string, debug = false): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const jsonData: any = JSON.parse(fs.readFileSync(jsonDataFilepath).toString());
     const pageData: IPage = buildPageData(jsonData);
 

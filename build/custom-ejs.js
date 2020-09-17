@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.render = exports.loadedComponents = exports.loadComponent = void 0;
 var ejs = require("ejs");
 var fs = require("fs");
 var path = require("path");
@@ -36,7 +37,7 @@ ejs.fileLoader = function (filepath) {
     var rawStr = fs.readFileSync(resolvedPath).toString();
     return processEjs(rawStr);
 };
-ejs.resolveInclude = function (name, filename, isDir) {
+ejs.resolveInclude = function (name) {
     /* Check if it's a custom component, and if so, remember its name */
     var dirname = path.dirname(name);
     var i = name.indexOf(COMPONENTS_DIR);
