@@ -1,0 +1,13 @@
+{
+    "include": [
+        "../../components/**/handler.ts"
+    ],
+    "compilerOptions": {
+        "target": "es5",
+        "module": "none",
+        "outDir": "../../../build",
+        "rootDir": "../..",
+        "declaration": false,
+        "sourceMap": false
+    }
+}

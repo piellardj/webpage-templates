@@ -1,27 +1,17 @@
-/* exported Controls */
-const Controls = (function() {
-    /**
-     * @param {string} selector
-     * @return {Object} Html node or null if not found
-     */
+var Controls;
+(function (Controls) {
     function getElementBySelector(selector) {
-        const elt = document.querySelector(selector);
+        var elt = document.querySelector(selector);
         if (!elt) {
             console.error("Cannot find control '" + selector + "'.");
         }
         return elt;
     }
-
-    return Object.freeze({
-        /**
-         * @param {string} id
-         * @param {boolean} visible
-         */
-        setVisibility: function(id, visible) {
-            const control = getElementBySelector("div#control-" + id);
-            if (control) {
-                control.style.display = visible ? "" : "none";
-            }
-        },
-    });
-})();
+    function setVisibility(id, visible) {
+        var control = getElementBySelector("div#control-" + id);
+        if (control) {
+            control.style.display = visible ? "" : "none";
+        }
+    }
+    Controls.setVisibility = setVisibility;
+})(Controls || (Controls = {}));

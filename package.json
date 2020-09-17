@@ -5,8 +5,10 @@
   "repository": "github:piellardj/webpage-templates",
   "main": "build/index.js",
   "scripts": {
-    "build": "npm run sass && npm run tsc  && npm run build-handlers",
-    "build-handlers": "node app/build-handlers.js",
+    "build": "npm run sass && npm run tsc  && npm run generate-handlers",
+    "generate-handlers": "npm run transpile-handlers && npm run minify-handlers",
+    "transpile-handlers": "tsc -p app/config/handlers/tsconfig.json",
+    "minify-handlers": "node app/minify-handlers.js",
     "rebuild": "npm run lint && npm run clean && npm run build",
     "sass": "node-sass app/components --include-path app/components --output build/components --recursive --quiet --output-style compressed",
     "tsc": "tsc -p app/config/tsconfig.json",

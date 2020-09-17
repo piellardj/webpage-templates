@@ -1,103 +1,74 @@
-/* exported FileControl */
-const FileControl = (function() {
-    const filenameMaxSize = 16;
-
-    /**
-     * @param {string} name
-     * @return {string}
-     */
+var FileControl;
+(function (FileControl) {
+    var filenameMaxSize = 16;
     function truncate(name) {
         if (name.length > filenameMaxSize) {
             return name.substring(0, 15) + "..." +
-                name.substring(name.length-15);
+                name.substring(name.length - 15);
         }
         return name;
     }
-
-    /**
-     * @param {string} selector
-     * @return {Object} Html node or null if not found
-     */
     function getElementBySelector(selector) {
-        const elt = document.querySelector(selector);
+        var elt = document.querySelector(selector);
         if (!elt) {
             console.error("Cannot find input file '" + selector + "'.");
         }
         return elt;
     }
-
-    /**
-     * @param {string} id
-     * @return {Object} Html node or null if not found
-     */
     function getUploadInputById(id) {
-        const selector = "input[type=file][id=" + id + "]";
+        var selector = "input[type=file][id=" + id + "]";
         return getElementBySelector(selector);
     }
-
-    /**
-     * @param {string} id
-     * @return {Object} Html node or null if not found
-     */
     function getDownloadLabel(id) {
-        const selector = ".file-control.download > label[id=" + id + "]";
+        var selector = ".file-control.download > label[id=" + id + "]";
         return getElementBySelector(selector);
     }
-
     /* Bind event so that filename is displayed on upload */
-    const labelsSelector = ".file-control.upload > label";
-    window.addEventListener("load", function() {
-        const labels = document.querySelectorAll(labelsSelector);
-        Array.prototype.forEach.call(labels, function(label) {
-            const input = getUploadInputById(label.htmlFor);
+    var labelsSelector = ".file-control.upload > label";
+    window.addEventListener("load", function () {
+        var labels = document.querySelectorAll(labelsSelector);
+        Array.prototype.forEach.call(labels, function (label) {
+            var input = getUploadInputById(label.htmlFor);
             if (input) {
-                const span = label.querySelector("span");
-                input.addEventListener("change", function() {
+                var span_1 = label.querySelector("span");
+                input.addEventListener("change", function () {
                     if (input.files.length === 1) {
-                        span.innerText = truncate(input.files[0].name);
+                        span_1.innerText = truncate(input.files[0].name);
                     }
                 }, false);
             }
         });
     });
-
-    return Object.freeze({
-        /**
-         * @param {string} id
-         * @param {Object} observer Callback function
-         * @return {boolean} Whether or not the observer was added
-         */
-        addDownloadObserver: function(id, observer) {
-            const elt = getDownloadLabel(id);
-            if (elt) {
-                elt.addEventListener("click", function() {
-                    event.stopPropagation();
-                    observer();
-                }, false);
-                return true;
-            }
-
-            return false;
-        },
-
-        /**
-         * @param {string} uploadId
-         * @param {Object} observer Callback function
-         * @return {boolean} Whether or not the observer was added
-         */
-        addUploadObserver: function(uploadId, observer) {
-            const input = getUploadInputById(uploadId);
-            if (input) {
-                input.addEventListener("change", function() {
-                    event.stopPropagation();
-                    if (input.files.length === 1) {
-                        observer(input.files);
-                    }
-                }, false);
-                return true;
-            }
-
-            return false;
-        },
-    });
-})();
+    /**
+     * @return {boolean} Whether or not the observer was added
+     */
+    function addDownloadObserver(id, observer) {
+        var elt = getDownloadLabel(id);
+        if (elt) {
+            elt.addEventListener("click", function () {
+                event.stopPropagation();
+                observer();
+            }, false);
+            return true;
+        }
+        return false;
+    }
+    FileControl.addDownloadObserver = addDownloadObserver;
+    /**
+     * @return {boolean} Whether or not the observer was added
+     */
+    function addUploadObserver(uploadId, observer) {
+        var input = getUploadInputById(uploadId);
+        if (input) {
+            input.addEventListener("change", function () {
+                event.stopPropagation();
+                if (input.files.length === 1) {
+                    observer(input.files);
+                }
+            }, false);
+            return true;
+        }
+        return false;
+    }
+    FileControl.addUploadObserver = addUploadObserver;
+})(FileControl || (FileControl = {}));

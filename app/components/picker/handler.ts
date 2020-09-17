@@ -1,15 +1,29 @@
-/* exported Picker */
-const Picker = (function() {
-    const pickersDictionary = {};
+namespace Picker {
+    type PickerObserver = (selectedValue: string | null) => unknown;
+
+    interface IPickerObject {
+        wrapper: HTMLElement;
+        leftButton: HTMLElement;
+        rightButton: HTMLElement;
+        span: HTMLSpanElement;
+        inputs: NodeListOf<HTMLInputElement>;
+        observers: PickerObserver[];
+    }
+
+    interface IPickersDictionary {
+        [id: string]: IPickerObject;
+    }
 
     /**
      * Populates pickers dictionary and binds events.
      */
-    function buildPickersDictionary() {
+    function buildPickersDictionary(): IPickersDictionary {
+        const dictionary: IPickersDictionary = {};
+
         const pickers = document.querySelectorAll(".inline-picker");
         for (let i = 0; i < pickers.length; ++i) {
-            const picker = {
-                wrapper: pickers[i],
+            const picker: IPickerObject = {
+                wrapper: pickers[i] as HTMLElement,
                 leftButton: pickers[i].querySelector(".picker-button.left"),
                 rightButton: pickers[i].querySelector(".picker-button.right"),
                 span: pickers[i].querySelector("span"),
@@ -18,15 +32,16 @@ const Picker = (function() {
             };
 
             bindPickerEvents(picker);
-            pickersDictionary[pickers[i].id] = picker;
+            dictionary[pickers[i].id] = picker;
         }
+
+        return dictionary;
     }
 
-    /**
-     * @param {object} picker
-     * @return {number}
-     */
-    function getIndexOfCheckedInput(picker) {
+    const pickersDictionary = buildPickersDictionary();
+    const DISABLED_BUTTON_CLASS = "disabled";
+
+    function getIndexOfCheckedInput(picker: IPickerObject): number {
         for (let i = 0; i < picker.inputs.length; ++i) {
             if (picker.inputs[i].checked) {
                 return i;
@@ -35,27 +50,21 @@ const Picker = (function() {
         return -1;
     }
 
-    /**
-     * @param {object} button
-     * @param {boolean} enable
-     */
-    function enableButton(button, enable) {
+    function enableButton(button: HTMLElement, enable: boolean): void {
         if (enable) {
-            button.classList.remove("disabled");
-        } else if (!button.classList.contains("disabled")) {
-            button.classList.add("disabled");
+            button.classList.remove(DISABLED_BUTTON_CLASS);
+        } else if (!button.classList.contains(DISABLED_BUTTON_CLASS)) {
+            button.classList.add(DISABLED_BUTTON_CLASS);
         }
     }
 
     /**
      *  Updates selector text and disables/enables buttons if needed.
-     *  @param {object} picker
-     *  @param {boolean} callObservers
      */
-    function updateVisibleValue(picker, callObservers) {
+    function updateVisibleValue(picker: IPickerObject, callObservers: boolean): void {
         const index = getIndexOfCheckedInput(picker);
-        let selectedLabel;
-        let selectedValue = null;
+        let selectedLabel: string;
+        let selectedValue: string | null = null;
         if (index >= 0) {
             selectedLabel = picker.inputs[index].dataset.label;
             selectedValue = picker.inputs[index].value;
@@ -75,29 +84,22 @@ const Picker = (function() {
         }
 
         if (callObservers) {
-            for (let i = 0; i < picker.observers.length; ++i) {
-                picker.observers[i](selectedValue);
+            for (const observer of picker.observers) {
+                observer(selectedValue);
             }
         }
     }
 
-    /**
-     * @param {object} button
-     * @return {boolean}
-     */
-    function isButtonEnabled(button) {
-        return !button.classList.contains("disabled");
+    function isButtonEnabled(button: HTMLElement): boolean {
+        return !button.classList.contains(DISABLED_BUTTON_CLASS);
     }
 
-    /**
-     * @param {object} picker HtmlObjectElement
-     */
-    function bindPickerEvents(picker) {
-        picker.leftButton.addEventListener("click", function() {
+    function bindPickerEvents(picker: IPickerObject): void {
+        picker.leftButton.addEventListener("click", function () {
             if (isButtonEnabled(picker.leftButton)) {
                 const index = getIndexOfCheckedInput(picker);
                 if (index < 0) {
-                    picker.inputs[picker.inputs.length-1].checked = true;
+                    picker.inputs[picker.inputs.length - 1].checked = true;
                 } else if (index > 0) {
                     picker.inputs[index].checked = false;
                     picker.inputs[index - 1].checked = true;
@@ -107,7 +109,7 @@ const Picker = (function() {
             }
         });
 
-        picker.rightButton.addEventListener("click", function() {
+        picker.rightButton.addEventListener("click", function () {
             if (isButtonEnabled(picker.rightButton)) {
                 const index = getIndexOfCheckedInput(picker);
                 if (index < 0) {
@@ -124,41 +126,24 @@ const Picker = (function() {
         updateVisibleValue(picker, true);
     }
 
-    buildPickersDictionary();
+    export function addObserver(id: string, observer: PickerObserver): void {
+        pickersDictionary[id].observers.push(observer);
+    }
 
-    return Object.freeze({
-        /**
-         * Callback will be called every time the value changes.
-         * @param {string} id
-         * @param {Object} observer Callback method
-         */
-        addObserver: function(id, observer) {
-            pickersDictionary[id].observers.push(observer);
-        },
+    export function getValue(id: string): string | null {
+        const picker = pickersDictionary[id];
+        const index = getIndexOfCheckedInput(picker);
+        if (index >= 0) {
+            return picker.inputs[index].value;
+        }
+        return null;
+    }
 
-        /**
-         * @param {string} id
-         * @return {string}
-         */
-        getValue: function(id) {
-            const picker = pickersDictionary[id];
-            const index = getIndexOfCheckedInput(picker);
-            if (index >= 0) {
-                return picker.inputs[index].value;
-            }
-            return null;
-        },
-
-        /**
-         * @param {string} id
-         * @param {string} value
-         */
-        setValue: function(id, value) {
-            const picker = pickersDictionary[id];
-            for (let i = 0; i < picker.inputs.length; ++i) {
-                picker.inputs[i].checked = (picker.inputs[i].value === value);
-            }
-            updateVisibleValue(picker, false);
-        },
-    });
-})();
+    export function setValue(id: string, value: string): void {
+        const picker = pickersDictionary[id];
+        for (let i = 0; i < picker.inputs.length; ++i) {
+            picker.inputs[i].checked = (picker.inputs[i].value === value);
+        }
+        updateVisibleValue(picker, false);
+    }
+}

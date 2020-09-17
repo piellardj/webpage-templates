@@ -1,22 +1,22 @@
-var Demopage;
-(function (Demopage) {
-    var errorsBlockId = "error-messages";
-    var errorsBlock = document.getElementById(errorsBlockId);
+namespace Demopage {
+    const errorsBlockId = "error-messages";
+    const errorsBlock = document.getElementById(errorsBlockId);
     if (!errorsBlock) {
         console.error("Cannot find element '" + errorsBlockId + "'.");
     }
-    function getErrorById(id) {
+
+    function getErrorById(id: string): Element {
         return errorsBlock.querySelector("span[id=error-message-" + id + "]");
     }
-    function setErrorMessage(id, message) {
+
+    export function setErrorMessage(id: string, message: string): void {
         if (errorsBlock) {
-            var existingSpan = getErrorById(id);
+            const existingSpan = getErrorById(id);
             if (existingSpan) {
                 existingSpan.innerHTML = message;
                 return;
-            }
-            else {
-                var newSpan = document.createElement("span");
+            } else {
+                const newSpan = document.createElement("span");
                 newSpan.id = "error-message-" + id;
                 newSpan.innerText = message;
                 errorsBlock.appendChild(newSpan);
@@ -24,12 +24,12 @@ var Demopage;
             }
         }
     }
-    Demopage.setErrorMessage = setErrorMessage;
-    function removeErrorMessage(id) {
+
+    export function removeErrorMessage(id: string): void {
         if (errorsBlock) {
-            var span = getErrorById(id);
+            const span = getErrorById(id);
             if (span) {
-                var br = span.nextElementSibling;
+                const br = span.nextElementSibling;
                 if (br) {
                     errorsBlock.removeChild(br);
                 }
@@ -37,5 +37,4 @@ var Demopage;
             }
         }
     }
-    Demopage.removeErrorMessage = removeErrorMessage;
-})(Demopage || (Demopage = {}));
+}
