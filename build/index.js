@@ -24,5 +24,5 @@ var Demopage = __importStar(require("./demopage"));
 exports.Demopage = Demopage;
 var DemopageEmpty = __importStar(require("./demopage-empty"));
 exports.DemopageEmpty = DemopageEmpty;
-var Homepage = __importStar(require("./homepage"));
+var Homepage = __importStar(require("./homepage/homepage"));
 exports.Homepage = Homepage;

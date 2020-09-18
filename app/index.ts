@@ -1,6 +1,6 @@
 import * as Demopage from "./demopage";
 import * as DemopageEmpty from "./demopage-empty";
-import * as Homepage from "./homepage";
+import * as Homepage from "./homepage/homepage";
 
 export {
     Demopage,

@@ -23,23 +23,26 @@ exports.build = void 0;
 var fs = require("fs");
 var fse = require("fs-extra");
 var path = require("path");
-var Builder = __importStar(require("./page-builder"));
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function buildPageData(jsonData) {
-    var mainData = { sections: jsonData.sections };
-    var bodyEjs = Builder.CustomEjs.loadComponent(path.join("homepage", "body"));
-    var bodyStr = Builder.CustomEjs.render(bodyEjs, mainData);
+var Builder = __importStar(require("../page-builder"));
+function buildPageData(homepageData) {
+    var homepageBodyData = { sections: homepageData.sections };
+    var homepageBodyEjs = Builder.CustomEjs.loadComponent(path.join("homepage", "body"));
+    var homepageBodyStr = Builder.CustomEjs.render(homepageBodyEjs, homepageBodyData);
     return {
-        bodyStr: bodyStr,
+        bodyStr: homepageBodyStr,
         cssFiles: ["css/page.css"],
-        description: jsonData.description,
-        scriptFiles: jsonData.scriptFiles || [],
-        title: jsonData.title,
+        description: homepageData.description,
+        scriptFiles: [],
+        title: homepageData.title,
     };
 }
-function build(dstDir, jsonDataFilepath) {
-    var jsonData = JSON.parse(fs.readFileSync(jsonDataFilepath).toString());
-    var pageData = buildPageData(jsonData);
+/**
+ *
+ * @param data Data describing the contents of the page
+ * @param destinationDir Root directory in which the generated files will be copied
+ */
+function build(data, destinationDir) {
+    var pageData = buildPageData(data);
     var pageJsStr = Builder.buildComponentsHandlers(false);
     var pageJsMinStr = Builder.buildComponentsHandlers(true);
     var SCRIPT_FOLDER = "script";
@@ -47,9 +50,9 @@ function build(dstDir, jsonDataFilepath) {
     var pageJsName = PAGE_JS_NAME + ".js";
     var pageJsMinName = PAGE_JS_NAME + ".min.js";
     pageData.scriptFiles.unshift(SCRIPT_FOLDER + "/" + pageJsMinName);
-    fse.ensureDirSync(path.join(dstDir, SCRIPT_FOLDER));
-    fs.writeFileSync(path.join(dstDir, SCRIPT_FOLDER, pageJsName), pageJsStr);
-    fs.writeFileSync(path.join(dstDir, SCRIPT_FOLDER, pageJsMinName), pageJsMinStr);
-    Builder.buildPage(dstDir, pageData);
+    fse.ensureDirSync(path.join(destinationDir, SCRIPT_FOLDER));
+    fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsName), pageJsStr);
+    fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsMinName), pageJsMinStr);
+    Builder.buildPage(destinationDir, pageData);
 }
 exports.build = build;
