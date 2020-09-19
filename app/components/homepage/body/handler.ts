@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-namespace Homepage {
+namespace Page.Homepage {
     /* Retrieve projects URLs from DOM, in their order of appearance */
     function retrieveProjectsUrls(): string[] {
         const projectUrlStart = "https://piellardj.github.io/";

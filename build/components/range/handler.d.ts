@@ -1,4 +1,4 @@
-declare namespace RangeControl {
+declare namespace Page.Range {
     type RangeObserver = (rangeValue: number) => unknown;
     /**
      * Callback will be called every time the value changes.

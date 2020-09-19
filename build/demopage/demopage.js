@@ -53,7 +53,7 @@ function build(data, destinationDir, options) {
     if (!isNumber(data.canvas.width) || !isNumber(data.canvas.height)) {
         console.error("ERROR: provide canvas dimensions with canvas.width and canvas.height.");
     }
-    var setSizeStr = "Canvas.setMaxSize(" + data.canvas.width + "," + data.canvas.height + ");";
+    var setSizeStr = "Page.Canvas.setMaxSize(" + data.canvas.width + "," + data.canvas.height + ");";
     var pageJsStr = Builder.buildComponentsHandlers(false) + setSizeStr;
     var pageJsMinStr = Builder.buildComponentsHandlers(true) + setSizeStr;
     var pageJsDeclaration = Builder.buildComponentsDeclaration();

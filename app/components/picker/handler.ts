@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-namespace Picker {
+namespace Page.Picker {
     type PickerObserver = (selectedValue: string | null) => unknown;
 
     interface IPickerObject {

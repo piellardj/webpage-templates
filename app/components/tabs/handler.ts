@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-namespace Tabs {
+namespace Page.Tabs {
     function getTabsById(id: string): Element | null {
         const selector = "div.tabs[id=" + id + "-id]";
         const elt = document.querySelector(selector);

@@ -49,7 +49,7 @@ function build(data: IDemopageData, destinationDir: string, options?: IBuildOpti
         console.error("ERROR: provide canvas dimensions with canvas.width and canvas.height.");
     }
 
-    const setSizeStr = `Canvas.setMaxSize(${data.canvas.width},${data.canvas.height});`;
+    const setSizeStr = `Page.Canvas.setMaxSize(${data.canvas.width},${data.canvas.height});`;
 
     const pageJsStr = Builder.buildComponentsHandlers(false) + setSizeStr;
     const pageJsMinStr = Builder.buildComponentsHandlers(true) + setSizeStr;

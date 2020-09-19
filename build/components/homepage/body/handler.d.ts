@@ -1,2 +1,2 @@
-declare namespace Homepage {
+declare namespace Page.Homepage {
 }

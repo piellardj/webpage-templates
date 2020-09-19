@@ -1,4 +1,4 @@
-declare namespace FileControl {
+declare namespace Page.FileControl {
     type DownloadObserver = () => unknown;
     type UploadObserver = (files: FileList) => unknown;
     /**

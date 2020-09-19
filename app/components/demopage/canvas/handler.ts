@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-namespace Canvas {
+namespace Page.Canvas {
     function getElementBySelector(selector: string): HTMLElement | null {
         const elt = document.querySelector(selector);
         if (!elt) {

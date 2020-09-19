@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-namespace Demopage {
+namespace Page.Demopage {
     const errorsBlockId = "error-messages";
     const errorsBlock = document.getElementById(errorsBlockId);
     if (!errorsBlock) {

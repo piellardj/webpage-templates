@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-namespace Checkbox {
+namespace Page.Checkbox {
     function getCheckboxFromId(id: string): HTMLInputElement | null {
         const selector = "input[type=checkbox][id=" + id + "]";
         const elt = document.querySelector(selector);

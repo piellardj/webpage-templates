@@ -1,4 +1,4 @@
-declare namespace Button {
+declare namespace Page.Button {
     type ButtonObserver = () => unknown;
     /**
      * @return {boolean} Whether or not the observer was added

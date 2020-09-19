@@ -1,4 +1,4 @@
-declare namespace Checkbox {
+declare namespace Page.Checkbox {
     type CheckboxObserver = (isChecked: boolean) => unknown;
     /**
      * @return {boolean} Whether or not the observer was added

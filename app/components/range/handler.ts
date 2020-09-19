@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-namespace RangeControl {
+namespace Page.Range {
     function isRangeElement(elt: unknown): boolean {
         return (elt as HTMLInputElement).type && (elt as HTMLInputElement).type.toLowerCase() === "range";
     }
@@ -103,5 +103,3 @@ namespace RangeControl {
         }
     }
 }
-
-eval("Range = RangeControl;"); // for legacy compatibility

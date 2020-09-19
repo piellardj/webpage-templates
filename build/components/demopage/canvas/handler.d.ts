@@ -1,4 +1,4 @@
-declare namespace Canvas {
+declare namespace Page.Canvas {
     type CanvasResizeObserver = (newWidth: number, newHeight: number) => unknown;
     type FullscreenObserver = (isFullscreen: boolean) => unknown;
     type MouseDownObserver = () => unknown;

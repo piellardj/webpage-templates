@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-namespace FileControl {
+namespace Page.FileControl {
     const filenameMaxSize = 16;
 
     function truncate(name: string): string {

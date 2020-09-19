@@ -1,4 +1,4 @@
-declare namespace Tabs {
+declare namespace Page.Tabs {
     type TabsObserver = (selectedValues: string[]) => unknown;
     /**
      * @return {boolean} Whether or not the observer was added
