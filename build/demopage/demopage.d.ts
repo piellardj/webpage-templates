@@ -1,5 +1,5 @@
 import { IDemopageData } from "./i-demopage-data";
-import { supportedControls } from "../components/demopage/controls-block/IControlsBlock";
+import { supportedControls } from "../components/demopage/controls-block/template-interface";
 interface IBuildOptions {
     debug: boolean;
 }

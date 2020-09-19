@@ -1,4 +1,4 @@
-import IPage from "./components/page/IPage";
+import IPage from "./components/page/template-interface";
 import * as CustomEjs from "./custom-ejs";
 declare function buildComponentsDeclaration(): string;
 declare function buildComponentsHandlers(minify: boolean): string;

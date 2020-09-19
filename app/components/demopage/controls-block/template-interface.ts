@@ -1,9 +1,9 @@
-import { IButton } from "../../button/IButton";
-import { ICheckbox } from "../../checkbox/ICheckbox";
-import { IFileControlDownload, IFileControlUpload } from "../../file-control/IFileControl";
-import { IPicker } from "../../picker/IPicker";
-import { IRange } from "../../range/IRange";
-import { ITabs } from "../../tabs/ITabs";
+import { IButton } from "../../button/template-interface";
+import { ICheckbox } from "../../checkbox/template-interface";
+import { IFileControlDownload, IFileControlUpload } from "../../file-control/template-interface";
+import { IPicker } from "../../picker/template-interface";
+import { IRange } from "../../range/template-interface";
+import { ITabs } from "../../tabs/template-interface";
 
 interface IControlBase {
     id: string;

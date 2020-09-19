@@ -2,12 +2,12 @@ import fs = require("fs");
 import fse = require("fs-extra");
 import path = require("path");
 
-import IPage from "../components/page/IPage";
+import IPage from "../components/page/template-interface";
 import * as Builder from "../page-builder";
 
-import { IBody as IDemopageBody } from "../components/demopage/body/IBody";
+import { IBody as IDemopageBody } from "../components/demopage/body/template-interface";
 import { IDemopageData } from "./i-demopage-data";
-import { supportedControls } from "../components/demopage/controls-block/IControlsBlock";
+import { supportedControls } from "../components/demopage/controls-block/template-interface";
 
 function buildPageData(demopageData: IDemopageData): IPage {
     const demopageBodyData: IDemopageBody = demopageData;

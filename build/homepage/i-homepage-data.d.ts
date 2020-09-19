@@ -1,4 +1,4 @@
-import { ISection } from "../components/homepage/section/ISection";
+import { ISection } from "../components/homepage/section/template-interface";
 interface IHomepageData {
     description: string;
     title: string;

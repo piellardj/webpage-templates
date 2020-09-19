@@ -3,7 +3,7 @@ import fse = require("fs-extra");
 import path = require("path");
 import pretty = require("pretty");
 
-import IPage from "./components/page/IPage";
+import IPage from "./components/page/template-interface";
 
 import * as CustomEjs from "./custom-ejs";
 

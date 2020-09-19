@@ -1,4 +1,4 @@
-import { IBody as IDemopageBody } from "../components/demopage/body/IBody";
+import { IBody as IDemopageBody } from "../components/demopage/body/template-interface";
 interface IDemopageData {
     description: string;
     title: string;

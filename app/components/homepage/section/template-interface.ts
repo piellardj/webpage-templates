@@ -1,4 +1,5 @@
-import { ICard } from "../card/ICard";
+import { ICard } from "../card/template-interface";
+
 export interface ISection {
     title: string;
     cards: ICard[];

@@ -7,7 +7,7 @@
   "scripts": {
     "rebuild": "npm run lint && npm run clean && npm run build",
     "clean": "shx rm -rf build/ test-*/*",
-    "build": "npm run build-sass && npm run build-ts-package && npm run generate-handlers",
+    "build": "npm run check-components && npm run build-sass && npm run build-ts-package && npm run generate-handlers",
     "generate-handlers": "npm run transpile-handlers && npm run minify-handlers",
     "transpile-handlers": "tsc -p app/config/handlers/tsconfig.json",
     "minify-handlers": "node app/minify-handlers.js",
@@ -16,6 +16,7 @@
     "lint": "npm run lint-ts && npm run lint-sass",
     "lint-sass": "sass-lint -c app/config/.sass-lint.yml -v",
     "lint-ts": "eslint -c app/config/.eslintrc.json app/**/*.ts",
+    "check-components": "node app/check-components.js",
     "test": "npm run rebuild && npm run test-demopage && npm run test-homepage && npm run test-demopage-empty",
     "test-demopage": "node build/test.js --page=demopage --data=samples/data-demopage.json --outdir=test-demopage",
     "test-demopage-empty": "node build/test.js --page=demopage-empty --data=samples/data-demopage-empty.json --outdir=test-demopage-empty",

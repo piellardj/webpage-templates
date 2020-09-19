@@ -2,7 +2,7 @@ import fs = require("fs");
 import fse = require("fs-extra");
 import path = require("path");
 
-import IPage from "./components/page/IPage";
+import IPage from "./components/page/template-interface";
 import * as Builder from "./page-builder";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

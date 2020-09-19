@@ -24,8 +24,8 @@ var fs = require("fs");
 var fse = require("fs-extra");
 var path = require("path");
 var Builder = __importStar(require("../page-builder"));
-var IControlsBlock_1 = require("../components/demopage/controls-block/IControlsBlock");
-Object.defineProperty(exports, "supportedControls", { enumerable: true, get: function () { return IControlsBlock_1.supportedControls; } });
+var template_interface_1 = require("../components/demopage/controls-block/template-interface");
+Object.defineProperty(exports, "supportedControls", { enumerable: true, get: function () { return template_interface_1.supportedControls; } });
 function buildPageData(demopageData) {
     var demopageBodyData = demopageData;
     var demopageBodyEjs = Builder.CustomEjs.loadComponent(path.join("demopage", "body"));

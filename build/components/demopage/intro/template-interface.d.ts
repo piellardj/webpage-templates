@@ -1,5 +1,5 @@
-import { ILink } from "../../link/ILink";
-import { IParagraphs } from "../../paragraphs/IParagraphs";
+import { ILink } from "../../link/template-interface";
+import { IParagraphs } from "../../paragraphs/template-interface";
 export interface IIntro {
     title: string;
     introduction: IParagraphs["paragraphs"];
