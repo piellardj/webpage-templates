@@ -8,7 +8,7 @@
 
         #include('link', {href: "https://github.com/piellardj/" + githubProjectName, text: "More on GitHub"})
 
-        # if (additionalLinks.length > 0) {
+        # if (typeof additionalLinks !== "undefined" && additionalLinks.length > 0) {
             <br/>
             # for (let link of additionalLinks) {
                 <br/>

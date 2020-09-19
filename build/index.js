@@ -20,7 +20,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Homepage = exports.DemopageEmpty = exports.Demopage = void 0;
-var Demopage = __importStar(require("./demopage"));
+var Demopage = __importStar(require("./demopage/demopage"));
 exports.Demopage = Demopage;
 var DemopageEmpty = __importStar(require("./demopage-empty"));
 exports.DemopageEmpty = DemopageEmpty;

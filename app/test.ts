@@ -1,5 +1,6 @@
+import fs from "fs";
 import minimist = require("minimist");
-import {Demopage, DemopageEmpty, Homepage} from "./index";
+import { Demopage, DemopageEmpty, Homepage } from "./index";
 
 function IsStringNullOrEmpty(str: unknown): boolean {
     return typeof str !== "string" || str.length === 0;
@@ -36,11 +37,14 @@ function checkArgs(providedArgs: any): void {
 const argv = minimist(process.argv.slice(2));
 checkArgs(argv);
 
+const dataStr = fs.readFileSync(argv.data).toString();
+const data = JSON.parse(dataStr);
+
 if (argv.page === "homepage") {
-    Homepage.build(argv.outdir, argv.data);
+    Homepage.build(data, argv.outdir);
 } else if (argv.page === "demopage") {
     const debug = argv.debug === 1;
-    Demopage.build(argv.outdir, argv.data, debug);
+    Demopage.build(data, argv.outdir, { debug: debug });
 } else if (argv.page === "demopage-empty") {
     const debug = argv.debug === 1;
     DemopageEmpty.build(argv.outdir, argv.data, debug);

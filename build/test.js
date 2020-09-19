@@ -1,5 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fs_1 = __importDefault(require("fs"));
 var minimist = require("minimist");
 var index_1 = require("./index");
 function IsStringNullOrEmpty(str) {
@@ -32,12 +36,14 @@ function checkArgs(providedArgs) {
 }
 var argv = minimist(process.argv.slice(2));
 checkArgs(argv);
+var dataStr = fs_1.default.readFileSync(argv.data).toString();
+var data = JSON.parse(dataStr);
 if (argv.page === "homepage") {
-    index_1.Homepage.build(argv.outdir, argv.data);
+    index_1.Homepage.build(data, argv.outdir);
 }
 else if (argv.page === "demopage") {
     var debug = argv.debug === 1;
-    index_1.Demopage.build(argv.outdir, argv.data, debug);
+    index_1.Demopage.build(data, argv.outdir, { debug: debug });
 }
 else if (argv.page === "demopage-empty") {
     var debug = argv.debug === 1;
