@@ -1,5 +1,4 @@
 import { IIntro } from "../intro/template-interface";
-
 export interface IBodyEmpty {
     title: IIntro["title"];
     introduction: IIntro["introduction"];

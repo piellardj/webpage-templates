@@ -47,7 +47,7 @@ if (argv.page === "homepage") {
     Demopage.build(data, argv.outdir, { debug: debug });
 } else if (argv.page === "demopage-empty") {
     const debug = argv.debug === 1;
-    DemopageEmpty.build(argv.outdir, argv.data, debug);
+    DemopageEmpty.build(data, argv.outdir, { debug: debug });
 } else {
     outputErrorInvalidValue("page", argv.page);
     exitAndDisplayHelp(100);
