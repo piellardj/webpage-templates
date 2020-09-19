@@ -62,13 +62,14 @@ function build(data, destinationDir, options) {
         var PAGE_JS_NAME = "page";
         var pageJsName = PAGE_JS_NAME + ".js";
         var pageJsMinName = PAGE_JS_NAME + ".min.js";
-        var pageJsDeclarationName = PAGE_JS_NAME + ".d.ts";
         pageData.scriptFiles.unshift(SCRIPT_FOLDER + "/" + ((options === null || options === void 0 ? void 0 : options.debug) ? pageJsName : pageJsMinName));
         fse.ensureDirSync(path.join(destinationDir, SCRIPT_FOLDER));
         fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsName), pageJsStr);
         fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsMinName), pageJsMinStr);
-        fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsDeclarationName), pageJsDeclaration);
     }
     Builder.buildPage(destinationDir, pageData);
+    return {
+        pageScriptDeclaration: pageJsDeclaration,
+    };
 }
 exports.build = build;

@@ -33,12 +33,16 @@ interface IBuildOptions {
     debug: boolean;
 }
 
+interface IBuildResult {
+    pageScriptDeclaration: string;
+}
+
 /**
  * @param data Data describing the contents of the page
  * @param destinationDir Root directory in which the generated files will be copied
  * @param options Optional build options
  */
-function build(data: IDemopageData, destinationDir: string, options?: IBuildOptions): void {
+function build(data: IDemopageData, destinationDir: string, options?: IBuildOptions): IBuildResult {
     const pageData: IPage = buildPageData(data);
 
     if (!isNumber(data.canvas.width) || !isNumber(data.canvas.height)) {
@@ -57,16 +61,18 @@ function build(data: IDemopageData, destinationDir: string, options?: IBuildOpti
 
         const pageJsName = PAGE_JS_NAME + ".js";
         const pageJsMinName = PAGE_JS_NAME + ".min.js";
-        const pageJsDeclarationName = PAGE_JS_NAME + ".d.ts";
 
         pageData.scriptFiles.unshift(SCRIPT_FOLDER + "/" + ((options?.debug) ? pageJsName : pageJsMinName));
         fse.ensureDirSync(path.join(destinationDir, SCRIPT_FOLDER));
         fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsName), pageJsStr);
         fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsMinName), pageJsMinStr);
-        fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsDeclarationName), pageJsDeclaration);
     }
 
     Builder.buildPage(destinationDir, pageData);
+
+    return {
+        pageScriptDeclaration: pageJsDeclaration,
+    }
 }
 
 export { build, supportedControls };
