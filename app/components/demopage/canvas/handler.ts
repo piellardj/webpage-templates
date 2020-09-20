@@ -324,7 +324,7 @@ namespace Page.Canvas {
             }
 
             const nbObservers = mouseMoveObservers.length + mouseDragObservers.length;
-            if (isMouseDown() && nbObservers > 0) {
+            if (Mouse.isMouseDown() && nbObservers > 0) {
                 event.preventDefault();
             }
 
