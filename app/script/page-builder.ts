@@ -96,7 +96,8 @@ function buildPage(dstDir: string, pageData: IPage, options?: IBuildOptions): IB
     const includeScript = (typeof options?.noScript === "boolean") ? !options.noScript : true;
 
     if (includeScript) {
-        pageData.scriptFiles.unshift(pageJsFolder + "/" + ((options?.minifyScript) ? pageJsMinFilename : pageJsFilename));
+        const filename = (options?.minifyScript) ? pageJsMinFilename : pageJsFilename;
+        pageData.scriptFiles.unshift(pageJsFolder + "/" + filename);
     }
     pageData.cssFiles.unshift(pageCssFolder + "/" + pageCssFilename);
 

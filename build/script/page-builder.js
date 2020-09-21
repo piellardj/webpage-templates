@@ -77,7 +77,8 @@ function buildPage(dstDir, pageData, options) {
     var pageCssFilename = "page.css";
     var includeScript = (typeof (options === null || options === void 0 ? void 0 : options.noScript) === "boolean") ? !options.noScript : true;
     if (includeScript) {
-        pageData.scriptFiles.unshift(pageJsFolder + "/" + ((options === null || options === void 0 ? void 0 : options.minifyScript) ? pageJsMinFilename : pageJsFilename));
+        var filename = (options === null || options === void 0 ? void 0 : options.minifyScript) ? pageJsMinFilename : pageJsFilename;
+        pageData.scriptFiles.unshift(pageJsFolder + "/" + filename);
     }
     pageData.cssFiles.unshift(pageCssFolder + "/" + pageCssFilename);
     buildPageHtml(dstDir, pageData);

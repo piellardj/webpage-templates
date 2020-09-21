@@ -1,5 +1,3 @@
-import fs = require("fs");
-import fse = require("fs-extra");
 import path = require("path");
 
 import IPage from "../../components/page/template-interface";
