@@ -6,7 +6,7 @@
   "main": "build/script/index.js",
   "scripts": {
     "rebuild": "npm run lint && npm run clean && npm run build",
-    "clean": "shx rm -rf build/ test-*/*",
+    "clean": "shx rm -rf build/ test/",
     "build": "npm run check-components && npm run build-sass && npm run build-ts-package && npm run generate-handlers",
     "generate-handlers": "npm run transpile-handlers && npm run minify-handlers",
     "transpile-handlers": "tsc -p app/config/handlers/tsconfig.json",
@@ -18,9 +18,9 @@
     "lint-ts": "eslint -c app/config/.eslintrc.json app/**/*.ts",
     "check-components": "node app/build-tools/check-components.js",
     "test": "npm run rebuild && npm run test-demopage && npm run test-homepage && npm run test-demopage-empty",
-    "test-demopage": "node build/script/test.js --page=demopage --data=samples/data-demopage.json --outdir=test-demopage",
-    "test-demopage-empty": "node build/script/test.js --page=demopage-empty --data=samples/data-demopage-empty.json --outdir=test-demopage-empty",
-    "test-homepage": "node build/script/test.js --page=homepage --data=samples/data-homepage.json --outdir=test-homepage"
+    "test-demopage": "node build/script/test.js --page=demopage --data=samples/data-demopage.json --outdir=test/demopage",
+    "test-demopage-empty": "node build/script/test.js --page=demopage-empty --data=samples/data-demopage-empty.json --outdir=test/demopage-empty",
+    "test-homepage": "node build/script/test.js --page=homepage --data=samples/data-homepage.json --outdir=test/homepage"
   },
   "author": "“Jérémie PIELLARD <jeremie.piellard@gmail.com> (https://github.com/piellardj)",
   "license": "ISC",
