@@ -1,7 +1,7 @@
 {
   "files": [
-    "../index.ts",
-    "../test.ts"
+    "../script/index.ts",
+    "../script/test.ts"
   ],
   "compilerOptions": {
     /* Basic Options */

@@ -3,7 +3,7 @@
   "version": "2.2.0",
   "description": "Static webpage generator based on EJS/SASS/TS",
   "repository": "github:piellardj/webpage-templates",
-  "main": "build/index.js",
+  "main": "build/script/index.js",
   "scripts": {
     "rebuild": "npm run lint && npm run clean && npm run build",
     "clean": "shx rm -rf build/ test-*/*",
@@ -18,9 +18,9 @@
     "lint-ts": "eslint -c app/config/.eslintrc.json app/**/*.ts",
     "check-components": "node app/build-tools/check-components.js",
     "test": "npm run rebuild && npm run test-demopage && npm run test-homepage && npm run test-demopage-empty",
-    "test-demopage": "node build/test.js --page=demopage --data=samples/data-demopage.json --outdir=test-demopage",
-    "test-demopage-empty": "node build/test.js --page=demopage-empty --data=samples/data-demopage-empty.json --outdir=test-demopage-empty",
-    "test-homepage": "node build/test.js --page=homepage --data=samples/data-homepage.json --outdir=test-homepage"
+    "test-demopage": "node build/script/test.js --page=demopage --data=samples/data-demopage.json --outdir=test-demopage",
+    "test-demopage-empty": "node build/script/test.js --page=demopage-empty --data=samples/data-demopage-empty.json --outdir=test-demopage-empty",
+    "test-homepage": "node build/script/test.js --page=homepage --data=samples/data-homepage.json --outdir=test-homepage"
   },
   "author": "“Jérémie PIELLARD <jeremie.piellard@gmail.com> (https://github.com/piellardj)",
   "license": "ISC",

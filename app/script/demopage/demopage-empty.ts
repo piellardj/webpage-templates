@@ -2,10 +2,10 @@ import fs = require("fs");
 import fse = require("fs-extra");
 import path = require("path");
 
-import IPage from "../components/page/template-interface";
+import IPage from "../../components/page/template-interface";
 import * as Builder from "../page-builder";
 
-import { IBodyEmpty as IDemopageEmptyBody } from "../components/demopage/body-empty/template-interface";
+import { IBodyEmpty as IDemopageEmptyBody } from "../../components/demopage/body-empty/template-interface";
 import { IDemopageEmptyData } from "./i-demopage-empty-data";
 
 function buildPageData(demopageEmptyData: IDemopageEmptyData): IPage {

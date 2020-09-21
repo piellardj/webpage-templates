@@ -26,8 +26,8 @@ var path = require("path");
 var pretty = require("pretty");
 var CustomEjs = __importStar(require("./custom-ejs"));
 exports.CustomEjs = CustomEjs;
-var APP_DIR = path.resolve(__dirname, "..", "app");
-var BUILD_DIR = path.resolve(__dirname, "..", "build");
+var APP_DIR = path.resolve(__dirname, "..", "..", "app");
+var BUILD_DIR = path.resolve(__dirname, "..", "..", "build");
 function safeWriteFile(directory, filename, content) {
     fse.ensureDirSync(directory);
     fs.writeFileSync(path.join(directory, filename), content);

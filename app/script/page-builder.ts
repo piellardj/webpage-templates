@@ -3,12 +3,12 @@ import fse = require("fs-extra");
 import path = require("path");
 import pretty = require("pretty");
 
-import IPage from "./components/page/template-interface";
+import IPage from "../components/page/template-interface";
 
 import * as CustomEjs from "./custom-ejs";
 
-const APP_DIR = path.resolve(__dirname, "..", "app");
-const BUILD_DIR = path.resolve(__dirname, "..", "build");
+const APP_DIR = path.resolve(__dirname, "..", "..", "app");
+const BUILD_DIR = path.resolve(__dirname, "..", "..", "build");
 
 function safeWriteFile(directory: string, filename: string, content: string): void {
     fse.ensureDirSync(directory);

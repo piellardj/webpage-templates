@@ -5,7 +5,7 @@ var ejs = require("ejs");
 var fs = require("fs");
 var path = require("path");
 var COMPONENTS_DIR = path.posix.join("app", "components");
-var COMPONENTS_DIR_ABSOLUTE = path.resolve(__dirname, "..", COMPONENTS_DIR);
+var COMPONENTS_DIR_ABSOLUTE = path.resolve(__dirname, "..", "..", COMPONENTS_DIR);
 var loadedComponents = new Set();
 exports.loadedComponents = loadedComponents;
 function registerComponent(componentName) {

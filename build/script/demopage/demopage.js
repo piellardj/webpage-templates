@@ -22,7 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.supportedControls = exports.build = void 0;
 var path = require("path");
 var Builder = __importStar(require("../page-builder"));
-var template_interface_1 = require("../components/demopage/controls-block/template-interface");
+var template_interface_1 = require("../../components/demopage/controls-block/template-interface");
 Object.defineProperty(exports, "supportedControls", { enumerable: true, get: function () { return template_interface_1.supportedControls; } });
 function buildPageData(demopageData) {
     var demopageBodyData = demopageData;

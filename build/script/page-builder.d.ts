@@ -1,4 +1,4 @@
-import IPage from "./components/page/template-interface";
+import IPage from "../components/page/template-interface";
 import * as CustomEjs from "./custom-ejs";
 interface IBuildOptions {
     additionalScript?: string;

@@ -3,7 +3,7 @@ import fs = require("fs");
 import path = require("path");
 
 const COMPONENTS_DIR = path.posix.join("app", "components");
-const COMPONENTS_DIR_ABSOLUTE = path.resolve(__dirname, "..", COMPONENTS_DIR);
+const COMPONENTS_DIR_ABSOLUTE = path.resolve(__dirname, "..", "..", COMPONENTS_DIR);
 
 const loadedComponents: Set<string> = new Set();
 function registerComponent(componentName: string): void {
