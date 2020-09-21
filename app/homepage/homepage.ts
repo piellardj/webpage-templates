@@ -15,7 +15,7 @@ function buildPageData(homepageData: IHomepageData): IPage {
 
     return {
         bodyStr: homepageBodyStr,
-        cssFiles: ["css/page.css"],
+        cssFiles: [],
         description: homepageData.description,
         scriptFiles: [],
         title: homepageData.title,
@@ -30,21 +30,9 @@ function buildPageData(homepageData: IHomepageData): IPage {
 function build(data: IHomepageData, destinationDir: string): void {
     const pageData: IPage = buildPageData(data);
 
-    const pageJsStr = Builder.buildComponentsHandlers(false);
-    const pageJsMinStr = Builder.buildComponentsHandlers(true);
-
-    const SCRIPT_FOLDER = "script";
-    const PAGE_JS_NAME = "page";
-
-    const pageJsName = PAGE_JS_NAME + ".js";
-    const pageJsMinName = PAGE_JS_NAME + ".min.js";
-
-    pageData.scriptFiles.unshift(SCRIPT_FOLDER + "/" + pageJsMinName);
-    fse.ensureDirSync(path.join(destinationDir, SCRIPT_FOLDER));
-    fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsName), pageJsStr);
-    fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsMinName), pageJsMinStr);
-
-    Builder.buildPage(destinationDir, pageData);
+    Builder.buildPage(destinationDir, pageData, {
+        minifyScript: true,
+    });
 }
 
 export { build };

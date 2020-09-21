@@ -20,8 +20,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.supportedControls = exports.build = void 0;
-var fs = require("fs");
-var fse = require("fs-extra");
 var path = require("path");
 var Builder = __importStar(require("../page-builder"));
 var template_interface_1 = require("../components/demopage/controls-block/template-interface");
@@ -32,16 +30,11 @@ function buildPageData(demopageData) {
     var demopageBodyStr = Builder.CustomEjs.render(demopageBodyEjs, demopageBodyData);
     return {
         bodyStr: demopageBodyStr,
-        cssFiles: [
-            "css/page.css",
-        ],
+        cssFiles: [],
         description: demopageData.description,
         scriptFiles: demopageData.scriptFiles || [],
         title: demopageData.title,
     };
-}
-function isNumber(v) {
-    return typeof v === "number";
 }
 /**
  * @param data Data describing the contents of the page
@@ -50,26 +43,11 @@ function isNumber(v) {
  */
 function build(data, destinationDir, options) {
     var pageData = buildPageData(data);
-    if (!isNumber(data.canvas.width) || !isNumber(data.canvas.height)) {
-        console.error("ERROR: provide canvas dimensions with canvas.width and canvas.height.");
-    }
-    var setSizeStr = "Page.Canvas.setMaxSize(" + data.canvas.width + "," + data.canvas.height + ");";
-    var pageJsStr = Builder.buildComponentsHandlers(false) + setSizeStr;
-    var pageJsMinStr = Builder.buildComponentsHandlers(true) + setSizeStr;
-    var pageJsDeclaration = Builder.buildComponentsDeclaration();
-    if (pageJsStr) {
-        var SCRIPT_FOLDER = "script";
-        var PAGE_JS_NAME = "page";
-        var pageJsName = PAGE_JS_NAME + ".js";
-        var pageJsMinName = PAGE_JS_NAME + ".min.js";
-        pageData.scriptFiles.unshift(SCRIPT_FOLDER + "/" + ((options === null || options === void 0 ? void 0 : options.debug) ? pageJsName : pageJsMinName));
-        fse.ensureDirSync(path.join(destinationDir, SCRIPT_FOLDER));
-        fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsName), pageJsStr);
-        fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsMinName), pageJsMinStr);
-    }
-    Builder.buildPage(destinationDir, pageData);
-    return {
-        pageScriptDeclaration: pageJsDeclaration,
-    };
+    var adjustCanvasScript = "Page.Canvas.setMaxSize(" + data.canvas.width + "," + data.canvas.height + ");";
+    var minifyScript = (typeof options !== "undefined") ? !options.debug : false;
+    return Builder.buildPage(destinationDir, pageData, {
+        additionalScript: adjustCanvasScript,
+        minifyScript: minifyScript,
+    });
 }
 exports.build = build;

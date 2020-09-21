@@ -16,17 +16,11 @@ function buildPageData(demopageData: IDemopageData): IPage {
 
     return {
         bodyStr: demopageBodyStr,
-        cssFiles: [
-            "css/page.css",
-        ],
+        cssFiles: [],
         description: demopageData.description,
         scriptFiles: demopageData.scriptFiles || [],
         title: demopageData.title,
     };
-}
-
-function isNumber(v: unknown): boolean {
-    return typeof v === "number";
 }
 
 interface IBuildOptions {
@@ -44,35 +38,13 @@ interface IBuildResult {
  */
 function build(data: IDemopageData, destinationDir: string, options?: IBuildOptions): IBuildResult {
     const pageData: IPage = buildPageData(data);
+    const adjustCanvasScript = `Page.Canvas.setMaxSize(${data.canvas.width},${data.canvas.height});`;
+    const minifyScript = (typeof options !== "undefined") ? !options.debug : false;
 
-    if (!isNumber(data.canvas.width) || !isNumber(data.canvas.height)) {
-        console.error("ERROR: provide canvas dimensions with canvas.width and canvas.height.");
-    }
-
-    const setSizeStr = `Page.Canvas.setMaxSize(${data.canvas.width},${data.canvas.height});`;
-
-    const pageJsStr = Builder.buildComponentsHandlers(false) + setSizeStr;
-    const pageJsMinStr = Builder.buildComponentsHandlers(true) + setSizeStr;
-    const pageJsDeclaration = Builder.buildComponentsDeclaration();
-
-    if (pageJsStr) {
-        const SCRIPT_FOLDER = "script";
-        const PAGE_JS_NAME = "page";
-
-        const pageJsName = PAGE_JS_NAME + ".js";
-        const pageJsMinName = PAGE_JS_NAME + ".min.js";
-
-        pageData.scriptFiles.unshift(SCRIPT_FOLDER + "/" + ((options?.debug) ? pageJsName : pageJsMinName));
-        fse.ensureDirSync(path.join(destinationDir, SCRIPT_FOLDER));
-        fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsName), pageJsStr);
-        fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsMinName), pageJsMinStr);
-    }
-
-    Builder.buildPage(destinationDir, pageData);
-
-    return {
-        pageScriptDeclaration: pageJsDeclaration,
-    }
+    return Builder.buildPage(destinationDir, pageData, {
+        additionalScript: adjustCanvasScript,
+        minifyScript: minifyScript,
+    });
 }
 
 export { build, supportedControls };

@@ -1,7 +1,4 @@
 import { IDemopageEmptyData } from "./i-demopage-empty-data";
-interface IBuildOptions {
-    debug: boolean;
-}
 interface IBuildResult {
     pageScriptDeclaration: string;
 }
@@ -10,5 +7,5 @@ interface IBuildResult {
  * @param destinationDir Root directory in which the generated files will be copied
  * @param options Optional build options
  */
-declare function build(data: IDemopageEmptyData, destinationDir: string, options?: IBuildOptions): IBuildResult;
+declare function build(data: IDemopageEmptyData, destinationDir: string): IBuildResult;
 export { build };

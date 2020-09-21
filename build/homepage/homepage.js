@@ -20,8 +20,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.build = void 0;
-var fs = require("fs");
-var fse = require("fs-extra");
 var path = require("path");
 var Builder = __importStar(require("../page-builder"));
 function buildPageData(homepageData) {
@@ -30,7 +28,7 @@ function buildPageData(homepageData) {
     var homepageBodyStr = Builder.CustomEjs.render(homepageBodyEjs, homepageBodyData);
     return {
         bodyStr: homepageBodyStr,
-        cssFiles: ["css/page.css"],
+        cssFiles: [],
         description: homepageData.description,
         scriptFiles: [],
         title: homepageData.title,
@@ -43,16 +41,8 @@ function buildPageData(homepageData) {
  */
 function build(data, destinationDir) {
     var pageData = buildPageData(data);
-    var pageJsStr = Builder.buildComponentsHandlers(false);
-    var pageJsMinStr = Builder.buildComponentsHandlers(true);
-    var SCRIPT_FOLDER = "script";
-    var PAGE_JS_NAME = "page";
-    var pageJsName = PAGE_JS_NAME + ".js";
-    var pageJsMinName = PAGE_JS_NAME + ".min.js";
-    pageData.scriptFiles.unshift(SCRIPT_FOLDER + "/" + pageJsMinName);
-    fse.ensureDirSync(path.join(destinationDir, SCRIPT_FOLDER));
-    fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsName), pageJsStr);
-    fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsMinName), pageJsMinStr);
-    Builder.buildPage(destinationDir, pageData);
+    Builder.buildPage(destinationDir, pageData, {
+        minifyScript: true,
+    });
 }
 exports.build = build;

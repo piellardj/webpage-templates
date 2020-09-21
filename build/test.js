@@ -46,8 +46,7 @@ else if (argv.page === "demopage") {
     index_1.Demopage.build(data, argv.outdir, { debug: debug });
 }
 else if (argv.page === "demopage-empty") {
-    var debug = argv.debug === 1;
-    index_1.DemopageEmpty.build(data, argv.outdir, { debug: debug });
+    index_1.DemopageEmpty.build(data, argv.outdir);
 }
 else {
     outputErrorInvalidValue("page", argv.page);

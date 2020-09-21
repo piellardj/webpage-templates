@@ -20,21 +20,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.build = void 0;
-var fs = require("fs");
-var fse = require("fs-extra");
 var path = require("path");
 var Builder = __importStar(require("../page-builder"));
 function buildPageData(demopageEmptyData) {
     var demopageBodyEmptyData = demopageEmptyData;
     var demopageBodyEmptyEjs = Builder.CustomEjs.loadComponent(path.join("demopage", "body-empty"));
     var demopageBodyEmptyStr = Builder.CustomEjs.render(demopageBodyEmptyEjs, demopageBodyEmptyData);
-    var cssFiles = ["css/page.css"];
-    if (demopageEmptyData.cssFiles) {
-        cssFiles.push.apply(cssFiles, demopageEmptyData.cssFiles);
-    }
     return {
         bodyStr: demopageBodyEmptyStr,
-        cssFiles: cssFiles,
+        cssFiles: demopageEmptyData.cssFiles,
         description: demopageEmptyData.description,
         scriptFiles: demopageEmptyData.scriptFiles || [],
         title: demopageEmptyData.title,
@@ -45,24 +39,10 @@ function buildPageData(demopageEmptyData) {
  * @param destinationDir Root directory in which the generated files will be copied
  * @param options Optional build options
  */
-function build(data, destinationDir, options) {
+function build(data, destinationDir) {
     var pageData = buildPageData(data);
-    var pageJsStr = Builder.buildComponentsHandlers(false);
-    var pageJsMinStr = Builder.buildComponentsHandlers(true);
-    var pageJsDeclaration = Builder.buildComponentsDeclaration();
-    if (pageJsStr) {
-        var SCRIPT_FOLDER = "script";
-        var PAGE_JS_NAME = "page";
-        var pageJsName = PAGE_JS_NAME + ".js";
-        var pageJsMinName = PAGE_JS_NAME + ".min.js";
-        pageData.scriptFiles.unshift(SCRIPT_FOLDER + "/" + ((options === null || options === void 0 ? void 0 : options.debug) ? pageJsName : pageJsMinName));
-        fse.ensureDirSync(path.join(destinationDir, SCRIPT_FOLDER));
-        fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsName), pageJsStr);
-        fs.writeFileSync(path.join(destinationDir, SCRIPT_FOLDER, pageJsMinName), pageJsMinStr);
-    }
-    Builder.buildPage(destinationDir, pageData);
-    return {
-        pageScriptDeclaration: pageJsDeclaration,
-    };
+    return Builder.buildPage(destinationDir, pageData, {
+        noScript: true,
+    });
 }
 exports.build = build;
