@@ -6,7 +6,7 @@
   "main": "build/script/index.js",
   "scripts": {
     "rebuild": "npm run lint && npm run clean && npm run build",
-    "clean": "shx rm -rf build/ test/",
+    "clean": "shx rm -rf build/ test/*/*",
     "build": "npm run check-components && npm run build-sass && npm run build-ts-package && npm run generate-handlers",
     "generate-handlers": "npm run transpile-handlers && npm run minify-handlers",
     "transpile-handlers": "tsc -p app/config/handlers/tsconfig.json",
