@@ -1,3 +1,4 @@
+/// <reference path="../helpers.d.ts" />
 declare namespace Page.Checkbox {
     type CheckboxObserver = (isChecked: boolean) => unknown;
     /**

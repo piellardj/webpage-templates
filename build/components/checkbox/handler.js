@@ -1,3 +1,4 @@
+/// <reference path="../helpers.ts"/>
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 var Page;
 (function (Page) {
@@ -11,6 +12,37 @@ var Page;
             }
             return elt;
         }
+        var Storage;
+        (function (Storage) {
+            var PREFIX = "checkbox";
+            var CHECKED = "true";
+            var UNCHECKED = "false";
+            function attachStorageEvents() {
+                var checkboxes = document.querySelectorAll("input[type=checkbox][id]");
+                checkboxes.forEach(function (checkbox) {
+                    checkbox.addEventListener("change", function () {
+                        var value = checkbox.checked ? CHECKED : UNCHECKED;
+                        Page.Helpers.URL.setQueryParameter(PREFIX, checkbox.id, value);
+                    });
+                });
+            }
+            Storage.attachStorageEvents = attachStorageEvents;
+            function applyStoredState() {
+                Page.Helpers.URL.loopOnParameters(PREFIX, function (checkboxId, value) {
+                    var input = getCheckboxFromId(checkboxId);
+                    if (!input || (value !== CHECKED && value !== UNCHECKED)) {
+                        console.log("Removing invalid query parameter '" + checkboxId + "=" + value + "'.");
+                        Page.Helpers.URL.removeQueryParameter(PREFIX, checkboxId);
+                    }
+                    else {
+                        input.checked = (value === CHECKED);
+                    }
+                });
+            }
+            Storage.applyStoredState = applyStoredState;
+        })(Storage || (Storage = {}));
+        Storage.applyStoredState();
+        Storage.attachStorageEvents();
         /**
          * @return {boolean} Whether or not the observer was added
          */

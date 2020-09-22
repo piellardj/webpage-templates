@@ -1,3 +1,5 @@
+/// <reference path="../helpers.ts"/>
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Checkbox {
     function getCheckboxFromId(id: string): HTMLInputElement | null {
@@ -8,6 +10,37 @@ namespace Page.Checkbox {
         }
         return elt as HTMLInputElement;
     }
+
+    namespace Storage {
+        const PREFIX = "checkbox";
+        const CHECKED = "true";
+        const UNCHECKED = "false";
+
+        export function attachStorageEvents(): void {
+            const checkboxes = document.querySelectorAll("input[type=checkbox][id]") as NodeListOf<HTMLInputElement>;
+            checkboxes.forEach((checkbox: HTMLInputElement) => {
+                checkbox.addEventListener("change", () => {
+                    const value = checkbox.checked ? CHECKED : UNCHECKED;
+                    Page.Helpers.URL.setQueryParameter(PREFIX, checkbox.id, value);
+                });
+            });
+        }
+
+        export function applyStoredState(): void {
+            Page.Helpers.URL.loopOnParameters(PREFIX, (checkboxId: string, value: string) => {
+                const input = getCheckboxFromId(checkboxId);
+                if (!input || (value !== CHECKED && value !== UNCHECKED)) {
+                    console.log("Removing invalid query parameter '" + checkboxId + "=" + value + "'.");
+                    Page.Helpers.URL.removeQueryParameter(PREFIX, checkboxId);
+                } else {
+                    input.checked = (value === CHECKED);
+                }
+            });
+        }
+    }
+
+    Storage.applyStoredState();
+    Storage.attachStorageEvents();
 
     type CheckboxObserver = (isChecked: boolean) => unknown;
 
