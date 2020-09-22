@@ -2,7 +2,13 @@ const fs = require("fs");
 const path = require("path");
 const UglifyJS = require("uglify-es");
 
-const ROOT_DIR = path.resolve(__dirname, "..", "..", "build", "components");
+const MINIFIED_EXTENSION = ".min.js";
+
+function shouldMinify(filename /* string */) /* boolean */ {
+    return path.extname(filename) === ".js" &&
+        !filename.endsWith(MINIFIED_EXTENSION) && // don't minify already minified files
+        filename !== "template-interface.js"; // these are part of the package itself
+}
 
 const MAX_RECURSION = 5;
 
@@ -24,13 +30,17 @@ function buildHandlersRecursive(directory) {
             } else {
                 buildHandlersRecursive(childFullpath);
             }
-        } else if (child === "handler.js") {
+        } else if (shouldMinify(child)) {
             const code = {
-                "handler.js": fs.readFileSync(childFullpath).toString(),
+                child: fs.readFileSync(childFullpath).toString(),
             };
             const minified = UglifyJS.minify(code);
 
-            const minifiedFilepath = path.join(directory, "handler.min.js");
+            const minifiedFilepath = path.format({
+                dir: directory,
+                name: path.basename(child, ".js"),
+                ext: MINIFIED_EXTENSION
+            });
             fs.writeFileSync(minifiedFilepath, minified.code);
         }
     });
@@ -38,4 +48,5 @@ function buildHandlersRecursive(directory) {
     recursion--;
 }
 
+const ROOT_DIR = path.resolve(__dirname, "..", "..", "build", "components");
 buildHandlersRecursive(ROOT_DIR);

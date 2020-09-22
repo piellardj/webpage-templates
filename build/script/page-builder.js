@@ -32,8 +32,115 @@ function safeWriteFile(directory, filename, content) {
     fse.ensureDirSync(directory);
     fs.writeFileSync(path.join(directory, filename), content);
 }
+/**
+ * Can be a JS script (.js), a minified JS script (.min.js) or a declaration file (.d.ts).
+ * The dependency declaration format is '/// <reference path="PATH_TO_DEPENDENCY"/>'.
+ */
+var LoadedScript = /** @class */ (function () {
+    function LoadedScript(filepath) {
+        this.dependencies = [];
+        var rawScript = fs.readFileSync(filepath).toString();
+        var referenceLines = rawScript.match(LoadedScript.referenceRegexp) || [];
+        for (var _i = 0, referenceLines_1 = referenceLines; _i < referenceLines_1.length; _i++) {
+            var referenceLine = referenceLines_1[_i];
+            var match = referenceLine.match(/"(.*)"/);
+            if (match) {
+                this.dependencies.push(match[1]);
+            }
+            else {
+                throw new Error("Should not happen: failed to extract reference name from '" + referenceLine + "'.");
+            }
+        }
+        this.script = rawScript.replace(LoadedScript.referenceRegexp, "");
+    }
+    LoadedScript.referenceRegexp = /^\/\/\/\s*<\s*reference\s+path\s*=\s*"(.*)"\s*\/>.*$/gm;
+    return LoadedScript;
+}());
+function loadHandlerAndDependencies(dictionary, scriptAbsolutePath) {
+    if (dictionary[scriptAbsolutePath]) {
+        console.log("Skipping loading of '" + scriptAbsolutePath + "' because it is already loaded.");
+        return;
+    }
+    var scriptId = scriptAbsolutePath;
+    var scriptPath = path.parse(scriptAbsolutePath);
+    var script = new LoadedScript(scriptAbsolutePath);
+    var scriptMinifiedFilepath = path.format({
+        dir: scriptPath.dir,
+        name: scriptPath.name,
+        ext: ".min.js",
+    });
+    var scriptMinified = new LoadedScript(scriptMinifiedFilepath);
+    var scriptDeclarationFilepath = path.format({
+        dir: scriptPath.dir,
+        name: scriptPath.name,
+        ext: ".d.ts",
+    });
+    var scriptDeclaration = new LoadedScript(scriptDeclarationFilepath);
+    var dependenciesAbsolutePaths = [];
+    for (var _i = 0, _a = script.dependencies; _i < _a.length; _i++) {
+        var rawDependencyPath = _a[_i];
+        // handlers.js contain references to .ts files, but we want to include their .js transpiled version.
+        var dependencyPath = path.parse(rawDependencyPath);
+        dependencyPath.ext = ".js";
+        dependencyPath.base = "";
+        var actualPath = path.format(dependencyPath);
+        dependenciesAbsolutePaths.push(path.resolve(scriptPath.dir, actualPath));
+    }
+    dictionary[scriptId] = {
+        id: scriptId,
+        script: script.script,
+        scriptMinified: scriptMinified.script,
+        scriptDeclaration: scriptDeclaration.script,
+        dependenciesIds: dependenciesAbsolutePaths,
+    };
+    for (var _b = 0, dependenciesAbsolutePaths_1 = dependenciesAbsolutePaths; _b < dependenciesAbsolutePaths_1.length; _b++) {
+        var dependencyPath = dependenciesAbsolutePaths_1[_b];
+        loadHandlerAndDependencies(dictionary, dependencyPath);
+    }
+}
+function orderDependencies(unorderedHandlers) {
+    var registeredHandlers = [];
+    var registeredHandlersSet = new Set(); // for faster lookup than looping through registeredHandlers.id
+    while (unorderedHandlers.length > 0) {
+        var handlersLeft = [];
+        for (var _i = 0, unorderedHandlers_1 = unorderedHandlers; _i < unorderedHandlers_1.length; _i++) {
+            var handler = unorderedHandlers_1[_i];
+            var allDependenciesRegistered = true;
+            for (var _a = 0, _b = handler.dependenciesIds; _a < _b.length; _a++) {
+                var dependency = _b[_a];
+                if (!registeredHandlersSet.has(dependency)) {
+                    allDependenciesRegistered = false;
+                    break;
+                }
+            }
+            if (allDependenciesRegistered) {
+                registeredHandlers.push(handler);
+                registeredHandlersSet.add(handler.id);
+            }
+            else {
+                handlersLeft.push(handler);
+            }
+        }
+        if (handlersLeft.length === unorderedHandlers.length) {
+            for (var _c = 0, handlersLeft_1 = handlersLeft; _c < handlersLeft_1.length; _c++) {
+                var handlerLeft = handlersLeft_1[_c];
+                console.log(handlerLeft.id + " depends on:");
+                for (var _d = 0, _e = handlerLeft.dependenciesIds; _d < _e.length; _d++) {
+                    var dependency = _e[_d];
+                    console.log("  - " + dependency);
+                }
+            }
+            throw new Error("Failed to order dependencies (maybe circular dependencies ?).");
+        }
+        unorderedHandlers = handlersLeft;
+    }
+    return registeredHandlers;
+}
 function buildLoadedComponents(dstDir) {
-    var components = [];
+    var components = {
+        cssStyles: [],
+        handlers: {},
+    };
     CustomEjs.loadedComponents.forEach(function (componentName) {
         /* Copy assets */
         var assetsDir = path.join(APP_DIR, "components", componentName, "assets");
@@ -41,25 +148,16 @@ function buildLoadedComponents(dstDir) {
             fse.copySync(assetsDir, dstDir);
         }
         /* Load style and scripts */
-        var component = {};
-        var styleFilePath = path.join(BUILD_DIR, "components", componentName, "style.css");
+        var componentDirectory = path.join(BUILD_DIR, "components", componentName);
+        var styleFilePath = path.join(componentDirectory, "style.css");
         if (fs.existsSync(styleFilePath)) {
-            component.cssStyle = fs.readFileSync(styleFilePath).toString();
+            var style = fs.readFileSync(styleFilePath).toString();
+            components.cssStyles.push(style);
         }
-        var handlerScriptFilePath = path.join(BUILD_DIR, "components", componentName, "handler.js");
+        var handlerScriptFilePath = path.join(componentDirectory, "handler.js");
         if (fs.existsSync(handlerScriptFilePath)) {
-            var handlerScript = fs.readFileSync(handlerScriptFilePath).toString();
-            var handlerScriptMinifiedFilepath = path.join(BUILD_DIR, "components", componentName, "handler.min.js");
-            var handlerScriptMinified = fs.readFileSync(handlerScriptMinifiedFilepath).toString();
-            var handlerScriptDeclarationFilepath = path.join(BUILD_DIR, "components", componentName, "handler.d.ts");
-            var handlerDeclaration = fs.readFileSync(handlerScriptDeclarationFilepath).toString();
-            component.handler = {
-                script: handlerScript,
-                scriptMinified: handlerScriptMinified,
-                scriptDeclaration: handlerDeclaration,
-            };
+            loadHandlerAndDependencies(components.handlers, handlerScriptFilePath);
         }
-        components.push(component);
     });
     return components;
 }
@@ -84,19 +182,22 @@ function buildPage(dstDir, pageData, options) {
     buildPageHtml(dstDir, pageData);
     var components = buildLoadedComponents(dstDir);
     var cssStyle = "";
+    for (var _i = 0, _a = components.cssStyles; _i < _a.length; _i++) {
+        var componentStyle = _a[_i];
+        cssStyle += componentStyle;
+    }
+    if (cssStyle) {
+        safeWriteFile(path.join(dstDir, pageCssFolder), pageCssFilename, cssStyle);
+    }
+    var orderedHandlers = orderDependencies(Object.values(components.handlers));
     var script = "";
     var scriptMinified = "";
     var scriptDeclaration = "";
-    for (var _i = 0, components_1 = components; _i < components_1.length; _i++) {
-        var component = components_1[_i];
-        if (component.cssStyle) {
-            cssStyle += component.cssStyle;
-        }
-        if (component.handler) {
-            script += component.handler.script + "\n";
-            scriptMinified += component.handler.scriptMinified + "\n";
-            scriptDeclaration += component.handler.scriptDeclaration + "\n";
-        }
+    for (var _b = 0, orderedHandlers_1 = orderedHandlers; _b < orderedHandlers_1.length; _b++) {
+        var handler = orderedHandlers_1[_b];
+        script += handler.script + "\n";
+        scriptMinified += handler.scriptMinified + "\n";
+        scriptDeclaration += handler.scriptDeclaration + "\n";
     }
     if (options && options.additionalScript) {
         script += options.additionalScript;
@@ -111,9 +212,6 @@ function buildPage(dstDir, pageData, options) {
             console.log("The page needs scripts but the page build options prevents from including them.");
             process.exit(1);
         }
-    }
-    if (cssStyle) {
-        safeWriteFile(path.join(dstDir, pageCssFolder), pageCssFilename, cssStyle);
     }
     return {
         pageScriptDeclaration: (includeScript) ? scriptDeclaration : "",

@@ -50,6 +50,7 @@
         ],
         "@typescript-eslint/no-invalid-this": "error",
         "@typescript-eslint/no-namespace": "off",
+        "@typescript-eslint/triple-slash-reference": "off",
         "@typescript-eslint/quotes": [
             "warn",
             "double"
