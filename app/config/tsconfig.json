@@ -1,7 +1,6 @@
 {
   "files": [
-    "../script/index.ts",
-    "../script/test.ts"
+    "../script/index.ts"
   ],
   "compilerOptions": {
     /* Basic Options */
