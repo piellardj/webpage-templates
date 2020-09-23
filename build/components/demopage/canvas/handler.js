@@ -1,3 +1,4 @@
+/// <reference path="../../helpers.ts"/>
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 var Page;
 (function (Page) {
@@ -318,6 +319,53 @@ var Page;
             }
             Indicators.getIndicatorSpan = getIndicatorSpan;
         })(Indicators || (Indicators = {}));
+        var Storage;
+        (function (Storage) {
+            var PREFIX = "canvas";
+            var FULLSCREEN_PARAMETER = "fullscreen";
+            var SIDE_PANE_PARAMETER = "sidepane";
+            var TRUE = "true";
+            var FALSE = "false";
+            function updateBooleanParameter(name, checked) {
+                var value = checked ? TRUE : FALSE;
+                Page.Helpers.URL.setQueryParameter(PREFIX, name, value);
+            }
+            function attachStorageEvents() {
+                if (fullscreenCheckbox) {
+                    fullscreenCheckbox.addEventListener("change", function () {
+                        updateBooleanParameter(FULLSCREEN_PARAMETER, fullscreenCheckbox.checked);
+                        Page.Helpers.URL.removeQueryParameter(PREFIX, SIDE_PANE_PARAMETER);
+                    });
+                }
+                if (sidePaneCheckbox) {
+                    sidePaneCheckbox.addEventListener("change", function () {
+                        updateBooleanParameter(SIDE_PANE_PARAMETER, sidePaneCheckbox.checked);
+                    });
+                }
+            }
+            Storage.attachStorageEvents = attachStorageEvents;
+            function applyStoredState() {
+                Page.Helpers.URL.loopOnParameters(PREFIX, function (name, value) {
+                    if (name === FULLSCREEN_PARAMETER && (value === TRUE || value === FALSE)) {
+                        if (fullscreenCheckbox) {
+                            fullscreenCheckbox.checked = (value === TRUE);
+                        }
+                    }
+                    else if (name === SIDE_PANE_PARAMETER && (value === TRUE || value === FALSE)) {
+                        if (sidePaneCheckbox) {
+                            sidePaneCheckbox.checked = (value === TRUE);
+                        }
+                    }
+                    else {
+                        console.log("Removing invalid query parameter '" + name + "=" + value + "'.");
+                        Page.Helpers.URL.removeQueryParameter(PREFIX, name);
+                    }
+                });
+            }
+            Storage.applyStoredState = applyStoredState;
+        })(Storage || (Storage = {}));
+        Storage.applyStoredState();
+        Storage.attachStorageEvents();
         Canvas.Observers = Object.freeze({
             canvasResize: canvasResizeObservers,
             fullscreenToggle: fullscreenToggleObservers,

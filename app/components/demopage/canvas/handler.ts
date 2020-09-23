@@ -1,3 +1,5 @@
+/// <reference path="../../helpers.ts"/>
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Canvas {
     function getElementBySelector(selector: string): HTMLElement | null {
@@ -367,6 +369,54 @@ namespace Page.Canvas {
             return indicatorSpansCache[id];
         }
     }
+
+    namespace Storage {
+        const PREFIX = "canvas";
+        const FULLSCREEN_PARAMETER = "fullscreen";
+        const SIDE_PANE_PARAMETER = "sidepane";
+        const TRUE = "true";
+        const FALSE = "false";
+
+        function updateBooleanParameter(name: string, checked: boolean): void {
+            const value = checked ? TRUE : FALSE;
+            Page.Helpers.URL.setQueryParameter(PREFIX, name, value);
+        }
+
+        export function attachStorageEvents(): void {
+            if (fullscreenCheckbox) {
+                fullscreenCheckbox.addEventListener("change", () => {
+                    updateBooleanParameter(FULLSCREEN_PARAMETER, fullscreenCheckbox.checked);
+                    Page.Helpers.URL.removeQueryParameter(PREFIX, SIDE_PANE_PARAMETER);
+                });
+            }
+
+            if (sidePaneCheckbox) {
+                sidePaneCheckbox.addEventListener("change", () => {
+                    updateBooleanParameter(SIDE_PANE_PARAMETER, sidePaneCheckbox.checked);
+                });
+            }
+        }
+
+        export function applyStoredState(): void {
+            Page.Helpers.URL.loopOnParameters(PREFIX, (name: string, value: string) => {
+                if (name === FULLSCREEN_PARAMETER && (value === TRUE || value === FALSE)) {
+                    if (fullscreenCheckbox) {
+                        fullscreenCheckbox.checked = (value === TRUE);
+                    }
+                } else if (name === SIDE_PANE_PARAMETER && (value === TRUE || value === FALSE)) {
+                    if (sidePaneCheckbox) {
+                        sidePaneCheckbox.checked = (value === TRUE);
+                    }
+                } else {
+                    console.log("Removing invalid query parameter '" + name + "=" + value + "'.");
+                    Page.Helpers.URL.removeQueryParameter(PREFIX, name);
+                }
+            });
+        }
+    }
+
+    Storage.applyStoredState();
+    Storage.attachStorageEvents();
 
     export const Observers = Object.freeze({
         canvasResize: canvasResizeObservers,

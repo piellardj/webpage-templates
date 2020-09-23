@@ -1,3 +1,4 @@
+/// <reference path="../../helpers.d.ts" />
 declare namespace Page.Canvas {
     type CanvasResizeObserver = (newWidth: number, newHeight: number) => unknown;
     type FullscreenObserver = (isFullscreen: boolean) => unknown;
