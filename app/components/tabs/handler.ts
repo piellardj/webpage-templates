@@ -1,7 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Tabs {
+    const ID_SUFFIX = "-id";
+
     function getTabsById(id: string): Element | null {
-        const selector = "div.tabs[id=" + id + "-id]";
+        const selector = "div.tabs[id=" + id + ID_SUFFIX + "]";
         const elt = document.querySelector(selector);
         if (!elt) {
             console.error("Cannot find tabs '" + selector + "'.");
@@ -25,6 +27,47 @@ namespace Page.Tabs {
 
         return values;
     }
+
+    namespace Storage {
+        const PREFIX = "tabs";
+        const SEPARATOR = ";";
+
+        export function attachStorageEvents(): void {
+            const tabsElements = document.querySelectorAll("div.tabs[id]");
+            tabsElements.forEach((tabsElement: Element) => {
+                const fullId = tabsElement.id;
+                if (fullId.indexOf(ID_SUFFIX, fullId.length - ID_SUFFIX.length) !== -1) {
+                    const id = fullId.substring(0, fullId.length - ID_SUFFIX.length);
+
+                    const saveTabsState = (): void => {
+                        const valuesList = getSelectedValues(tabsElement);
+                        const values = valuesList.join(SEPARATOR);
+                        Page.Helpers.URL.setQueryParameter(PREFIX, id, values);
+                    };
+
+                    const inputs = tabsElement.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
+                    for (let i = 0; i < inputs.length; i++) {
+                        inputs[i].addEventListener("change", saveTabsState);
+                    }
+                }
+            });
+        }
+
+        export function applyStoredState(): void {
+            Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
+                const values = value.split(SEPARATOR);
+                if (!getTabsById(controlId)) {
+                    console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
+                    Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
+                } else {
+                    setValues(controlId, values);
+                }
+            });
+        }
+    }
+
+    Storage.applyStoredState();
+    Storage.attachStorageEvents();
 
     type TabsObserver = (selectedValues: string[]) => unknown;
 

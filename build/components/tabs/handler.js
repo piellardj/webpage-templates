@@ -3,8 +3,9 @@ var Page;
 (function (Page) {
     var Tabs;
     (function (Tabs) {
+        var ID_SUFFIX = "-id";
         function getTabsById(id) {
-            var selector = "div.tabs[id=" + id + "-id]";
+            var selector = "div.tabs[id=" + id + ID_SUFFIX + "]";
             var elt = document.querySelector(selector);
             if (!elt) {
                 console.error("Cannot find tabs '" + selector + "'.");
@@ -25,6 +26,45 @@ var Page;
             }
             return values;
         }
+        var Storage;
+        (function (Storage) {
+            var PREFIX = "tabs";
+            var SEPARATOR = ";";
+            function attachStorageEvents() {
+                var tabsElements = document.querySelectorAll("div.tabs[id]");
+                tabsElements.forEach(function (tabsElement) {
+                    var fullId = tabsElement.id;
+                    if (fullId.indexOf(ID_SUFFIX, fullId.length - ID_SUFFIX.length) !== -1) {
+                        var id_1 = fullId.substring(0, fullId.length - ID_SUFFIX.length);
+                        var saveTabsState = function () {
+                            var valuesList = getSelectedValues(tabsElement);
+                            var values = valuesList.join(SEPARATOR);
+                            Page.Helpers.URL.setQueryParameter(PREFIX, id_1, values);
+                        };
+                        var inputs = tabsElement.querySelectorAll("input");
+                        for (var i = 0; i < inputs.length; i++) {
+                            inputs[i].addEventListener("change", saveTabsState);
+                        }
+                    }
+                });
+            }
+            Storage.attachStorageEvents = attachStorageEvents;
+            function applyStoredState() {
+                Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
+                    var values = value.split(SEPARATOR);
+                    if (!getTabsById(controlId)) {
+                        console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
+                        Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
+                    }
+                    else {
+                        setValues(controlId, values);
+                    }
+                });
+            }
+            Storage.applyStoredState = applyStoredState;
+        })(Storage || (Storage = {}));
+        Storage.applyStoredState();
+        Storage.attachStorageEvents();
         /**
          * @return {boolean} Whether or not the observer was added
          */
