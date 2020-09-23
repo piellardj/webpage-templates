@@ -17,7 +17,7 @@ namespace Page.Checkbox {
         const UNCHECKED = "false";
 
         export function attachStorageEvents(): void {
-            const checkboxes = document.querySelectorAll("input[type=checkbox][id]") as NodeListOf<HTMLInputElement>;
+            const checkboxes = document.querySelectorAll("div.checkbox > input[type=checkbox][id]") as NodeListOf<HTMLInputElement>;
             checkboxes.forEach((checkbox: HTMLInputElement) => {
                 checkbox.addEventListener("change", () => {
                     const value = checkbox.checked ? CHECKED : UNCHECKED;

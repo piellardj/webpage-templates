@@ -18,7 +18,7 @@ var Page;
             var CHECKED = "true";
             var UNCHECKED = "false";
             function attachStorageEvents() {
-                var checkboxes = document.querySelectorAll("input[type=checkbox][id]");
+                var checkboxes = document.querySelectorAll("div.checkbox > input[type=checkbox][id]");
                 checkboxes.forEach(function (checkbox) {
                     checkbox.addEventListener("change", function () {
                         var value = checkbox.checked ? CHECKED : UNCHECKED;
