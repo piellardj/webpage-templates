@@ -1,3 +1,4 @@
+/// <reference path="../helpers.d.ts" />
 declare namespace Page.Range {
     type RangeObserver = (rangeValue: number) => unknown;
     /**

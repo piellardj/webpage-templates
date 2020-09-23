@@ -1,3 +1,5 @@
+/// <reference path="../helpers.ts"/>
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Range {
     function isRangeElement(elt: unknown): boolean {
@@ -47,6 +49,35 @@ namespace Page.Range {
             }
         });
     });
+
+    namespace Storage {
+        const PREFIX = "range";
+
+        export function attachStorageEvents(): void {
+            const inputsSelector = "div.range input.slider[type=range][id]";
+            const inputElements = document.querySelectorAll(inputsSelector) as NodeListOf<HTMLInputElement>;
+            inputElements.forEach((inputElement: HTMLInputElement) => {
+                inputElement.addEventListener("change", () => {
+                    Page.Helpers.URL.setQueryParameter(PREFIX, inputElement.id, inputElement.value);
+                });
+            });
+        }
+
+        export function applyStoredState(): void {
+            Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
+                const input = getRangeById(controlId);
+                if (!input) {
+                    console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
+                    Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
+                } else {
+                    setValue(controlId, +value);
+                }
+            });
+        }
+    }
+
+    Storage.applyStoredState();
+    Storage.attachStorageEvents();
 
     type RangeObserver = (rangeValue: number) => unknown;
 

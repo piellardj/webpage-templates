@@ -1,3 +1,4 @@
+/// <reference path="../helpers.ts"/>
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 var Page;
 (function (Page) {
@@ -41,6 +42,35 @@ var Page;
                 }
             });
         });
+        var Storage;
+        (function (Storage) {
+            var PREFIX = "range";
+            function attachStorageEvents() {
+                var inputsSelector = "div.range input.slider[type=range][id]";
+                var inputElements = document.querySelectorAll(inputsSelector);
+                inputElements.forEach(function (inputElement) {
+                    inputElement.addEventListener("change", function () {
+                        Page.Helpers.URL.setQueryParameter(PREFIX, inputElement.id, inputElement.value);
+                    });
+                });
+            }
+            Storage.attachStorageEvents = attachStorageEvents;
+            function applyStoredState() {
+                Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
+                    var input = getRangeById(controlId);
+                    if (!input) {
+                        console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
+                        Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
+                    }
+                    else {
+                        setValue(controlId, +value);
+                    }
+                });
+            }
+            Storage.applyStoredState = applyStoredState;
+        })(Storage || (Storage = {}));
+        Storage.applyStoredState();
+        Storage.attachStorageEvents();
         /**
          * @return {boolean} Whether or not the observer was added
          */
