@@ -1,3 +1,5 @@
+/// <reference path="../helpers.ts"/>
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Tabs {
     const ID_SUFFIX = "-id";

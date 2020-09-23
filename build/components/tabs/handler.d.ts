@@ -1,3 +1,4 @@
+/// <reference path="../helpers.d.ts" />
 declare namespace Page.Tabs {
     type TabsObserver = (selectedValues: string[]) => unknown;
     /**
