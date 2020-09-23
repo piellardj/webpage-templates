@@ -1,3 +1,4 @@
+/// <reference path="../helpers.ts"/>
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 var Page;
 (function (Page) {
@@ -103,6 +104,36 @@ var Page;
             });
             updateVisibleValue(picker, true);
         }
+        var Storage;
+        (function (Storage) {
+            var PREFIX = "picker";
+            var NULL_VALUE = "__null__";
+            function attachStorageEvents() {
+                var pickersElementsSelectors = "div.inline-picker[id]";
+                var pickersElements = document.querySelectorAll(pickersElementsSelectors);
+                pickersElements.forEach(function (pickerElement) {
+                    var pickerId = pickerElement.id;
+                    addObserver(pickerId, function (selectedValue) {
+                        var value = (selectedValue === null) ? NULL_VALUE : selectedValue;
+                        Page.Helpers.URL.setQueryParameter(PREFIX, pickerId, value);
+                    });
+                });
+            }
+            Storage.attachStorageEvents = attachStorageEvents;
+            function applyStoredState() {
+                Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
+                    if (pickersDictionary[controlId]) {
+                        setValue(controlId, value);
+                    }
+                    else {
+                        Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
+                    }
+                });
+            }
+            Storage.applyStoredState = applyStoredState;
+        })(Storage || (Storage = {}));
+        Storage.applyStoredState();
+        Storage.attachStorageEvents();
         function addObserver(id, observer) {
             pickersDictionary[id].observers.push(observer);
         }

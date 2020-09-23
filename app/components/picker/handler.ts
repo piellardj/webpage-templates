@@ -1,3 +1,5 @@
+/// <reference path="../helpers.ts"/>
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Picker {
     type PickerObserver = (selectedValue: string | null) => unknown;
@@ -126,6 +128,36 @@ namespace Page.Picker {
 
         updateVisibleValue(picker, true);
     }
+
+    namespace Storage {
+        const PREFIX = "picker";
+        const NULL_VALUE = "__null__";
+
+        export function attachStorageEvents(): void {
+            const pickersElementsSelectors = "div.inline-picker[id]";
+            const pickersElements = document.querySelectorAll(pickersElementsSelectors);
+            pickersElements.forEach((pickerElement: HTMLInputElement) => {
+                const pickerId = pickerElement.id;
+                addObserver(pickerId, (selectedValue: string | null) => {
+                    const value = (selectedValue === null) ? NULL_VALUE : selectedValue;
+                    Page.Helpers.URL.setQueryParameter(PREFIX, pickerId, value);
+                });
+            });
+        }
+
+        export function applyStoredState(): void {
+            Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
+                if (pickersDictionary[controlId]) {
+                    setValue(controlId, value);
+                } else {
+                    Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
+                }
+            });
+        }
+    }
+
+    Storage.applyStoredState();
+    Storage.attachStorageEvents();
 
     export function addObserver(id: string, observer: PickerObserver): void {
         pickersDictionary[id].observers.push(observer);

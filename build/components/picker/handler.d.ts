@@ -1,3 +1,4 @@
+/// <reference path="../helpers.d.ts" />
 declare namespace Page.Picker {
     type PickerObserver = (selectedValue: string | null) => unknown;
     export function addObserver(id: string, observer: PickerObserver): void;
