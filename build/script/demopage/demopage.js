@@ -30,7 +30,7 @@ function buildPageData(demopageData) {
     var demopageBodyStr = Builder.CustomEjs.render(demopageBodyEjs, demopageBodyData);
     return {
         bodyStr: demopageBodyStr,
-        cssFiles: [],
+        cssFiles: demopageData.styleFiles || [],
         description: demopageData.description,
         scriptFiles: demopageData.scriptFiles || [],
         title: demopageData.title,

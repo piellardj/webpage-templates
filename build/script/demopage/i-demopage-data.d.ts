@@ -5,6 +5,7 @@ interface IDemopageData {
     introduction: IDemopageBody["introduction"];
     githubProjectName: IDemopageBody["githubProjectName"];
     additionalLinks: IDemopageBody["additionalLinks"];
+    styleFiles: string[];
     scriptFiles: string[];
     indicators: IDemopageBody["indicators"];
     canvas: IDemopageBody["canvas"] & {

@@ -14,7 +14,7 @@ function buildPageData(demopageData: IDemopageData): IPage {
 
     return {
         bodyStr: demopageBodyStr,
-        cssFiles: [],
+        cssFiles: demopageData.styleFiles || [],
         description: demopageData.description,
         scriptFiles: demopageData.scriptFiles || [],
         title: demopageData.title,
