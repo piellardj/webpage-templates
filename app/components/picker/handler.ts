@@ -136,13 +136,15 @@ namespace Page.Picker {
         export function attachStorageEvents(): void {
             const pickersElementsSelectors = "div.inline-picker[id]";
             const pickersElements = document.querySelectorAll(pickersElementsSelectors);
-            pickersElements.forEach((pickerElement: HTMLInputElement) => {
+            for (let i = 0; i < pickersElements.length; i++) {
+                const pickerElement = pickersElements[i];
+
                 const pickerId = pickerElement.id;
                 addObserver(pickerId, (selectedValue: string | null) => {
                     const value = (selectedValue === null) ? NULL_VALUE : selectedValue;
                     Page.Helpers.URL.setQueryParameter(PREFIX, pickerId, value);
                 });
-            });
+            }
         }
 
         export function applyStoredState(): void {

@@ -33,7 +33,8 @@ var Page;
             var SEPARATOR = ";";
             function attachStorageEvents() {
                 var tabsElements = document.querySelectorAll("div.tabs[id]");
-                tabsElements.forEach(function (tabsElement) {
+                var _loop_1 = function (i) {
+                    var tabsElement = tabsElements[i];
                     var fullId = tabsElement.id;
                     if (fullId.indexOf(ID_SUFFIX, fullId.length - ID_SUFFIX.length) !== -1) {
                         var id_1 = fullId.substring(0, fullId.length - ID_SUFFIX.length);
@@ -43,11 +44,14 @@ var Page;
                             Page.Helpers.URL.setQueryParameter(PREFIX, id_1, values);
                         };
                         var inputs = tabsElement.querySelectorAll("input");
-                        for (var i = 0; i < inputs.length; i++) {
-                            inputs[i].addEventListener("change", saveTabsState);
+                        for (var i_1 = 0; i_1 < inputs.length; i_1++) {
+                            inputs[i_1].addEventListener("change", saveTabsState);
                         }
                     }
-                });
+                };
+                for (var i = 0; i < tabsElements.length; i++) {
+                    _loop_1(i);
+                }
             }
             Storage.attachStorageEvents = attachStorageEvents;
             function applyStoredState() {
@@ -73,12 +77,13 @@ var Page;
             var divWrapper = getTabsById(tabsId);
             if (divWrapper) {
                 var inputs = divWrapper.querySelectorAll("input");
-                Array.prototype.forEach.call(inputs, function (input) {
+                for (var i = 0; i < inputs.length; i++) {
+                    var input = inputs[i];
                     input.addEventListener("change", function (event) {
                         event.stopPropagation();
                         observer(getSelectedValues(divWrapper));
                     }, false);
-                });
+                }
                 return true;
             }
             return false;

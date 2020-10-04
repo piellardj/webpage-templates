@@ -30,7 +30,8 @@ var Page;
         var labelsSelector = ".file-control.upload > label";
         window.addEventListener("load", function () {
             var labels = document.querySelectorAll(labelsSelector);
-            Array.prototype.forEach.call(labels, function (label) {
+            var _loop_1 = function (i) {
+                var label = labels[i];
                 var input = getUploadInputById(label.htmlFor);
                 if (input) {
                     var span_1 = label.querySelector("span");
@@ -40,7 +41,10 @@ var Page;
                         }
                     }, false);
                 }
-            });
+            };
+            for (var i = 0; i < labels.length; i++) {
+                _loop_1(i);
+            }
         });
         /**
          * @return {boolean} Whether or not the observer was added

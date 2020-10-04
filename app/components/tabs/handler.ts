@@ -36,7 +36,9 @@ namespace Page.Tabs {
 
         export function attachStorageEvents(): void {
             const tabsElements = document.querySelectorAll("div.tabs[id]");
-            tabsElements.forEach((tabsElement: Element) => {
+            for (let i = 0; i < tabsElements.length; i++) {
+                const tabsElement = tabsElements[i];
+
                 const fullId = tabsElement.id;
                 if (fullId.indexOf(ID_SUFFIX, fullId.length - ID_SUFFIX.length) !== -1) {
                     const id = fullId.substring(0, fullId.length - ID_SUFFIX.length);
@@ -52,7 +54,7 @@ namespace Page.Tabs {
                         inputs[i].addEventListener("change", saveTabsState);
                     }
                 }
-            });
+            }
         }
 
         export function applyStoredState(): void {
@@ -80,12 +82,14 @@ namespace Page.Tabs {
         const divWrapper = getTabsById(tabsId);
         if (divWrapper) {
             const inputs = divWrapper.querySelectorAll("input");
-            Array.prototype.forEach.call(inputs, function (input) {
+            for (let i = 0; i < inputs.length; i++) {
+                const input = inputs[i];
+
                 input.addEventListener("change", function (event) {
                     event.stopPropagation();
                     observer(getSelectedValues(divWrapper));
                 }, false);
-            });
+            }
             return true;
         }
 

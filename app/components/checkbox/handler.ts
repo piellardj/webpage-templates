@@ -19,12 +19,13 @@ namespace Page.Checkbox {
         export function attachStorageEvents(): void {
             const checkboxesSelector = "div.checkbox > input[type=checkbox][id]";
             const checkboxes = document.querySelectorAll(checkboxesSelector) as NodeListOf<HTMLInputElement>;
-            checkboxes.forEach((checkbox: HTMLInputElement) => {
+            for (let i = 0; i < checkboxes.length; i++) {
+                const checkbox = checkboxes[i];
                 checkbox.addEventListener("change", () => {
                     const value = checkbox.checked ? CHECKED : UNCHECKED;
                     Page.Helpers.URL.setQueryParameter(PREFIX, checkbox.id, value);
                 });
-            });
+            }
         }
 
         export function applyStoredState(): void {

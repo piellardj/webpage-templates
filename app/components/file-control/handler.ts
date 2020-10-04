@@ -31,8 +31,10 @@ namespace Page.FileControl {
     /* Bind event so that filename is displayed on upload */
     const labelsSelector = ".file-control.upload > label";
     window.addEventListener("load", function () {
-        const labels = document.querySelectorAll(labelsSelector);
-        Array.prototype.forEach.call(labels, function (label) {
+        const labels = document.querySelectorAll(labelsSelector) as NodeListOf<HTMLLabelElement>;
+        for (let i = 0; i < labels.length; i++) {
+            const label = labels[i];
+
             const input = getUploadInputById(label.htmlFor);
             if (input) {
                 const span = label.querySelector("span");
@@ -42,7 +44,7 @@ namespace Page.FileControl {
                     }
                 }, false);
             }
-        });
+        }
     });
 
     type DownloadObserver = () => unknown;

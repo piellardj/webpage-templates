@@ -30,7 +30,8 @@ var Page;
         }
         window.addEventListener("load", function () {
             var tooltips = document.querySelectorAll(".tooltip");
-            Array.prototype.forEach.call(tooltips, function (tooltip) {
+            var _loop_1 = function (i) {
+                var tooltip = tooltips[i];
                 var range = tooltip.previousElementSibling;
                 if (isRangeElement(range)) {
                     range.parentNode.addEventListener("mouseenter", function () {
@@ -40,7 +41,10 @@ var Page;
                         updateTooltipPosition(range, tooltip);
                     }, false);
                 }
-            });
+            };
+            for (var i = 0; i < tooltips.length; i++) {
+                _loop_1(i);
+            }
         });
         var Storage;
         (function (Storage) {
@@ -48,11 +52,15 @@ var Page;
             function attachStorageEvents() {
                 var inputsSelector = "div.range input.slider[type=range][id]";
                 var inputElements = document.querySelectorAll(inputsSelector);
-                inputElements.forEach(function (inputElement) {
+                var _loop_2 = function (i) {
+                    var inputElement = inputElements[i];
                     inputElement.addEventListener("change", function () {
                         Page.Helpers.URL.setQueryParameter(PREFIX, inputElement.id, inputElement.value);
                     });
-                });
+                };
+                for (var i = 0; i < inputElements.length; i++) {
+                    _loop_2(i);
+                }
             }
             Storage.attachStorageEvents = attachStorageEvents;
             function applyStoredState() {

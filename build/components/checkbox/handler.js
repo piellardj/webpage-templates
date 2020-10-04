@@ -20,12 +20,16 @@ var Page;
             function attachStorageEvents() {
                 var checkboxesSelector = "div.checkbox > input[type=checkbox][id]";
                 var checkboxes = document.querySelectorAll(checkboxesSelector);
-                checkboxes.forEach(function (checkbox) {
+                var _loop_1 = function (i) {
+                    var checkbox = checkboxes[i];
                     checkbox.addEventListener("change", function () {
                         var value = checkbox.checked ? CHECKED : UNCHECKED;
                         Page.Helpers.URL.setQueryParameter(PREFIX, checkbox.id, value);
                     });
-                });
+                };
+                for (var i = 0; i < checkboxes.length; i++) {
+                    _loop_1(i);
+                }
             }
             Storage.attachStorageEvents = attachStorageEvents;
             function applyStoredState() {

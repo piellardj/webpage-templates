@@ -111,13 +111,17 @@ var Page;
             function attachStorageEvents() {
                 var pickersElementsSelectors = "div.inline-picker[id]";
                 var pickersElements = document.querySelectorAll(pickersElementsSelectors);
-                pickersElements.forEach(function (pickerElement) {
+                var _loop_1 = function (i) {
+                    var pickerElement = pickersElements[i];
                     var pickerId = pickerElement.id;
                     addObserver(pickerId, function (selectedValue) {
                         var value = (selectedValue === null) ? NULL_VALUE : selectedValue;
                         Page.Helpers.URL.setQueryParameter(PREFIX, pickerId, value);
                     });
-                });
+                };
+                for (var i = 0; i < pickersElements.length; i++) {
+                    _loop_1(i);
+                }
             }
             Storage.attachStorageEvents = attachStorageEvents;
             function applyStoredState() {

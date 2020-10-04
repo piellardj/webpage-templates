@@ -35,9 +35,11 @@ namespace Page.Range {
     }
 
     window.addEventListener("load", function () {
-        const tooltips = document.querySelectorAll(".tooltip");
-        Array.prototype.forEach.call(tooltips, function (tooltip) {
-            const range = tooltip.previousElementSibling;
+        const tooltips = document.querySelectorAll(".tooltip") as NodeListOf<HTMLElement>;
+        for (let i = 0; i < tooltips.length; i++) {
+            const tooltip = tooltips[i];
+
+            const range = tooltip.previousElementSibling as HTMLInputElement;
             if (isRangeElement(range)) {
                 range.parentNode.addEventListener("mouseenter", function () {
                     updateTooltipPosition(range, tooltip);
@@ -47,7 +49,7 @@ namespace Page.Range {
                     updateTooltipPosition(range, tooltip);
                 }, false);
             }
-        });
+        }
     });
 
     namespace Storage {
@@ -56,11 +58,12 @@ namespace Page.Range {
         export function attachStorageEvents(): void {
             const inputsSelector = "div.range input.slider[type=range][id]";
             const inputElements = document.querySelectorAll(inputsSelector) as NodeListOf<HTMLInputElement>;
-            inputElements.forEach((inputElement: HTMLInputElement) => {
+            for (let i = 0; i < inputElements.length; i++) {
+                const inputElement = inputElements[i];
                 inputElement.addEventListener("change", () => {
                     Page.Helpers.URL.setQueryParameter(PREFIX, inputElement.id, inputElement.value);
                 });
-            });
+            }
         }
 
         export function applyStoredState(): void {
