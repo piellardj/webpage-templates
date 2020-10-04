@@ -8,7 +8,7 @@ interface IDemopageData {
     githubProjectName: IDemopageBody["githubProjectName"];
     additionalLinks: IDemopageBody["additionalLinks"];
 
-    styleFiles: string[];
+    styleFiles?: string[];
     scriptFiles: string[];
 
     indicators: IDemopageBody["indicators"];
