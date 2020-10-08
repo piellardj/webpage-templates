@@ -87,6 +87,27 @@ $section-margin: 12px;
         overflow-x: hidden;
         overflow-y: auto;
 
+        &::-webkit-scrollbar {
+            width: 16px;
+        }
+
+        &::-webkit-scrollbar-track {
+            border-radius: 8px;
+            background-color: $color-background;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-width: 3px 5px;
+            border-style: solid;
+            border-color: $color-background;
+            border-radius: 8px;
+            background-color: #B1B1B1;
+        }
+
+        &:hover::-webkit-scrollbar-thumb {
+            border-width: 3px;
+        }
+
         @include transition(transform $controls-pane-transition-time)
     }
 
