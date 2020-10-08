@@ -24,7 +24,10 @@ namespace Page.Range {
         const rangeRect = range.getBoundingClientRect();
         const tooltipRect = tooltip.getBoundingClientRect();
 
-        const percentage = (+range.value - +range.min) / (+range.max - +range.min);
+        let percentage = 0;
+        if (+range.max > +range.min){
+            percentage = (+range.value - +range.min) / (+range.max - +range.min);
+        }
 
         const top = (rangeRect.top - tooltipRect.height - bodyRect.top) - 4;
         const middle = percentage * (rangeRect.width - thumbSize) +
