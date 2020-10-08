@@ -77,13 +77,12 @@ $section-margin: 12px;
     & ~ .controls-block {
         position: fixed;
         top: 0;
-        bottom: 0;
         left: 100%;
         width: $controls-pane-width;
-        max-height: 100%;
+        max-height: calc(100% - 48px);
         margin: 0;
-        border-width: 1px;
-        border-radius: 0;
+        border-width: 0 0 1px 1px;
+        border-radius: 0 0 0 $border-radius;
         z-index: 50;
         overflow-x: hidden;
         overflow-y: auto;
