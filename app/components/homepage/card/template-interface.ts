@@ -7,6 +7,7 @@ export interface ICard {
 
     githubLink?: boolean;
     liveLink?: boolean;
+    liveLinkArguments?: string;
 
     /* Each index is a paragraph */
     body: string[];

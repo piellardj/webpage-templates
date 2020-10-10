@@ -13,7 +13,8 @@
             # }
             # if (liveLink) {
             <div>
-                # const link = {href: "https://piellardj.github.io/" + projectName + "/", text: "See live"};
+                # const linkArguments = (typeof liveLinkArguments !== "undefined") ? "?" + liveLinkArguments : "";
+                # const link = {href: "https://piellardj.github.io/" + projectName + "/" + linkArguments, text: "See live"};
                 #include('link', link)
             </div>
             # }

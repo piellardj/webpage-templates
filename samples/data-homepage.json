@@ -14,7 +14,8 @@
                     ],
                     "projectName": "pool-webgl",
                     "githubLink": true,
-                    "liveLink": true
+                    "liveLink": true,
+                    "liveLinkArguments": "page%3Acanvas%3Afullscreen=true"
                 },
                 {
                     "background": "images/projects/navier-stokes.jpg",

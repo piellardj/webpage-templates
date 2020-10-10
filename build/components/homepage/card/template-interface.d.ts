@@ -4,5 +4,6 @@ export interface ICard {
     projectName: string;
     githubLink?: boolean;
     liveLink?: boolean;
+    liveLinkArguments?: string;
     body: string[];
 }
