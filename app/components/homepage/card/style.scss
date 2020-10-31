@@ -63,6 +63,7 @@ $card-transition-time: .2s ease-in-out;
     font-size: $card-title-text-size;
     line-height: $card-title-height;
     text-align: left;
+    white-space: nowrap;
 }
 
 .card-frame:hover {
