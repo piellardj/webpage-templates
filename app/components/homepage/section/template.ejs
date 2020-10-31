@@ -3,7 +3,9 @@
     # for (let card of cards) {
         #include('homepage/card', card)
     # }
-    # if (cards.length % 2 !== 0) {
+    # const maxCardsPerRow = 3;
+    # const nbRows = Math.ceil(cards.length / maxCardsPerRow);
+    # for (let iP = cards.length; iP < nbRows * maxCardsPerRow; iP++) {
         <div class="card-placeholder"></div>
     # }
   </section>

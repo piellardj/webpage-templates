@@ -1,6 +1,7 @@
 @import '../../common/utils';
 
 $grid-margin: 8px;
+$max-cards-per-row: 3;
 
 .projects {
     display: flex;
@@ -8,7 +9,7 @@ $grid-margin: 8px;
     justify-content: flex-start;
 
     width: 100%;
-    max-width: 900px;
+    max-width: 450px * $max-cards-per-row;
     margin: 0 auto 32px;
     padding: $grid-margin;
     @include box-sizing(border-box);
