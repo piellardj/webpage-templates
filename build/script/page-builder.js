@@ -58,7 +58,7 @@ var LoadedScript = /** @class */ (function () {
 }());
 function loadHandlerAndDependencies(dictionary, scriptAbsolutePath) {
     if (dictionary[scriptAbsolutePath]) {
-        console.log("Skipping loading of '" + scriptAbsolutePath + "' because it is already loaded.");
+        // console.log("Skipping loading of '" + scriptAbsolutePath + "' because it is already loaded.");
         return;
     }
     var scriptId = scriptAbsolutePath;

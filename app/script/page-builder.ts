@@ -57,7 +57,7 @@ type HandlerDictionary = { [handlerId: string]: IHandler };
 
 function loadHandlerAndDependencies(dictionary: HandlerDictionary, scriptAbsolutePath: string): void {
     if (dictionary[scriptAbsolutePath]) {
-        console.log("Skipping loading of '" + scriptAbsolutePath + "' because it is already loaded.");
+        // console.log("Skipping loading of '" + scriptAbsolutePath + "' because it is already loaded.");
         return;
     }
 
