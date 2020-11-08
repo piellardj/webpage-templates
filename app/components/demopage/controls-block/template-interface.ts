@@ -57,6 +57,7 @@ IControlFileUpload | IControlFileDownload | IControlPicker;
 
 interface IControlSection {
     title: string;
+    id?: string;
     controls: ISupportedControl[];
 }
 

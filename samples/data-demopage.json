@@ -38,6 +38,7 @@
     "controlsSections": [
         {
             "title": "Files",
+            "id": "files-section-id",
             "controls": [
                 {
                     "type": "file-upload",
@@ -70,6 +71,7 @@
         },
         {
             "title": "Checkboxes",
+            "id": "checkboxes-section-id",
             "controls": [
                 {
                     "title": "Checkbox 1",
@@ -236,6 +238,7 @@
         },
         {
             "title": "Pickers",
+            "id": "pickers-section-id",
             "controls": [
                 {
                     "type": "picker",
@@ -280,6 +283,7 @@
         },
         {
             "title": "Buttons",
+            "id": "buttons-section-id",
             "controls": [
                 {
                     "type": "button",

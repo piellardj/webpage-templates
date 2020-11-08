@@ -13,7 +13,8 @@
         # }
         # firstSection = false;
 
-        <section class="controls-section">
+        # const sectionIdAttribute = (typeof section.id === 'undefined') ? '' : ('id="section-' + section.id + '"');
+        <section class="controls-section" #=(sectionIdAttribute)>
             <h2>#=(section.title)</h2>
 
             <div class="controls-list">

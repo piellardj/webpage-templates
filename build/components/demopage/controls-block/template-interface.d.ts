@@ -44,6 +44,7 @@ interface IControlTabs extends IControlBase, ITabs {
 declare type ISupportedControl = IControlTabs | IControlCheckbox | IControlRange | IControlButton | IControlFileUpload | IControlFileDownload | IControlPicker;
 interface IControlSection {
     title: string;
+    id?: string;
     controls: ISupportedControl[];
 }
 export interface IControlsBlock {
