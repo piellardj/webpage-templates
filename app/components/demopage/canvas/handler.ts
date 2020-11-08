@@ -475,13 +475,13 @@ namespace Page.Canvas {
     export function setIndicatorVisibility(id: string, visible: boolean): void {
         const indicator = Indicators.getIndicator(id);
         if (indicator) {
-            indicator.style.display = visible ? "block" : "none";
+            indicator.style.display = visible ? "" : "none";
         }
     }
 
     export function setIndicatorsVisibility(visible: boolean): void {
         const indicators = document.getElementById("indicators");
-        indicators.style.display = visible ? "block" : "none";
+        indicators.style.display = visible ? "" : "none";
     }
 
     export function setMaxSize(newMaxWidth: number, newMaxHeight: number): void {
@@ -492,7 +492,7 @@ namespace Page.Canvas {
     }
 
     export function setResizable(resizable: boolean): void {
-        buttonsColumn.style.display = resizable ? "block" : "none";
+        buttonsColumn.style.display = resizable ? "" : "none";
     }
 
     export function setLoaderText(text: string): void {

@@ -421,13 +421,13 @@ var Page;
         function setIndicatorVisibility(id, visible) {
             var indicator = Indicators.getIndicator(id);
             if (indicator) {
-                indicator.style.display = visible ? "block" : "none";
+                indicator.style.display = visible ? "" : "none";
             }
         }
         Canvas.setIndicatorVisibility = setIndicatorVisibility;
         function setIndicatorsVisibility(visible) {
             var indicators = document.getElementById("indicators");
-            indicators.style.display = visible ? "block" : "none";
+            indicators.style.display = visible ? "" : "none";
         }
         Canvas.setIndicatorsVisibility = setIndicatorsVisibility;
         function setMaxSize(newMaxWidth, newMaxHeight) {
@@ -437,7 +437,7 @@ var Page;
         }
         Canvas.setMaxSize = setMaxSize;
         function setResizable(resizable) {
-            buttonsColumn.style.display = resizable ? "block" : "none";
+            buttonsColumn.style.display = resizable ? "" : "none";
         }
         Canvas.setResizable = setResizable;
         function setLoaderText(text) {
