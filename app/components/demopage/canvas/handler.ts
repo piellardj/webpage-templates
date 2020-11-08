@@ -361,9 +361,15 @@ namespace Page.Canvas {
             [id: string]: HTMLSpanElement,
         } = {};
 
+        const suffix = "-indicator-id";
+
+        export function getIndicator(id: string): HTMLElement {
+            return getElementBySelector("#" + id + suffix);
+        }
+
         export function getIndicatorSpan(id: string): HTMLSpanElement {
             if (!indicatorSpansCache[id]) { // not yet in cache
-                const fullId = id + "-indicator-id";
+                const fullId = id + suffix;
                 indicatorSpansCache[id] = getElementBySelector("#" + fullId + " span");
             }
             return indicatorSpansCache[id];
@@ -463,6 +469,13 @@ namespace Page.Canvas {
         const indicator = Indicators.getIndicatorSpan(id);
         if (indicator) {
             indicator.innerText = text;
+        }
+    }
+
+    export function setIndicatorVisibility(id: string, visible: boolean): void {
+        const indicator = Indicators.getIndicator(id);
+        if (indicator) {
+            indicator.style.display = visible ? "block" : "none";
         }
     }
 

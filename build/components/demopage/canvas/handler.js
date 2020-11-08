@@ -310,9 +310,14 @@ var Page;
         var Indicators;
         (function (Indicators) {
             var indicatorSpansCache = {};
+            var suffix = "-indicator-id";
+            function getIndicator(id) {
+                return getElementBySelector("#" + id + suffix);
+            }
+            Indicators.getIndicator = getIndicator;
             function getIndicatorSpan(id) {
                 if (!indicatorSpansCache[id]) { // not yet in cache
-                    var fullId = id + "-indicator-id";
+                    var fullId = id + suffix;
                     indicatorSpansCache[id] = getElementBySelector("#" + fullId + " span");
                 }
                 return indicatorSpansCache[id];
@@ -413,6 +418,13 @@ var Page;
             }
         }
         Canvas.setIndicatorText = setIndicatorText;
+        function setIndicatorVisibility(id, visible) {
+            var indicator = Indicators.getIndicator(id);
+            if (indicator) {
+                indicator.style.display = visible ? "block" : "none";
+            }
+        }
+        Canvas.setIndicatorVisibility = setIndicatorVisibility;
         function setIndicatorsVisibility(visible) {
             var indicators = document.getElementById("indicators");
             indicators.style.display = visible ? "block" : "none";

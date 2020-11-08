@@ -28,6 +28,7 @@ declare namespace Page.Canvas {
     export function isFullScreen(): boolean;
     export function isMouseDown(): boolean;
     export function setIndicatorText(id: string, text: string): void;
+    export function setIndicatorVisibility(id: string, visible: boolean): void;
     export function setIndicatorsVisibility(visible: boolean): void;
     export function setMaxSize(newMaxWidth: number, newMaxHeight: number): void;
     export function setResizable(resizable: boolean): void;
