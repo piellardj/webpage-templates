@@ -4,6 +4,7 @@ var Page;
 (function (Page) {
     var Picker;
     (function (Picker) {
+        var DISABLED_BUTTON_CLASS = "disabled";
         /**
          * Populates pickers dictionary and binds events.
          */
@@ -25,7 +26,6 @@ var Page;
             return dictionary;
         }
         var pickersDictionary = buildPickersDictionary();
-        var DISABLED_BUTTON_CLASS = "disabled";
         function getIndexOfCheckedInput(picker) {
             for (var i = 0; i < picker.inputs.length; ++i) {
                 if (picker.inputs[i].checked) {

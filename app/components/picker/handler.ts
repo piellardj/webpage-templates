@@ -17,6 +17,8 @@ namespace Page.Picker {
         [id: string]: IPickerObject;
     }
 
+    const DISABLED_BUTTON_CLASS = "disabled";
+
     /**
      * Populates pickers dictionary and binds events.
      */
@@ -42,7 +44,6 @@ namespace Page.Picker {
     }
 
     const pickersDictionary = buildPickersDictionary();
-    const DISABLED_BUTTON_CLASS = "disabled";
 
     function getIndexOfCheckedInput(picker: IPickerObject): number {
         for (let i = 0; i < picker.inputs.length; ++i) {

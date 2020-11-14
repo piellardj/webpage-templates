@@ -18,7 +18,7 @@
     "lint-ts": "eslint -c app/config/.eslintrc.json app/**/*.ts",
     "check-components": "node app/build-tools/check-components.js",
     "test": "npm run rebuild && npm run test-demopage && npm run test-homepage && npm run test-demopage-empty",
-    "test-demopage": "ts-node-script app/script/test.ts --page=demopage --data=samples/data-demopage.json --outdir=test/demopage",
+    "test-demopage": "ts-node-script app/script/test.ts --page=demopage --data=samples/data-demopage.json --outdir=test/demopage --debug=1",
     "test-demopage-empty": "ts-node-script app/script/test.ts --page=demopage-empty --data=samples/data-demopage-empty.json --outdir=test/demopage-empty",
     "test-homepage": "ts-node-script app/script/test.ts --page=homepage --data=samples/data-homepage.json --outdir=test/homepage"
   },
