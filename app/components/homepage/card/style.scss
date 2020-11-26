@@ -59,6 +59,7 @@ $card-transition-time: .1s ease-in-out;
     z-index: 0;
 
     .card-frame:hover > & {
+        // sass-lint:disable-block quotes no-duplicate-properties
         // no transition for blur because it is expansive
         filter: blur(3px); // fallback in case better blur is not supported. This one produces white artifacts on edges.
         // SVG blur does not produce artifacts but not all browsers support it
@@ -149,9 +150,11 @@ a.card-link {
 }
 
 .card-title {
-    padding-left: 0.5 * $card-border-radius;
+    margin: 0;
+    padding: 0 0 0 #{0.5 * $card-border-radius};
     color: #2b2b2b;
     font-size: 112.5%;
+    font-weight: normal;
     line-height: 28px;
     text-align: left;
     user-select: none;
