@@ -1,23 +1,19 @@
-<div class="card-frame" style="background-image:url('#=(background)');">
+<div class="card-frame">
+    <img class="card-background" src="#=(background)" alt="Illustration for #=(title)"/>
     <div class="card-content card-reveal">
-        <div class="card-title">#=(title)</div>
         <div class="card-body">
             #include('paragraphs', { paragraphs: body })
         </div>
-        <div class="card-footer">
-            # if (githubLink) {
-            <div>
-                # const link = {href: "https://github.com/piellardj/" + projectName + "/", text: "GitHub"};
-                #include('link', link)
-            </div>
-            # }
+        <div class="card-action">
             # if (liveLink) {
-            <div>
                 # const linkArguments = (typeof liveLinkArguments !== "undefined") ? "?" + liveLinkArguments : "";
-                # const link = {href: "https://piellardj.github.io/" + projectName + "/" + linkArguments, text: "See live"};
-                #include('link', link)
-            </div>
+                # const url = "https://piellardj.github.io/" + projectName + "/" + linkArguments;
+                <a class="card-link" href="#=(url)">See live</a>
+            # } else if (githubLink) {
+                # const url = "https://github.com/piellardj/" + projectName + "/";
+                <a class="card-link" href="#=(url)">Github</a>
             # }
         </div>
     </div>
 </div>
+<div class="card-title">#=(title)</div>

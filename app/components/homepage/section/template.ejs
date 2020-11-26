@@ -1,11 +1,10 @@
 <section class="projects">
     <h1>#=(title)</h1>
-    # for (let card of cards) {
-        #include('homepage/card', card)
-    # }
-    # const maxCardsPerRow = 3;
-    # const nbRows = Math.ceil(cards.length / maxCardsPerRow);
-    # for (let iP = cards.length; iP < nbRows * maxCardsPerRow; iP++) {
-        <div class="card-placeholder"></div>
-    # }
-  </section>
+    <div class="projects-grid">
+        # for (let card of cards) {
+            <div class="projects-grid-cell">
+                #include('homepage/card', card)
+            </div>
+        # }
+    </div>
+</section>

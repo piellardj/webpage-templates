@@ -1,44 +1,33 @@
 @import '../../common/utils';
 
-$grid-margin: 8px;
-$max-cards-per-row: 3;
+$grid-cell-margin: 8px;
 
 .projects {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-start;
-
-    width: 100%;
-    max-width: 450px * $max-cards-per-row;
+    max-width: 1350px;
     margin: 0 auto 32px;
-    padding: $grid-margin;
-    @include box-sizing(border-box);
+    padding: $grid-cell-margin;
+    user-select: none;
 
     & > h1 {
         width: 100%;
-        margin: 0 $grid-margin #{$grid-margin / 2};
+        margin: 0 $grid-cell-margin #{$grid-cell-margin / 2};
         font-size: 200%;
     }
+}
 
-    & > .card-frame,
-    & > .card-placeholder {
-        flex: 1;
-        min-width: #{256px - $grid-margin};
-        max-width: 100%;
+.projects-grid {
+    display: grid;
+    grid-template-columns: 1fr;
 
-        @media only screen and (min-width: 780px) {
-            min-width: 320px;
-        }
+    @media only screen and (min-width: 560px) {
+        grid-template-columns: 1fr 1fr;
     }
 
-    & > .card-frame {
-        height: 256px;
-        margin: $grid-margin;
+    @media only screen and (min-width: 1040px) {
+        grid-template-columns: 1fr 1fr 1fr;
     }
+}
 
-    & > .card-placeholder {
-        height: 0;
-        margin: 0 $grid-margin;
-        visibility: hidden;
-    }
+.projects-grid-cell {
+    padding: $grid-cell-margin; // don't use grid-gap because it is not supported by IE11
 }

@@ -7,7 +7,7 @@ namespace Page.Homepage {
         const result: string[] = [];
 
         // don't use forEach because not standard and fails on IE11
-        const potentialLinks = document.querySelectorAll(".card-footer a");
+        const potentialLinks = document.querySelectorAll("a.card-link");
         for (let i = 0; i < potentialLinks.length; ++i) {
             const href = (potentialLinks[i] as HTMLLinkElement).href;
             if (href && href.indexOf(projectUrlStart) === 0) {
