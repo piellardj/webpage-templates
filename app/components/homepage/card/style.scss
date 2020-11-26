@@ -59,8 +59,10 @@ $card-transition-time: .1s ease-in-out;
     z-index: 0;
 
     .card-frame:hover > & {
-        // transform: scale(1.05); // to avoid artifacts on edges due to blurring
-        filter: blur(3px); // without transition because it is too expensive
+        // no transition for blur because it is expansive
+        filter: blur(3px); // fallback in case better blur is not supported. This one produces white artifacts on edges.
+        // SVG blur does not produce artifacts but not all browsers support it
+        filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='1' height='1'%3E%3CfeGaussianBlur stdDeviation='5' result='b'/%3E%3CfeMorphology operator='dilate' radius='5'/%3E %3CfeMerge%3E%3CfeMergeNode/%3E%3CfeMergeNode in='b'/%3E%3C/feMerge%3E%3C/filter%3E%3C/svg%3E#a");
     }
 }
 
