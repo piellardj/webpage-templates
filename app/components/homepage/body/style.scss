@@ -35,6 +35,7 @@ main {
             left: $logo-border-width;
             width: #{$logo-size - 2 * $logo-border-width};
             height: #{$logo-size - 2 * $logo-border-width};
+            border-radius: 50%;
         }
 
         &::after {
@@ -46,7 +47,6 @@ main {
         }
 
         &::before {
-            border-radius: 50%;
             background: $color-background;
             content: '';
             z-index: 0;
