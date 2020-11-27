@@ -49,22 +49,26 @@ $card-transition-time: .1s ease-in-out;
 }
 
 .card-background {
-    $image-width: $card-max-width;
-
     position: absolute;
     top: 0;
-    left: calc(50% - #{0.5 * $image-width});
-    width: $image-width;
-    height: 100%;
+    left: calc(50% - #{0.5 * $card-max-width});
+    width: $card-max-width;
+    height: $card-height;
     z-index: 0;
 
     .card-frame:hover > & {
+        $blur-radius: 2;
         // sass-lint:disable-block quotes no-duplicate-properties
         // no transition for blur because it is expansive
-        filter: blur(3px); // fallback in case better blur is not supported. This one produces white artifacts on edges.
+        filter: blur(#{$blur-radius}px); // fallback in case better blur is not supported. This one produces white artifacts on edges.
         // SVG blur does not produce artifacts but not all browsers support it
-        filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='1' height='1'%3E%3CfeGaussianBlur stdDeviation='5' result='b'/%3E%3CfeMorphology operator='dilate' radius='5'/%3E %3CfeMerge%3E%3CfeMergeNode/%3E%3CfeMergeNode in='b'/%3E%3C/feMerge%3E%3C/filter%3E%3C/svg%3E#a");
+        filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='1' height='1'%3E%3CfeGaussianBlur stdDeviation='#{$blur-radius}' result='b'/%3E%3CfeMorphology operator='dilate' radius='#{$blur-radius}'/%3E %3CfeMerge%3E%3CfeMergeNode/%3E%3CfeMergeNode in='b'/%3E%3C/feMerge%3E%3C/filter%3E%3C/svg%3E#a");
     }
+}
+
+.card-image {
+    width: $card-max-width;
+    height: $card-height;
 }
 
 .card-content {
@@ -80,6 +84,7 @@ $card-transition-time: .1s ease-in-out;
     border: 1px solid #cccccc;
     border-radius: 8px;
     background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     z-index: 2;
     box-sizing: border-box;
     user-select: none;
@@ -105,6 +110,10 @@ $card-transition-time: .1s ease-in-out;
 
     > p {
         margin: $card-padding;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
 
     $scrollbar-thumb-width: 6px;

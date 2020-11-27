@@ -1,6 +1,19 @@
 <h2 class="card-title">#=(title)</h2>
 <div class="card-frame">
-    <img class="card-background" src="#=(background)" alt="Illustration for #=(title)"/>
+    <picture class="card-background card-image">
+        # const lightImages = [];
+        # if (typeof background_light === "string") {
+        #    lightImages.push(background_light);
+        # }
+        # if (typeof background_light_highdpi === "string") {
+        #    lightImages.push(background_light_highdpi + " 1.1x");
+        # }
+        # if (lightImages.length > 0) {
+        #    const srcset = lightImages.join(', ');
+            <source class="card-image" srcset="#=(srcset)">
+        # }
+        <img class="card-image" src="#=(background)" alt="Illustration for #=(title)" />
+    </picture>
     <div class="card-content card-reveal">
         <div class="card-body">
             #include('paragraphs', { paragraphs: body })
