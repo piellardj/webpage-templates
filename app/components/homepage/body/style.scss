@@ -40,6 +40,7 @@ main {
 
         &::after {
             color: $color-medium;
+            font-size: 16px;
             font-weight: normal;
             line-height: #{$logo-size - 2 * $logo-border-width};
             content: 'random';

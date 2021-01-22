@@ -43,6 +43,7 @@ header {
 
     &::after {
         color: $color-medium;
+        font-size: 16px;
         font-weight: normal;
         line-height: $logo-size;
         content: 'home';
