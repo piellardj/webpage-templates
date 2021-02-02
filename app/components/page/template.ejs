@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
+    # const date = new Date();
+    # const version = encodeURIComponent(date.toISOString());
   <head>
     <meta charset="utf-8">
     <meta name="description" content="#=(description)" />
@@ -14,7 +16,8 @@
     # if(cssFiles.length > 0) {
         
         # for (cssFilename of cssFiles) {
-        <link rel="stylesheet" type="text/css" href="#=(cssFilename)">
+            # const finalPath = cssFilename + "?v=" + version;
+        <link rel="stylesheet" type="text/css" href="#=(finalPath)">
         # }
     # }
   </head>
@@ -26,9 +29,10 @@
     # if (scriptFiles.length > 0) {
 
         # for (let scriptFile of scriptFiles) {
-          <script src="#=(scriptFile)"></script>
+            # const finalPath = scriptFile + "?v=" + version;
+          <script src="#=(finalPath)"></script>
         # }
-      # }
+    # }
   </body>
 
 </html>
