@@ -13,11 +13,12 @@ var Page;
             var progression = (+range.value - +range.min) / (+range.max - +range.min);
             var width = container.getBoundingClientRect().width;
             var handleSize = handle.getBoundingClientRect().width;
-            var handleCenter = 0.5 * handleSize + progression * (width - handleSize);
-            leftBar.style.width = handleCenter + "px";
-            rightBar.style.width = (width - handleCenter) + "px";
-            handle.style.left = handleCenter + "px";
-            tooltip.style.left = handleCenter + "px";
+            var handleCenterInPx = 0.5 * handleSize + progression * (width - handleSize);
+            var handleCenterInPercent = 100 * handleCenterInPx / width;
+            leftBar.style.width = handleCenterInPercent + "%";
+            rightBar.style.width = (100 - handleCenterInPercent) + "%";
+            handle.style.left = handleCenterInPercent + "%";
+            tooltip.style.left = handleCenterInPercent + "%";
             tooltip.textContent = range.value;
         }
         window.addEventListener("load", function () {
@@ -44,7 +45,7 @@ var Page;
                 }
             };
             window.addEventListener("resize", updateEverything);
-            setInterval(updateEverything, 1000); // update on a regular basis
+            setInterval(updateEverything, 2000); // update on a regular basis
         });
         function getRangeById(id) {
             var selector = "input[type=range][id=" + id + "]";

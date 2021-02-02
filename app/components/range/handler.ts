@@ -13,12 +13,13 @@ namespace Page.Range {
 
         const width = container.getBoundingClientRect().width;
         const handleSize = handle.getBoundingClientRect().width;
-        const handleCenter = 0.5 * handleSize + progression * (width - handleSize);
+        const handleCenterInPx = 0.5 * handleSize + progression * (width - handleSize);
+        const handleCenterInPercent = 100 * handleCenterInPx / width;
 
-        leftBar.style.width = handleCenter + "px";
-        rightBar.style.width = (width - handleCenter) + "px";
-        handle.style.left = handleCenter + "px";
-        tooltip.style.left = handleCenter + "px";
+        leftBar.style.width = handleCenterInPercent + "%";
+        rightBar.style.width = (100 - handleCenterInPercent) + "%";
+        handle.style.left = handleCenterInPercent + "%";
+        tooltip.style.left = handleCenterInPercent + "%";
         tooltip.textContent = range.value;
     }
 
@@ -46,7 +47,7 @@ namespace Page.Range {
             }
         }
         window.addEventListener("resize", updateEverything);
-        setInterval(updateEverything, 1000); // update on a regular basis
+        setInterval(updateEverything, 2000); // update on a regular basis
     });
 
     function getRangeById(id: string): HTMLInputElement | null {
