@@ -4,9 +4,48 @@ var Page;
 (function (Page) {
     var Range;
     (function (Range) {
-        function isRangeElement(elt) {
-            return elt.type && elt.type.toLowerCase() === "range";
+        function update(range) {
+            var container = range.parentElement;
+            var handle = container.querySelector(".range-handle");
+            var leftBar = container.querySelector(".range-bar-left");
+            var rightBar = container.querySelector(".range-bar-right");
+            var tooltip = container.querySelector("output.range-tooltip");
+            var progression = (+range.value - +range.min) / (+range.max - +range.min);
+            var width = container.getBoundingClientRect().width;
+            var handleSize = handle.getBoundingClientRect().width;
+            var handleCenter = 0.5 * handleSize + progression * (width - handleSize);
+            leftBar.style.width = handleCenter + "px";
+            rightBar.style.width = (width - handleCenter) + "px";
+            handle.style.left = handleCenter + "px";
+            tooltip.style.left = handleCenter + "px";
+            tooltip.textContent = range.value;
         }
+        window.addEventListener("load", function () {
+            var updateFunctions = [];
+            var selector = ".range-container > input[type='range']";
+            var rangeElements = document.querySelectorAll(selector);
+            var _loop_1 = function (i) {
+                var rangeElement = rangeElements[i];
+                var updateFunction = function () {
+                    update(rangeElement);
+                };
+                updateFunctions.push(updateFunction);
+                rangeElement.addEventListener("input", updateFunction);
+                rangeElement.addEventListener("change", updateFunction);
+                updateFunction();
+            };
+            for (var i = 0; i < rangeElements.length; i++) {
+                _loop_1(i);
+            }
+            var updateEverything = function () {
+                for (var _i = 0, updateFunctions_1 = updateFunctions; _i < updateFunctions_1.length; _i++) {
+                    var updateFunction = updateFunctions_1[_i];
+                    updateFunction();
+                }
+            };
+            window.addEventListener("resize", updateEverything);
+            setInterval(updateEverything, 1000); // update on a regular basis
+        });
         function getRangeById(id) {
             var selector = "input[type=range][id=" + id + "]";
             var elt = document.querySelector(selector);
@@ -15,40 +54,6 @@ var Page;
             }
             return elt;
         }
-        var thumbSize = 16;
-        function updateTooltipPosition(range, tooltip) {
-            tooltip.textContent = range.value;
-            var bodyRect = document.body.getBoundingClientRect();
-            var rangeRect = range.getBoundingClientRect();
-            var tooltipRect = tooltip.getBoundingClientRect();
-            var percentage = 0;
-            if (+range.max > +range.min) {
-                percentage = (+range.value - +range.min) / (+range.max - +range.min);
-            }
-            var top = (rangeRect.top - tooltipRect.height - bodyRect.top) - 4;
-            var middle = percentage * (rangeRect.width - thumbSize) +
-                (rangeRect.left + 0.5 * thumbSize) - bodyRect.left;
-            tooltip.style.top = top + "px";
-            tooltip.style.left = (middle - 0.5 * tooltipRect.width) + "px";
-        }
-        window.addEventListener("load", function () {
-            var tooltips = document.querySelectorAll(".tooltip");
-            var _loop_1 = function (i) {
-                var tooltip = tooltips[i];
-                var range = tooltip.previousElementSibling;
-                if (isRangeElement(range)) {
-                    range.parentNode.addEventListener("mouseenter", function () {
-                        updateTooltipPosition(range, tooltip);
-                    }, false);
-                    range.addEventListener("input", function () {
-                        updateTooltipPosition(range, tooltip);
-                    }, false);
-                }
-            };
-            for (var i = 0; i < tooltips.length; i++) {
-                _loop_1(i);
-            }
-        });
         var Storage;
         (function (Storage) {
             var PREFIX = "range";
@@ -130,6 +135,7 @@ var Page;
             var elt = getRangeById(rangeId);
             if (elt) {
                 elt.value = "" + value;
+                update(elt);
             }
         }
         Range.setValue = setValue;

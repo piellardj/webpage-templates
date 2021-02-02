@@ -1,6 +1,9 @@
-<div class="range">
+<div class="range-container">
     # { const initialState = IsFalse(enabled) ? "disabled" : "";
     <input type="range" min="#=(min)" max="#=(max)" value="#=(value)" step="#=(step)" class="slider" id="#=(id)" #=(initialState)>
-    <span class="tooltip"></span>
+    <output for="#=(id)" class="range-tooltip"></output>
     # }
+    <span class="range-bar-left"></span>
+    <span class="range-bar-right"></span>
+    <span class="range-handle"></span>
 </div>

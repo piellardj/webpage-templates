@@ -2,9 +2,52 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Range {
-    function isRangeElement(elt: unknown): boolean {
-        return (elt as HTMLInputElement).type && (elt as HTMLInputElement).type.toLowerCase() === "range";
+    function update(range: HTMLInputElement): void {
+        const container = range.parentElement;
+        const handle = container.querySelector(".range-handle") as HTMLElement;
+        const leftBar = container.querySelector(".range-bar-left") as HTMLElement;
+        const rightBar = container.querySelector(".range-bar-right") as HTMLElement;
+        const tooltip = container.querySelector("output.range-tooltip") as HTMLElement;
+
+        const progression = (+range.value - +range.min) / (+range.max - +range.min);
+
+        const width = container.getBoundingClientRect().width;
+        const handleSize = handle.getBoundingClientRect().width;
+        const handleCenter = 0.5 * handleSize + progression * (width - handleSize);
+
+        leftBar.style.width = handleCenter + "px";
+        rightBar.style.width = (width - handleCenter) + "px";
+        handle.style.left = handleCenter + "px";
+        tooltip.style.left = handleCenter + "px";
+        tooltip.textContent = range.value;
     }
+
+    window.addEventListener("load", function (): void {
+        const updateFunctions = [];
+
+        const selector = ".range-container > input[type='range']";
+        const rangeElements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
+
+        for (let i = 0; i < rangeElements.length; i++) {
+            const rangeElement = rangeElements[i];
+            const updateFunction = function (): void {
+                update(rangeElement);
+            };
+            updateFunctions.push(updateFunction);
+
+            rangeElement.addEventListener("input", updateFunction);
+            rangeElement.addEventListener("change", updateFunction);
+            updateFunction();
+        }
+
+        const updateEverything = function(): void {
+            for (const updateFunction of updateFunctions) {
+                updateFunction();
+            }
+        }
+        window.addEventListener("resize", updateEverything);
+        setInterval(updateEverything, 1000); // update on a regular basis
+    });
 
     function getRangeById(id: string): HTMLInputElement | null {
         const selector = "input[type=range][id=" + id + "]";
@@ -14,46 +57,6 @@ namespace Page.Range {
         }
         return elt as HTMLInputElement;
     }
-
-    const thumbSize = 16;
-
-    function updateTooltipPosition(range: HTMLInputElement, tooltip: HTMLElement): void {
-        tooltip.textContent = range.value;
-
-        const bodyRect = document.body.getBoundingClientRect();
-        const rangeRect = range.getBoundingClientRect();
-        const tooltipRect = tooltip.getBoundingClientRect();
-
-        let percentage = 0;
-        if (+range.max > +range.min){
-            percentage = (+range.value - +range.min) / (+range.max - +range.min);
-        }
-
-        const top = (rangeRect.top - tooltipRect.height - bodyRect.top) - 4;
-        const middle = percentage * (rangeRect.width - thumbSize) +
-            (rangeRect.left + 0.5 * thumbSize) - bodyRect.left;
-
-        tooltip.style.top = top + "px";
-        tooltip.style.left = (middle - 0.5 * tooltipRect.width) + "px";
-    }
-
-    window.addEventListener("load", function () {
-        const tooltips = document.querySelectorAll(".tooltip") as NodeListOf<HTMLElement>;
-        for (let i = 0; i < tooltips.length; i++) {
-            const tooltip = tooltips[i];
-
-            const range = tooltip.previousElementSibling as HTMLInputElement;
-            if (isRangeElement(range)) {
-                range.parentNode.addEventListener("mouseenter", function () {
-                    updateTooltipPosition(range, tooltip);
-                }, false);
-
-                range.addEventListener("input", function () {
-                    updateTooltipPosition(range, tooltip);
-                }, false);
-            }
-        }
-    });
 
     namespace Storage {
         const PREFIX = "range";
@@ -137,6 +140,7 @@ namespace Page.Range {
         const elt = getRangeById(rangeId);
         if (elt) {
             elt.value = "" + value;
+            update(elt);
         }
     }
 }

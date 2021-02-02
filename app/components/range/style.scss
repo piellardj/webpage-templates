@@ -1,225 +1,123 @@
 @import 'common/colors';
 @import 'common/utils';
 
-$range-thumb-color: $color-control-accent;
-$range-thumb-color-hover: $color-control-accent-hover;
-$range-thumb-color-active: $color-control-accent-active;
-$range-thumb-color-disabled: $color-control-disabled;
-
-$range-track-color: $color-control-neutral;
-$range-track-color-hover: $color-control-neutral;
-$range-track-color-active: $color-control-neutral;
-$range-track-color-disabled: $color-control-neutral;
-
-$range-thumb-width: 16px;
-$range-thumb-height: 16px;
-$range-thumb-border-radius: 50%;
-
-$range-track-height: 4px;
-$range-track-border-radius: $range-track-height / 2;
+$control-height: 26px;
+$range-bar-left-thickness: 4px;
+$range-bar-right-thickness: 2px;
+$range-handle-size: 16px;
+$range-tooltip-color: $grey-darken-4;
 
 $range-transition-time: .1s ease-in-out;
 
-@mixin range-thumb {
-    width: $range-thumb-width;
-    height: $range-thumb-height;
-    border: none;
-    border-radius: $range-thumb-border-radius;
-    background: $range-thumb-color;
-    cursor: pointer;
-
-    // @include transition($range-transition-time);
-}
-
-@mixin range-thumb-disabled {
-    background: $range-thumb-color-disabled;
-    cursor: default;
-}
-
-@mixin range-thumb-hover {
-    background: $range-thumb-color-hover;
-}
-
-@mixin range-thumb-active {
-    background: $range-thumb-color-active;
-}
-
-@mixin range-track {
+.range-container {
+    display: inline-block;
+    position: relative;
+    flex: 1 1 0%;
     width: 100%;
-    height: $range-track-height;
-    border: none;
-    border-radius: $range-track-border-radius;
-    background: $range-track-color;
-    cursor: pointer;
+    height: $control-height;
 
-    // @include transition($range-transition-time);
-}
-
-@mixin range-track-hover {
-    background: $range-track-color-hover;
-}
-
-@mixin range-track-active {
-    background: $range-track-color-hover;
-}
-
-@mixin range-track-disabled {
-    background: $range-track-color-disabled;
-    cursor: default;
-}
-
-.range {
-    flex: 1;
-    width: 100%; // Specific width is required for Firefox.
-    height: 26px;
-
-    // sass-lint:disable-block no-mergeable-selectors
-    // Remove default styles ========================================================
-    & > input[type=range] {
-        width: 100%; // Specific width is required for Firefox.
+    input[type='range'] {
+        width: 100%;
         min-width: 128px;
-        height: 26px;
+        height: 100%;
         margin: 0;
         padding: 0;
-        background: transparent; // Otherwise white in Chrome
-        -webkit-appearance: none; // Hides the slider so that custom slider can be made
+        opacity: 0;
 
         &:not(:disabled) {
             cursor: pointer;
         }
-
-        &::-webkit-slider-thumb {
-            -webkit-appearance: none;
-        }
-
-        &:focus {
-            outline: none; // Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though.
-        }
-
-        &::-ms-track {
-            width: 100%;
-
-            // Hides the slider so custom styles can be added
-            border-color: transparent;
-            background: transparent; 
-            color: transparent;
-        }
     }
 
-    // Thumb style =================================================================
-    & > input[type=range] {
-        &::-webkit-slider-thumb {
-            @include range-thumb;
-            margin-top: ($range-track-height - $range-thumb-height) / 2; // You need to specify a margin in Chrome, but in Firefox and IE it is automatic
-            -webkit-appearance: none;
-        }
-
-        &::-moz-range-thumb { @include range-thumb; }
-        &::-ms-thumb { @include range-thumb; margin-top: 1px;}
-
-        &:disabled {    
-            &::-webkit-slider-thumb { @include range-thumb-disabled; }
-            &::-moz-range-thumb { @include range-thumb-disabled; }
-            &::-ms-thumb { @include range-thumb-disabled; }
-        }
-
-        &:focus,
-        &:hover:not(:disabled) {   
-            &::-webkit-slider-thumb { @include range-thumb-hover; }
-            &::-moz-range-thumb { @include range-thumb-hover; }
-            &::-ms-thumb { @include range-thumb-hover; }
-        }
-
-        &:active:not(:disabled) {
-            &::-webkit-slider-thumb { @include range-thumb-active; }
-            &::-moz-range-thumb { @include range-thumb-active; }
-            &::-ms-thumb { @include range-thumb-active; }
-        }
+    .range-bar-left,
+    .range-bar-right,
+    .range-handle,
+    .range-tooltip {
+        pointer-events: none;
+        user-select: none;
     }
 
-
-    // Track style ==================================================================
-    & > input[type=range] {
-
-        & {
-            &::-webkit-slider-runnable-track { @include range-track; }
-            &::-moz-range-track { @include range-track; }
-            &::-ms-track { @include range-track; }
-
-            &::-ms-fill-lower,
-            &::-ms-fill-upper {
-                border: none;
-                border-radius: $range-track-border-radius;
-                background: $range-track-color;
-            }
-
-            &:focus::-ms-fill-lower,
-            &:focus::-ms-fill-upper {
-                background: $range-track-color-hover;
-            }
-        }
-
-        &:disabled {
-            &::-webkit-slider-runnable-track { @include range-track-disabled; }
-            &::-moz-range-track { @include range-track-disabled; }
-            &::-ms-track { @include range-track-disabled; }
-        }
-
-        &:focus,
-        &:hover:not(:disabled) {
-            &::-webkit-slider-runnable-track { @include range-track-hover; }
-            &::-moz-range-track { @include range-track-hover; }
-            &::-ms-track { @include range-track-hover; }
-        }
-
-        &:active:not(:disabled) {
-            &::-webkit-slider-runnable-track { @include range-track-active; }
-            &::-moz-range-track { @include range-track-active; }
-            &::-ms-track { @include range-track-active; }
-        }
-    }
-
-    $arrow-size: 12px;
-    $border-radius: 4px;
-
-    $tooltip-color: $grey-darken-4;
-
-    & > .tooltip {
+    .range-bar-left {
         position: absolute;
-        top: -10000000px;
+        top: 0.5 * ($control-height - $range-bar-left-thickness);
+        left: 0;
+        height: $range-bar-left-thickness;
+        border-radius: 0.5 * $range-bar-left-thickness;
+    }
+
+    .range-bar-right {
+        position: absolute;
+        top: 0.5 * ($control-height - $range-bar-right-thickness);
+        right: 0;
+        width: 100%;
+        height: $range-bar-right-thickness;
+        border-radius: 0.5 * $range-bar-right-thickness;
+        background: $color-control-neutral;
+    }
+
+    .range-handle {
+        position: absolute;
+        top: 0.5 * ($control-height - $range-handle-size);
+        left: 0.5 * $range-handle-size;
+        width: $range-handle-size;
+        height: $range-handle-size;
+        transform: translateX(-0.5 * $range-handle-size);
+        border-radius: 50%;
+    }
+
+    input[type='range']:not(:disabled):hover ~ .range-handle,
+    input[type='range']:not(:disabled):focus ~ .range-handle {
+        background: $color-control-accent-hover;
+    }
+
+    input[type='range']:not(:disabled):active ~ .range-handle {
+        background: $color-control-accent-active;
+    }
+
+    .range-bar-left,
+    .range-handle {
+        background: $color-control-accent;
+    }
+
+    input[type='range']:disabled {
+        & ~ .range-bar-left,
+        & ~ .range-handle {
+            background: $color-control-disabled;
+        }
+    }
+
+    .range-tooltip {
+        position: absolute;
+        top: -28px;
         left: 0;
         min-width: 24px;
-        padding: $border-radius;
-        border-radius: $border-radius;
-        background: $tooltip-color;
+        padding: 4px;
+        transform: translateX(-50%);
+        transition: opacity $range-transition-time;
+        border-radius: 4px;
+        background: $range-tooltip-color;
         color: $grey-lighten-5;
         font-size: 87.5%;
         text-align: center;
         opacity: 0;
-        z-index: 127;
-        pointer-events: none;  
-
-        @include transition(opacity $range-transition-time);
-        @include user-select(none);
-
-        &::after {
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            width: $arrow-size;
-            height: $arrow-size;
-            margin-left: -$arrow-size / 2;
-            border-width: $arrow-size / 2;
-            border-style: solid;
-            border-color: $tooltip-color transparent transparent;
-            content: '';
-
-            @include box-sizing(border-box);
-        }
     }
 
-    & > input[type=range]:active:not(:disabled) + .tooltip,
-    &:hover > .tooltip {
+    input[type='range']:hover + .range-tooltip,
+    input[type='range']:active + .range-tooltip,
+    input[type='range']:focus + .range-tooltip {
         opacity: 1;
+    }
+
+    .range-tooltip::after {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        width: 0px;
+        height: 12px;
+        margin-left: -6px;
+        border-width: 6px;
+        border-style: solid;
+        border-color: $range-tooltip-color transparent transparent;
+        content: '';
     }
 }
