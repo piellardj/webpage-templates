@@ -5,7 +5,7 @@
         # if (typeof accept !== 'undefined' && accept !== null) {
             # acceptAttr = "accept=\"" + accept.join(',') + "\"";
         # }
-        <input type="file" name="file" id="#=(id)" class="inputfile" #=(acceptAttr)/>
+        <input type="file" name="file" id="#=(id)" class="file-input" #=(acceptAttr)/>
         <label class="file-control-button" for="#=(id)">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                 <path d="M12 22L12 13 7 13 16 2 25 13 20 13 20 22ZM6 25L26 25 26 29 6 29Z"/>
@@ -15,7 +15,8 @@
     </div>
 # } else {
     <div class="file-control download #=(compactness)">
-        <label class="file-control-button" id="#=(id)">
+        <input type="button" id="#=(id)" class="file-input"/>
+        <label class="file-control-button" for="#=(id)">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                 <path d="M12 4L12 13 7 13 16 24 25 13 20 13 20 4ZM6 25L26 25 26 29 6 29Z"/>
             </svg>

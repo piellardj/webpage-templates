@@ -2,8 +2,15 @@
 @import 'common/utils';
 
 .file-control {
-    & > input[type=file] {
-        display: none;
+    position: relative;
+
+    & > input.file-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
     }
 
     & > .file-control-button {
@@ -34,45 +41,31 @@
     }
 }
 
-.file-control > .file-control-button {
-    & {
-        border-color: $color-control-accent;
-        background: none;
-        color: $color-control-accent;
+.file-control > input.file-input {
+    @mixin button-style($color, $background) {
+        border-color: $color;
+        background: $background;
+        color: $color;
 
         & > svg {
-            fill: $color-control-accent;
+            fill: $color;
         }
     }
 
-    &:focus,
-    &:hover:not(:disabled) {
-        border-color: $color-control-accent-hover;
-        background: none;
-        color: $color-control-accent-hover;
-
-        & > svg {
-            fill: $color-control-accent-hover;
-        }
+    & + .file-control-button {
+        @include button-style($color-control-accent, none);
     }
 
-    &:active:not(:disabled) {
-        border-color: $color-control-accent-active;
-        background: $grey-lighten-4;
-        color: $color-control-accent-active;
-
-        & > svg {
-            fill: $color-control-accent-active;
-        }
+    &:focus + .file-control-button,
+    &:hover:not(:disabled) + .file-control-button {
+        @include button-style($color-control-accent-hover, none);
     }
 
-    &:disabled {
-        border-color: $color-control-disabled;
-        background: none;
-        color: $color-control-disabled;
+    &:active:not(:disabled) + .file-control-button {
+        @include button-style($color-control-accent-active, $grey-lighten-4);
+    }
 
-        & > svg {
-            fill: $color-control-disabled;
-        }
+    &:disabled + .file-control-button {
+        @include button-style($color-control-disabled, none);
     }
 }

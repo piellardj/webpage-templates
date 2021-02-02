@@ -19,13 +19,13 @@ namespace Page.FileControl {
     }
 
     function getUploadInputById(id: string): HTMLInputElement | null {
-        const selector = "input[type=file][id=" + id + "]";
+        const selector = ".file-control.upload > input[type=file][id=" + id + "]";
         return getElementBySelector(selector) as (HTMLInputElement | null);
     }
 
-    function getDownloadLabel(id: string): HTMLLabelElement | null {
-        const selector = ".file-control.download > label[id=" + id + "]";
-        return getElementBySelector(selector) as (HTMLLabelElement | null);
+    function getDownloadInputById(id: string): HTMLInputElement | null {
+        const selector = ".file-control.download > input[type=button][id=" + id + "]";
+        return getElementBySelector(selector) as (HTMLInputElement | null);
     }
 
     /* Bind event so that filename is displayed on upload */
@@ -54,9 +54,9 @@ namespace Page.FileControl {
      * @return {boolean} Whether or not the observer was added
      */
     export function addDownloadObserver(id: string, observer: DownloadObserver): boolean {
-        const elt = getDownloadLabel(id);
-        if (elt) {
-            elt.addEventListener("click", () => {
+        const input = getDownloadInputById(id);
+        if (input) {
+            input.addEventListener("click", () => {
                 event.stopPropagation();
                 observer();
             }, false);

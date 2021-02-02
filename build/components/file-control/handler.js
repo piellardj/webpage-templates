@@ -19,11 +19,11 @@ var Page;
             return elt;
         }
         function getUploadInputById(id) {
-            var selector = "input[type=file][id=" + id + "]";
+            var selector = ".file-control.upload > input[type=file][id=" + id + "]";
             return getElementBySelector(selector);
         }
-        function getDownloadLabel(id) {
-            var selector = ".file-control.download > label[id=" + id + "]";
+        function getDownloadInputById(id) {
+            var selector = ".file-control.download > input[type=button][id=" + id + "]";
             return getElementBySelector(selector);
         }
         /* Bind event so that filename is displayed on upload */
@@ -50,9 +50,9 @@ var Page;
          * @return {boolean} Whether or not the observer was added
          */
         function addDownloadObserver(id, observer) {
-            var elt = getDownloadLabel(id);
-            if (elt) {
-                elt.addEventListener("click", function () {
+            var input = getDownloadInputById(id);
+            if (input) {
+                input.addEventListener("click", function () {
                     event.stopPropagation();
                     observer();
                 }, false);
