@@ -42,7 +42,12 @@ $tabs-transition: .1s ease-in-out;
     }
 
     & > input {
-        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
 
         & {
             & + label {
@@ -90,7 +95,8 @@ $tabs-transition: .1s ease-in-out;
         }
 
         &[type=checkbox]:not(:disabled) {
-            &:hover {
+            &:hover,
+            &:focus {
                 & + label {
                     background: $button-color-hover;
                 }
@@ -112,8 +118,11 @@ $tabs-transition: .1s ease-in-out;
         }
 
         &[type=radio]:not(:disabled):not(:checked) {
-            &:hover + label {
-                background: $button-color-hover;
+            &:hover,
+            &:focus {
+                & + label {
+                    background: $button-color-hover;
+                }
             }
 
             &:active + label {
