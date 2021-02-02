@@ -20,18 +20,21 @@ $checkbox-transition: .1s ease-in-out;
     @include user-select(none);
 
     & > input[type=checkbox] {
-        display: none;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
 
         & + label.checkmark,
         & + label.checkmark-line {
             margin-left: $checkbox-size + 4px;
             line-height: 26px;
+            cursor: pointer;
         }
 
-        &:not(:disabled) {
+        &:disabled {
             & + label.checkmark,
             & + label.checkmark-line {
-                cursor: pointer;
+                cursor: default;
             }
         }
     }
@@ -97,7 +100,8 @@ $checkmark-length-left: 0.35 * $checkbox-size;
             }
         }
 
-        &:hover {
+        &:hover,
+        &:focus {
             & + label.checkmark::before {
                 border-color: $color-control-accent-hover;
             }
