@@ -20,9 +20,9 @@ $checkbox-transition: .1s ease-in-out;
     @include user-select(none);
 
     & > input[type=checkbox] {
-        opacity: 0;
         width: 1px;
         height: 1px;
+        opacity: 0;
 
         & + label.checkmark,
         & + label.checkmark-line {
