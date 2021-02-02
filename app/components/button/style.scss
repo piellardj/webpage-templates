@@ -1,15 +1,8 @@
 @import 'common/colors';
-@import 'common/shadows';
 @import 'common/utils';
-
-$button-color: $color-medium;
-$button-color-hover: $color-lighten-1;
-$button-color-active: $color-darken-1;
-$button-color-disabled: $grey-lighten-1;
 
 $button-flat-border: 2px;
 
-$button-flat-text-color: $color-medium;
 $button-flat-color-hover: none;
 $button-flat-color-active: $grey-lighten-4;
 
@@ -53,50 +46,50 @@ $button-transition: .1s ease-in-out;
 
 .button {
     & {
-        background: $button-color;
+        background: $color-control-accent;
         color: white;
     }
 
     &:focus,
     &:hover:not(:disabled) {
         outline: 0px;
-        background: $button-color-hover;
+        background: $color-control-accent-hover;
     }
 
     &:active:not(:disabled) {
         outline: 0px;
-        background: $button-color-active;
+        background: $color-control-accent-active;
     }
 
     &:disabled {
-        background: $button-color-disabled;
+        background: $color-control-disabled;
         cursor: default;
     }
 }
 
 .button.flat {
     & {
-        border-color: $button-color;
+        border-color: $color-control-accent;
         background: none;
-        color: $button-flat-text-color;
+        color: $color-control-accent;
     }
 
     &:focus,
     &:hover:not(:disabled) {
-        border-color: $button-color-hover;
+        border-color: $color-control-accent-hover;
         background: $button-flat-color-hover;
-        color: $button-color-hover;
+        color: $color-control-accent-hover;
     }
 
     &:active:not(:disabled) {
-        border-color: $button-color-active;
+        border-color: $color-control-accent-active;
         background: $button-flat-color-active;
-        color: $button-color-active;
+        color: $color-control-accent-active;
     }
 
     &:disabled {
-        border-color: $button-color-disabled;
+        border-color: $color-control-disabled;
         background: none;
-        color: $button-color-disabled;
+        color: $color-control-disabled;
     }
 }

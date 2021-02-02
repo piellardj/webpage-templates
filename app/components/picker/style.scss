@@ -31,22 +31,22 @@
             height: 12px;
             border-width: 0 3px 3px 0;
             border-style: solid;
-            border-color: $color-medium;
+            border-color: $color-control-accent;
             background: none;
             content: '';
             @include box-sizing(border-box);
         }
 
         &:hover::after {
-            border-color: $color-lighten-1;
+            border-color: $color-control-accent-hover;
         }
 
         &:active::after {
-            border-color: $color-darken-1;
+            border-color: $color-control-accent-active;
         }
 
         &.disabled::after {
-            border-color: $grey-medium;
+            border-color: $color-control-disabled;
         }
 
         &.left::after {

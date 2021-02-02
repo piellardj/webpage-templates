@@ -22,7 +22,7 @@ main {
     height: $logo-size;
     margin: 8px auto 16px;
     border-radius: 50%;
-    background: $color-medium;
+    background: $color-control-accent;
     text-align: center;
     text-decoration: none;
     user-select: none;
@@ -39,7 +39,7 @@ main {
         }
 
         &::after {
-            color: $color-medium;
+            color: $color-control-accent;
             font-size: 16px;
             font-weight: normal;
             line-height: #{$logo-size - 2 * $logo-border-width};
@@ -48,7 +48,7 @@ main {
         }
 
         &::before {
-            background: $color-background;
+            background: $color-block-background;
             content: '';
             z-index: 0;
             @include transform(scale(0));

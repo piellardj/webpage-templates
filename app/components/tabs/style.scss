@@ -1,21 +1,13 @@
 @import 'common/colors';
-@import 'common/shadows';
 @import 'common/utils';
 
-$text-color: $color-medium;
 $text-color-selected: white;
-$text-color-disabled: $grey-lighten-1;
 
 $button-color-hover: $grey-lighten-4;
 $button-color-active: $grey-lighten-3;
-$button-color-disabled: $grey-lighten-1;
-
-$button-color-selected: $color-medium;
-$button-color-selected-hover: $color-lighten-1;
-$button-color-selected-active: $color-darken-1;
 
 $tabs-border-width: 2px;
-$tabs-border-color: $grey-lighten-3;
+$tabs-border-color: $color-control-neutral;
 $tabs-border-radius: 4px;
 
 $tabs-transition: .1s ease-in-out;
@@ -77,22 +69,22 @@ $tabs-transition: .1s ease-in-out;
         // Colors common to checkbox and radio ====================================
         & + label {
             background: none;
-            color: $text-color;
+            color: $color-control-accent;
         }
 
         &:checked + label {
-            background: $button-color-selected;
+            background: $color-control-accent;
             color: $text-color-selected;
         }
 
         &:disabled {
             & + label {
                 background: none;
-                color: $button-color-disabled;
+                color: $color-control-disabled;
             }
 
             &:checked + label {
-                background: $button-color-disabled;
+                background: $color-control-disabled;
                 color: $text-color-selected;
             }
         }
@@ -104,7 +96,7 @@ $tabs-transition: .1s ease-in-out;
                 }
 
                 &:checked  + label {
-                    background: $button-color-selected-hover;
+                    background: $color-control-accent-hover;
                 }
             }
 
@@ -114,7 +106,7 @@ $tabs-transition: .1s ease-in-out;
                 }
 
                 &:checked  + label {
-                    background: $button-color-selected-active;
+                    background: $color-control-accent-active;
                 }
             }
         }

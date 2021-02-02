@@ -1,5 +1,4 @@
 @import 'common/colors';
-@import 'common/shadows';
 @import 'common/utils';
 
 $card-max-width: 512px;
@@ -8,6 +7,7 @@ $card-padding: 12px;
 
 $card-border-radius: 4px;
 
+$shadow-color: rgba(0, 0, 0, 0.5);
 $card-background-color: white;
 
 $card-transition-time: .1s ease-in-out;
@@ -25,7 +25,7 @@ $card-transition-time: .1s ease-in-out;
     background-color: $card-background-color;
     background-position: center;
     background-size: cover;
-    box-shadow: $shadow-pop-1;
+    box-shadow: 0px 1px 6px -1px $shadow-color;
     overflow: hidden;
     box-sizing: border-box;
 
@@ -84,7 +84,7 @@ $card-transition-time: .1s ease-in-out;
     border: 1px solid #cccccc;
     border-radius: 8px;
     background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 10px $shadow-color;
     z-index: 2;
     box-sizing: border-box;
     user-select: none;
@@ -143,18 +143,25 @@ a.card-link {
     position: relative;
     margin: 20px;
     padding: 0 24px;
-    border: $card-link-border-width solid $color-medium;
+    border: $card-link-border-width solid $color-control-accent;
     border-radius: 0.5 * ($card-link-line-height + 2 * $card-link-border-width);
     outline: none;
     background: white;
-    color: $color-medium;
+    color: $color-control-accent;
     font-weight: bold;
     line-height: $card-link-line-height;
     text-decoration: none;
 
-    &:hover {
-        border-color: $color-lighten-2;
-        color: $color-lighten-2;
+    &:hover,
+    &:focus {
+        border-color: $color-control-accent-hover;
+        color: $color-control-accent-hover;
+    }
+
+    &:active {
+        border-color: $color-control-accent-active;
+        background: $grey-lighten-5;
+        color: $color-control-accent-active;
     }
 }
 

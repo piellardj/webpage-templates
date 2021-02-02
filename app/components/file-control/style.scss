@@ -36,43 +36,43 @@
 
 .file-control > .file-control-button {
     & {
-        border-color: $color-medium;
+        border-color: $color-control-accent;
         background: none;
-        color: $color-medium;
+        color: $color-control-accent;
 
         & > svg {
-            fill: $color-medium;
+            fill: $color-control-accent;
         }
     }
 
     &:focus,
     &:hover:not(:disabled) {
-        border-color: $color-lighten-1;
+        border-color: $color-control-accent-hover;
         background: none;
-        color: $color-lighten-1;
+        color: $color-control-accent-hover;
 
         & > svg {
-            fill: $color-lighten-1;
+            fill: $color-control-accent-hover;
         }
     }
 
     &:active:not(:disabled) {
-        border-color: $color-darken-1;
+        border-color: $color-control-accent-active;
         background: $grey-lighten-4;
-        color: $color-darken-1;
+        color: $color-control-accent-active;
 
         & > svg {
-            fill: $color-darken-1;
+            fill: $color-control-accent-active;
         }
     }
 
     &:disabled {
-        border-color: $grey-lighten-1;
+        border-color: $color-control-disabled;
         background: none;
-        color: $grey-lighten-1;
+        color: $color-control-disabled;
 
         & > svg {
-            fill: $grey-lighten-1;
+            fill: $color-control-disabled;
         }
     }
 }

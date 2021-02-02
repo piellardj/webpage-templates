@@ -3,7 +3,7 @@
 html {
     display: flex; // to make footer stick to bottom if short page
     min-height: 100%; // to make footer stick to bottom if short page
-    background: $color-background;
+    background: $color-block-background;
     background-attachment: fixed;
     background-image: url('../images/noise.png');
     color: $color-text;
@@ -22,10 +22,6 @@ main {
     display: block; // for IE to see background image
     flex-grow: 1;
     padding-bottom: 32px;
-}
-
-hr {
-    border-color: $color-line;
 }
 
 h1 {

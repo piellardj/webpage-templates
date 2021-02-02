@@ -1,16 +1,15 @@
 @import 'common/colors';
-@import 'common/shadows';
 @import 'common/utils';
 
-$range-thumb-color: $color-medium;
-$range-thumb-color-hover: $color-lighten-1;
-$range-thumb-color-active: $color-darken-1;
-$range-thumb-color-disabled: $grey-medium;
+$range-thumb-color: $color-control-accent;
+$range-thumb-color-hover: $color-control-accent-hover;
+$range-thumb-color-active: $color-control-accent-active;
+$range-thumb-color-disabled: $color-control-disabled;
 
-$range-track-color: $grey-lighten-4;
-$range-track-color-hover: $grey-lighten-4;
-$range-track-color-active: $grey-lighten-4;
-$range-track-color-disabled: $grey-lighten-4;
+$range-track-color: $color-control-neutral;
+$range-track-color-hover: $color-control-neutral;
+$range-track-color-active: $color-control-neutral;
+$range-track-color-disabled: $color-control-neutral;
 
 $range-thumb-width: 16px;
 $range-thumb-height: 16px;

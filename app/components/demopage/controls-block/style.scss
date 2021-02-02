@@ -2,8 +2,6 @@
 @import 'common/utils';
 @import 'demopage/controls-pane';
 
-$border-color: $grey-lighten-3;
-
 $border-radius: 8px;
 $max-width: 36em;
 $section-margin: 12px;
@@ -13,9 +11,9 @@ $section-margin: 12px;
     max-width: $max-width;
     margin: 16px 0;
     padding: $section-margin 0;
-    border: 1px solid $border-color;
+    border: 1px solid $color-block-delimiter;
     border-radius: $border-radius;
-    background: $color-background;
+    background: $color-block-background;
     z-index: 0;
 
     @media only screen and (min-width: 540px) {
@@ -28,7 +26,7 @@ $section-margin: 12px;
         
         border-width: 1px 0 0;
         border-style: solid;
-        border-color: $border-color;
+        border-color: $color-block-delimiter;
     }
 }
 
@@ -93,14 +91,14 @@ $section-margin: 12px;
 
         &::-webkit-scrollbar-track {
             border-radius: 8px;
-            background-color: $color-background;
+            background-color: $color-block-background;
         }
 
         &::-webkit-scrollbar-thumb {
             border-width: 3px 5px;
             border-style: solid;
             border-radius: 8px;
-            border-color: $color-background;
+            border-color: $color-block-background;
             background-color: #b1b1b1;
         }
 

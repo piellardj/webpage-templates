@@ -54,7 +54,7 @@ $anim: 1.1s linear;//cubic-bezier(.5, .2, .5, .8);
         width: $size;
         height: $size;
         border: $border-width solid transparent;
-        border-top: $border-width solid white;//$color-medium;
+        border-top: $border-width solid white;
         border-radius: 50%;
         content: '';
         z-index: 51;

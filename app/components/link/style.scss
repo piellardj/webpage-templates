@@ -2,15 +2,13 @@
 @import 'common/utils';
 
 a {
-    //font-family: Sans-Serif;
-    //text-transform: uppercase;
-    color: $color-medium;
+    color: $color-control-accent;
     font-weight: bold;
     text-decoration: none;
     @include box-sizing(border-box);
 
     &:focus,
     &:hover {
-        border-bottom: 2px solid $color-medium;
+        border-bottom: 2px solid $color-control-accent;
     }
 }

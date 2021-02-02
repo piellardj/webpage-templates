@@ -1,5 +1,4 @@
 @import 'common/colors';
-@import 'common/shadows';
 @import 'common/utils';
 
 $checkbox-size: 20px;
@@ -8,13 +7,8 @@ $checkbox-vertical-padding: 3px;
 $checkbox-border-width: 2px;
 $checkbox-border-radius: 2px;
 
-$checkbox-color: $color-medium;
-$checkbox-color-hover: $color-lighten-1;
-$checkbox-color-active: $color-darken-1;
-$checkbox-color-disabled: $grey-lighten-1;
-
 $checkmark-width: 3px;
-$checkmark-color: $color-background;
+$checkmark-color: $color-block-background;
 
 $checkbox-transition: .1s ease-in-out;
 
@@ -95,41 +89,41 @@ $checkmark-length-left: 0.35 * $checkbox-size;
         // COLORS
         & {
             & + label.checkmark::before {
-                border-color: $checkbox-color;
+                border-color: $color-control-accent;
             }
 
             &:checked + label.checkmark::before {
-                background: $checkbox-color;
+                background: $color-control-accent;
             }
         }
 
         &:hover {
             & + label.checkmark::before {
-                border-color: $checkbox-color-hover;
+                border-color: $color-control-accent-hover;
             }
 
             &:checked + label.checkmark::before {
-                background: $checkbox-color-hover;
+                background: $color-control-accent-hover;
             }
         }
 
         &:active {
             & + label.checkmark::before {
-                border-color: $checkbox-color-active;
+                border-color: $color-control-accent-active;
             }
 
             &:checked + label.checkmark::before {
-                background: $checkbox-color-active;
+                background: $color-control-accent-active;
             }
         }
 
         &:disabled {
             & + label.checkmark::before {
-                border-color: $checkbox-color-disabled;
+                border-color: $color-control-disabled;
             }
 
             &:checked + label.checkmark::before {
-                background: $checkbox-color-disabled;
+                background: $color-control-disabled;
             }
         }
     }
