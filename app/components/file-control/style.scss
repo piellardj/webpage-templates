@@ -42,30 +42,41 @@
 }
 
 .file-control > input.file-input {
-    @mixin button-style($color, $background) {
-        border-color: $color;
-        background: $background;
-        color: $color;
+    & + .file-control-button {
+        @include color-control-accent(border-color);
+        @include color-control-accent(color);
 
         & > svg {
-            fill: $color;
+            @include color-control-accent(fill);
         }
-    }
-
-    & + .file-control-button {
-        @include button-style($color-control-accent, none);
     }
 
     &:focus + .file-control-button,
     &:hover:not(:disabled) + .file-control-button {
-        @include button-style($color-control-accent-hover, none);
+        @include color-control-accent-hover(border-color);
+        @include color-control-accent-hover(color);
+
+        & > svg {
+            @include color-control-accent-hover(fill);
+        }
     }
 
     &:active:not(:disabled) + .file-control-button {
-        @include button-style($color-control-accent-active, $grey-lighten-4);
+        @include color-control-accent-active(border-color);
+        @include color-control-accent-active(color);
+        background: $color-accent-transparent-medium;
+
+        & > svg {
+            @include color-control-accent-active(fill);
+        }
     }
 
     &:disabled + .file-control-button {
-        @include button-style($color-control-disabled, none);
+        @include color-control-accent-disabled(border-color);
+        @include color-control-accent-disabled(color);
+
+        & > svg {
+            @include color-control-accent-disabled(fill);
+        }
     }
 }

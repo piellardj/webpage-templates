@@ -18,9 +18,11 @@ header {
     width: $logo-size;
     height: $logo-size;
     margin: 8px auto 16px;
-    border: $logo-border-width solid $color-control-accent;
+    border-width: $logo-border-width;
+    border-style: solid;
+    @include color-control-accent(border-color);
     border-radius: 50%;
-    background: $color-block-background;
+    @include block-background-color(background);
     user-select: none;
 
     &::before,
@@ -34,7 +36,7 @@ header {
 
     &::before {
         border-radius: 50%;
-        background: $color-control-accent;
+        @include color-control-accent(background);
         content: '';
         z-index: 0;
         @include transform(scale(0));
@@ -42,7 +44,7 @@ header {
     }
 
     &::after {
-        color: $color-control-accent;
+        @include color-control-accent(color);
         font-size: 16px;
         font-weight: normal;
         line-height: $logo-size;

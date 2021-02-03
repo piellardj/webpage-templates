@@ -26,17 +26,121 @@ $grey-darken-1:  #7e7e7e;
 $grey-darken-2:  #676767;
 $grey-darken-3:  #5e5e5e;
 $grey-darken-4:  #535353;
+$grey-darken-5:  #202020;
 
-$color-page-background:  $grey-lighten-5;
-$color-block-background: $color-page-background;
-$color-block-delimiter:  $grey-lighten-3;
-$color-text:             $grey-darken-2;
-$color-title:            $grey-darken-4;
-$color-subtitle:         $grey-darken-3;
-$color-subsubtitle:      $grey-darken-2;
+$color-accent-transparent-medium: rgba($color-teal-medium, 0.10);
+$color-accent-transparent-light: rgba($color-teal-medium, 0.05);
 
-$color-control-accent:        $color-teal-medium;
-$color-control-accent-hover:  $color-teal-lighten-1;
-$color-control-accent-active: $color-teal-darken-1;
-$color-control-disabled:      $grey-lighten-1;
-$color-control-neutral:       $grey-lighten-4;
+@if variable-exists(declare-css-variables) {
+    :root {
+        --var-color-theme: white;
+
+        --var-color-page-background: #EDEDED;
+        --var-page-background-image: url('../images/noise-light.png');
+
+        --var-color-block-background: #{$grey-lighten-5};
+        --var-color-block-border: 1px solid #{$grey-lighten-3};
+
+        --var-color-title: #{$grey-darken-4};
+        --var-color-text: #{$grey-darken-2};
+
+        --var-color-block-actionitem: #{$grey-darken-3};
+        --var-color-block-actionitem-hover: #{$grey-darken-1};
+        --var-color-block-actionitem-active: #{$grey-darken-4};
+
+        --var-color-control-neutral: #{$grey-lighten-3};
+        --var-color-control-accent: #{$color-teal-medium};
+        --var-color-control-accent-hover: #{$color-teal-lighten-1};
+        --var-color-control-accent-active: #{$color-teal-darken-1};
+
+        @media (prefers-color-scheme: dark) {
+            --var-color-theme: black;
+
+            --var-color-page-background: #191919;
+            --var-page-background-image: url('../images/noise-dark.png');
+
+            --var-color-block-background: #{$grey-darken-5};
+            --var-color-block-border: 1px solid #{$grey-darken-4};
+
+            --var-color-title: #{$grey-lighten-5};
+            --var-color-text: #{$grey-lighten-4};
+
+            --var-color-block-actionitem: #{$grey-lighten-4};
+            --var-color-block-actionitem-hover: #{$grey-lighten-5};
+            --var-color-block-actionitem-active: #{$grey-lighten-3};
+
+            --var-color-control-neutral: #{$grey-darken-3};
+            --var-color-control-accent: #{$color-teal-lighten-1};
+            --var-color-control-accent-hover: #{$color-teal-lighten-2};
+            --var-color-control-accent-active: #{$color-teal-medium};
+        }
+    }
+}
+
+@mixin color-accent-transparent($property, $opacity) {
+    #{$property}: rgba($color-teal-medium, $opacity);
+}
+
+@mixin use-css-variable($property, $variable-name, $default-value) {
+    #{$property}: $default-value; // fallback for IE11
+    #{$property}: var($variable-name, $default-value);
+}
+
+@mixin color-theme($property) {
+    @include use-css-variable($property, --var-color-theme, white);
+}
+
+@mixin color-control-neutral($property) {
+    @include use-css-variable($property, --var-color-control-neutral, $grey-lighten-3);
+}
+
+@mixin color-control-accent($property) {
+    @include use-css-variable($property, --var-color-control-accent, $color-teal-medium);
+}
+
+@mixin color-control-accent-hover($property) {
+    @include use-css-variable($property, --var-color-control-accent-hover, $color-teal-lighten-1);
+}
+
+@mixin color-control-accent-active($property) {
+    @include use-css-variable($property, --var-color-control-accent-active, $color-teal-darken-1);
+}
+
+@mixin color-control-accent-disabled($property) {
+    #{$property}: $grey-lighten-1;
+}
+
+@mixin page-theme {
+    @include use-css-variable(background, --var-color-page-background, $grey-lighten-5);
+    @include use-css-variable(background-image, --var-page-background-image, url('../images/noise.png'));
+    @include use-css-variable(color, --var-color-text, $grey-darken-2);
+}
+
+@mixin color-title($property) {
+    @include use-css-variable($property, --var-color-title, $grey-darken-4);
+}
+
+@mixin color-title-interactible($property) {
+    @include color-title($property);
+}
+
+@mixin block-background-color($property) {
+    @include use-css-variable($property, --var-color-block-background, $grey-lighten-5);
+}
+
+@mixin block-border($property) {
+    @include use-css-variable($property, --var-color-block-border, 1px solid $grey-lighten-3);
+}
+
+@mixin block-actionitem($property) {
+    @include use-css-variable($property, --var-color-block-actionitem, $grey-darken-2);
+
+    &:focus,
+    &:hover {
+        @include use-css-variable($property, --var-color-block-actionitem-hover, $grey-darken-1);
+    }
+
+    &:active {
+        @include use-css-variable($property, --var-color-block-actionitem-active, $grey-darken-3);
+    }
+}

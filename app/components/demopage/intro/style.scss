@@ -3,9 +3,9 @@
 .intro {
     margin: auto;
     padding: 16px;
-    border: 1px solid $color-block-delimiter;
     border-radius: 8px;
-    background: $color-block-background;
+    @include block-border(border);
+    @include block-background-color(background);
 
     & h1 {
         margin-top: 0;

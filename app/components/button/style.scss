@@ -3,9 +3,6 @@
 
 $button-flat-border: 2px;
 
-$button-flat-color-hover: none;
-$button-flat-color-active: $grey-lighten-4;
-
 $button-padding-y: 8px;
 $button-padding-x: 14px;
 $button-compact-padding-y: 6px;
@@ -46,50 +43,50 @@ $button-transition: .1s ease-in-out;
 
 .button {
     & {
-        background: $color-control-accent;
+        @include color-control-accent(background);
         color: white;
     }
 
     &:focus,
     &:hover:not(:disabled) {
         outline: 0px;
-        background: $color-control-accent-hover;
+        @include color-control-accent-hover(background);
     }
 
     &:active:not(:disabled) {
         outline: 0px;
-        background: $color-control-accent-active;
+        @include color-control-accent-active(background);
     }
 
     &:disabled {
-        background: $color-control-disabled;
+        @include color-control-accent-disabled(background);
         cursor: default;
     }
 }
 
 .button.flat {
     & {
-        border-color: $color-control-accent;
+        @include color-control-accent(border-color);
         background: none;
-        color: $color-control-accent;
+        @include color-control-accent(color);
     }
 
     &:focus,
     &:hover:not(:disabled) {
-        border-color: $color-control-accent-hover;
-        background: $button-flat-color-hover;
-        color: $color-control-accent-hover;
+        @include color-control-accent-hover(border-color);
+        background: none;
+        @include color-control-accent-hover(color);
     }
 
     &:active:not(:disabled) {
-        border-color: $color-control-accent-active;
-        background: $button-flat-color-active;
-        color: $color-control-accent-active;
+        @include color-control-accent-active(border-color);
+        background: $color-accent-transparent-medium;
+        @include color-control-accent-active(color);
     }
 
     &:disabled {
-        border-color: $color-control-disabled;
+        @include color-control-accent-disabled(border-color);
         background: none;
-        color: $color-control-disabled;
+        @include color-control-accent-disabled(color);
     }
 }

@@ -11,9 +11,9 @@ $section-margin: 12px;
     max-width: $max-width;
     margin: 16px 0;
     padding: $section-margin 0;
-    border: 1px solid $color-block-delimiter;
     border-radius: $border-radius;
-    background: $color-block-background;
+    @include block-border(border);
+    @include block-background-color(background);
     z-index: 0;
 
     @media only screen and (min-width: 540px) {
@@ -25,7 +25,7 @@ $section-margin: 12px;
         clear: both;
         
         border: none;
-        border-top: 1px solid $color-block-delimiter;
+        @include block-border(border-top);
     }
 }
 
@@ -90,15 +90,15 @@ $section-margin: 12px;
 
         &::-webkit-scrollbar-track {
             border-radius: 8px;
-            background-color: $color-block-background;
+            @include block-background-color(background-color);
         }
 
         &::-webkit-scrollbar-thumb {
             border-width: 3px 5px;
             border-style: solid;
             border-radius: 8px;
-            border-color: $color-block-background;
-            background-color: #b1b1b1;
+            @include block-background-color(border-color);
+            background-color: $grey-lighten-2;
         }
 
         &:hover::-webkit-scrollbar-thumb {
@@ -126,13 +126,8 @@ $section-margin: 12px;
     position: absolute;
     top: 0;
     right: 0;
-    stroke: $grey-darken-2;
 
-    &:hover {
-        stroke: $grey-darken-1;
-    }
-
-    &:active {
-        stroke: $grey-darken-3;
+    svg {
+        @include block-actionitem(stroke);
     }
 }

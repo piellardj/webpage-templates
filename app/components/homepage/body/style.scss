@@ -22,7 +22,7 @@ main {
     height: $logo-size;
     margin: 8px auto 16px;
     border-radius: 50%;
-    background: $color-control-accent;
+    @include color-control-accent(background);
     text-align: center;
     text-decoration: none;
     user-select: none;
@@ -39,7 +39,7 @@ main {
         }
 
         &::after {
-            color: $color-control-accent;
+            @include color-control-accent(color);
             font-size: 16px;
             font-weight: normal;
             line-height: #{$logo-size - 2 * $logo-border-width};
@@ -48,11 +48,11 @@ main {
         }
 
         &::before {
-            background: $color-block-background;
             content: '';
             z-index: 0;
             @include transform(scale(0));
             @include transition(.1s ease);
+            @include block-background-color(background);
         }
 
         &:hover::before {

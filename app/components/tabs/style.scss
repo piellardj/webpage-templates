@@ -3,11 +3,10 @@
 
 $text-color-selected: white;
 
-$button-color-hover: $grey-lighten-4;
-$button-color-active: $grey-lighten-3;
+$button-color-hover: $color-accent-transparent-light;
+$button-color-active: $color-accent-transparent-medium;
 
 $tabs-border-width: 2px;
-$tabs-border-color: $color-control-neutral;
 $tabs-border-radius: 4px;
 
 $tabs-transition: .1s ease-in-out;
@@ -28,7 +27,10 @@ $tabs-transition: .1s ease-in-out;
         left: 0;
         width: 100%;
         height: 100%;
-        border: $tabs-border-width solid $tabs-border-color;
+        border-width: $tabs-border-width;
+        border-style: solid;
+        @include color-control-neutral(border-color);
+
         border-radius: $tabs-border-radius;
         content: '';
         z-index: 1;
@@ -74,22 +76,22 @@ $tabs-transition: .1s ease-in-out;
         // Colors common to checkbox and radio ====================================
         & + label {
             background: none;
-            color: $color-control-accent;
+            @include color-control-accent(color);
         }
 
         &:checked + label {
-            background: $color-control-accent;
+            @include color-control-accent(background);
             color: $text-color-selected;
         }
 
         &:disabled {
             & + label {
                 background: none;
-                color: $color-control-disabled;
+                @include color-control-accent-disabled(color);
             }
 
             &:checked + label {
-                background: $color-control-disabled;
+                @include color-control-accent-disabled(background);
                 color: $text-color-selected;
             }
         }
@@ -102,7 +104,7 @@ $tabs-transition: .1s ease-in-out;
                 }
 
                 &:checked  + label {
-                    background: $color-control-accent-hover;
+                    @include color-control-accent-hover(background);
                 }
             }
 
@@ -112,7 +114,7 @@ $tabs-transition: .1s ease-in-out;
                 }
 
                 &:checked  + label {
-                    background: $color-control-accent-active;
+                    @include color-control-accent-active(background);
                 }
             }
         }

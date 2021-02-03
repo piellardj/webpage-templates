@@ -7,8 +7,7 @@ $card-padding: 12px;
 
 $card-border-radius: 4px;
 
-$shadow-color: rgba(0, 0, 0, 0.5);
-$card-background-color: white;
+$shadow-color: rgba(50, 50, 50, 0.6);
 
 $card-transition-time: .1s ease-in-out;
 
@@ -22,7 +21,7 @@ $card-transition-time: .1s ease-in-out;
     padding: $card-padding;
 
     border-radius: $card-border-radius;
-    background-color: $card-background-color;
+    @include color-theme(background-color);
     background-position: center;
     background-size: cover;
     box-shadow: 0px 1px 6px -1px $shadow-color;
@@ -83,7 +82,7 @@ $card-transition-time: .1s ease-in-out;
     margin: auto;
     border: 1px solid #cccccc;
     border-radius: 8px;
-    background-color: white;
+    @include color-theme(background-color);
     box-shadow: 0 0 10px $shadow-color;
     z-index: 2;
     box-sizing: border-box;
@@ -102,7 +101,6 @@ $card-transition-time: .1s ease-in-out;
 
 .card-body {
     width: 100%;
-    color: #353535;
     font-size: 90%;
     text-align: justify;
     text-indent: 1em;
@@ -125,11 +123,13 @@ $card-transition-time: .1s ease-in-out;
 
     &::-webkit-scrollbar-track {
         border-radius: 8px;
-        background-color: $card-background-color;
+        @include color-theme(background-color);
     }
 
     &::-webkit-scrollbar-thumb {
-        border: $scrollbar-thumb-margin solid $card-background-color;
+        border-width: $scrollbar-thumb-margin;
+        border-style: solid;
+        @include color-theme(border-color);
         border-radius: 6px;
         background-color: #b1b1b1;
     }
@@ -143,32 +143,34 @@ a.card-link {
     position: relative;
     margin: 20px;
     padding: 0 24px;
-    border: $card-link-border-width solid $color-control-accent;
+    border-width: $card-link-border-width;
+    border-style: solid;
     border-radius: 0.5 * ($card-link-line-height + 2 * $card-link-border-width);
     outline: none;
-    background: white;
-    color: $color-control-accent;
     font-weight: bold;
     line-height: $card-link-line-height;
     text-decoration: none;
 
+    @include color-control-accent(border-color);
+    @include color-control-accent(color);
+
     &:hover,
     &:focus {
-        border-color: $color-control-accent-hover;
-        color: $color-control-accent-hover;
+        @include color-control-accent-hover(border-color);
+        @include color-control-accent-hover(color);
+        background: $color-accent-transparent-light;
     }
 
     &:active {
-        border-color: $color-control-accent-active;
-        background: $grey-lighten-5;
-        color: $color-control-accent-active;
+        @include color-control-accent-active(border-color);
+        @include color-control-accent-active(color);
+        background: $color-accent-transparent-medium;
     }
 }
 
 .card-title {
     margin: 0;
     padding: 0 0 0 #{0.5 * $card-border-radius};
-    color: #2b2b2b;
     font-size: 112.5%;
     font-weight: normal;
     line-height: 28px;

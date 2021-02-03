@@ -2,13 +2,15 @@
 @import 'common/utils';
 
 a {
-    color: $color-control-accent;
+    @include color-control-accent(color);
     font-weight: bold;
     text-decoration: none;
     @include box-sizing(border-box);
 
     &:focus,
     &:hover {
-        border-bottom: 2px solid $color-control-accent;
+        border-width: 0 0 2px 0;
+        border-style: solid;
+        @include color-control-accent(border-color);
     }
 }

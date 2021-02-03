@@ -4,7 +4,7 @@
 footer {
     align-items: center;
     padding: 8px;
-    border-top: 1px solid $color-block-delimiter;
-    background: $color-block-background;
     text-align: center;
+    @include block-border(border-top);
+    @include block-background-color(background);
 }

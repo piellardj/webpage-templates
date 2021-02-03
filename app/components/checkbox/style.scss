@@ -8,7 +8,7 @@ $checkbox-border-width: 2px;
 $checkbox-border-radius: 2px;
 
 $checkmark-width: 3px;
-$checkmark-color: $color-block-background;
+$checkmark-color: #ffffff;
 
 $checkbox-transition: .1s ease-in-out;
 
@@ -92,42 +92,42 @@ $checkmark-length-left: 0.35 * $checkbox-size;
         // COLORS
         & {
             & + label.checkmark::before {
-                border-color: $color-control-accent;
+                @include color-control-accent(border-color);
             }
 
             &:checked + label.checkmark::before {
-                background: $color-control-accent;
+                @include color-control-accent(background);
             }
         }
 
         &:hover,
         &:focus {
             & + label.checkmark::before {
-                border-color: $color-control-accent-hover;
+                @include color-control-accent-hover(border-color);
             }
 
             &:checked + label.checkmark::before {
-                background: $color-control-accent-hover;
+                @include color-control-accent-hover(background);
             }
         }
 
         &:active {
             & + label.checkmark::before {
-                border-color: $color-control-accent-active;
+                @include color-control-accent-active(border-color);
             }
 
             &:checked + label.checkmark::before {
-                background: $color-control-accent-active;
+                @include color-control-accent-active(background);
             }
         }
 
         &:disabled {
             & + label.checkmark::before {
-                border-color: $color-control-disabled;
+                @include color-control-accent-disabled(border-color);
             }
 
             &:checked + label.checkmark::before {
-                background: $color-control-disabled;
+                @include color-control-accent-disabled(background);
             }
         }
     }
