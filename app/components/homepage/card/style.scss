@@ -131,7 +131,7 @@ $card-transition-time: .1s ease-in-out;
         border-style: solid;
         @include color-theme(border-color);
         border-radius: 6px;
-        background-color: #b1b1b1;
+        @include block-actionitem(background-color);
     }
 }
 

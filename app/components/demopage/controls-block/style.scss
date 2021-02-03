@@ -98,7 +98,7 @@ $section-margin: 12px;
             border-style: solid;
             border-radius: 8px;
             @include block-background-color(border-color);
-            background-color: $grey-lighten-2;
+            @include block-actionitem(background-color);
         }
 
         &:hover::-webkit-scrollbar-thumb {
