@@ -66,6 +66,19 @@ $vars: (
         dark: #{$grey-lighten-3},
     ),
 
+    color-scrollbar: (
+        light: #{$grey-lighten-1},
+        dark: #{$grey-darken-1},
+    ),
+    color-scrollbar-hover: (
+        light: #{$grey-lighten-2},
+        dark: #{$grey-medium},
+    ),
+    color-scrollbar-active: (
+        light: #{$grey-medium},
+        dark: #{$grey-darken-2},
+    ),
+
     color-control-neutral: (
         light: #{$grey-lighten-3},
         dark: #{$grey-darken-3},
@@ -186,5 +199,18 @@ $vars: (
 
     &:active {
         @include use-css-variable($property, color-block-actionitem-active);
+    }
+}
+
+@mixin scrollbar-color($property) {
+    @include use-css-variable($property, color-scrollbar);
+
+    &:focus,
+    &:hover {
+        @include use-css-variable($property, color-scrollbar-hover);
+    }
+
+    &:active {
+        @include use-css-variable($property, color-scrollbar-active);
     }
 }

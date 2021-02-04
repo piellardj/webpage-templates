@@ -80,7 +80,7 @@ $card-transition-time: .1s ease-in-out;
     max-width: 360px;
     height: 100%;
     margin: auto;
-    border: 1px solid #cccccc;
+    border: 1px solid rgba(150,150,150, 0.6);
     border-radius: 8px;
     @include color-theme(background-color);
     box-shadow: 0 0 10px $shadow-color;
@@ -131,7 +131,7 @@ $card-transition-time: .1s ease-in-out;
         border-style: solid;
         @include color-theme(border-color);
         border-radius: 6px;
-        @include block-actionitem(background-color);
+        @include scrollbar-color(background-color);
     }
 }
 
