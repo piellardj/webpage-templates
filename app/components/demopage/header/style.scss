@@ -32,6 +32,7 @@ header {
         left: -$logo-border-width;
         width: $logo-size;
         height: $logo-size;
+        border-radius: 50%;
     }
 
     &::before {
