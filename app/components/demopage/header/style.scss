@@ -15,24 +15,26 @@ header {
 .logo {
     display: block;
     position: relative;
-    width: $logo-size;
-    height: $logo-size;
     margin: 8px auto 16px;
     border-width: $logo-border-width;
     border-style: solid;
     @include color-control-accent(border-color);
-    border-radius: 50%;
     @include block-background-color(background);
     user-select: none;
+
+    &,
+    &::before,
+    &::after {
+        width: $logo-size;
+        height: $logo-size;
+        border-radius: 50%;
+    }
 
     &::before,
     &::after {
         position: absolute;
         top: -$logo-border-width;
         left: -$logo-border-width;
-        width: $logo-size;
-        height: $logo-size;
-        border-radius: 50%;
     }
 
     &::before {
