@@ -5,17 +5,6 @@
 // @import 'colors/colors-red';
 @import 'colors/colors-teal';
 
-// $color-lighten-5: $color-teal-lighten-5;
-// $color-lighten-4: $color-teal-lighten-4;
-// $color-lighten-3: $color-teal-lighten-3;
-// $color-lighten-2: $color-teal-lighten-2;
-// $color-lighten-1: $color-teal-lighten-1;
-// $color-medium:    $color-teal-medium;
-// $color-darken-1:  $color-teal-darken-1;
-// $color-darken-2:  $color-teal-darken-2;
-// $color-darken-3:  $color-teal-darken-3;
-// $color-darken-4:  $color-teal-darken-4;
-
 $grey-lighten-5: #eeeeee;
 $grey-lighten-4: #dbdbdb;
 $grey-lighten-3: #c9c9c9;
@@ -31,48 +20,87 @@ $grey-darken-5:  #202020;
 $color-accent-transparent-medium: rgba($color-teal-medium, 0.10);
 $color-accent-transparent-light: rgba($color-teal-medium, 0.05);
 
+$vars: (
+    color-theme: (
+        light: white,
+        dark: black,
+    ),
+
+    color-page-background: (
+        light: #EDEDED,
+        dark: #191919,
+    ),
+    page-background-image: (
+        light: url('../images/noise-light.png'),
+        dark: url('../images/noise-dark.png'),
+    ),
+
+    color-block-background: (
+        light: #{$grey-lighten-5},
+        dark: #{$grey-darken-5},
+    ),
+    color-block-border: (
+        light: 1px solid #{$grey-lighten-3},
+        dark: 1px solid #{$grey-darken-4},
+    ),
+
+    color-title: (
+        light: #{$grey-darken-4},
+        dark: #{$grey-lighten-5},
+    ),
+    color-text: (
+        light: #{$grey-darken-2},
+        dark: #{$grey-lighten-4},
+    ),
+
+    color-block-actionitem: (
+        light: #{$grey-darken-3},
+        dark: #{$grey-lighten-4},
+    ),
+    color-block-actionitem-hover: (
+        light: #{$grey-darken-1},
+        dark: #{$grey-lighten-5},
+    ),
+    color-block-actionitem-active: (
+        light: #{$grey-darken-4},
+        dark: #{$grey-lighten-3},
+    ),
+
+    color-control-neutral: (
+        light: #{$grey-lighten-3},
+        dark: #{$grey-darken-3},
+    ),
+    color-control-accent: (
+        light: #{$color-teal-medium},
+        dark: #{$color-teal-lighten-1},
+    ),
+    color-control-accent-hover: (
+        light: #{$color-teal-lighten-1},
+        dark: #{$color-teal-lighten-2},
+    ),
+    color-control-accent-active: (
+        light: #{$color-teal-darken-1},
+        dark: #{$color-teal-medium},
+    ),
+);
+
+@mixin list-vars-values($attribute-name) {
+    @each $var-map-name, $var-map in $vars {
+        $value: map-get($var-map, $attribute-name);
+        @if ($value == null) {
+            @error "ERROR: missing property '" + $attribute-name + "' was in variable '" + $var-map-name + "'.";
+        }
+
+        --var-#{$var-map-name}: #{$value};
+    }
+}
+
 @if variable-exists(declare-css-variables) {
     :root {
-        --var-color-theme: white;
-
-        --var-color-page-background: #EDEDED;
-        --var-page-background-image: url('../images/noise-light.png');
-
-        --var-color-block-background: #{$grey-lighten-5};
-        --var-color-block-border: 1px solid #{$grey-lighten-3};
-
-        --var-color-title: #{$grey-darken-4};
-        --var-color-text: #{$grey-darken-2};
-
-        --var-color-block-actionitem: #{$grey-darken-3};
-        --var-color-block-actionitem-hover: #{$grey-darken-1};
-        --var-color-block-actionitem-active: #{$grey-darken-4};
-
-        --var-color-control-neutral: #{$grey-lighten-3};
-        --var-color-control-accent: #{$color-teal-medium};
-        --var-color-control-accent-hover: #{$color-teal-lighten-1};
-        --var-color-control-accent-active: #{$color-teal-darken-1};
+        @include list-vars-values(light);
 
         @media (prefers-color-scheme: dark) {
-            --var-color-theme: black;
-
-            --var-color-page-background: #191919;
-            --var-page-background-image: url('../images/noise-dark.png');
-
-            --var-color-block-background: #{$grey-darken-5};
-            --var-color-block-border: 1px solid #{$grey-darken-4};
-
-            --var-color-title: #{$grey-lighten-5};
-            --var-color-text: #{$grey-lighten-4};
-
-            --var-color-block-actionitem: #{$grey-lighten-4};
-            --var-color-block-actionitem-hover: #{$grey-lighten-5};
-            --var-color-block-actionitem-active: #{$grey-lighten-3};
-
-            --var-color-control-neutral: #{$grey-darken-3};
-            --var-color-control-accent: #{$color-teal-lighten-1};
-            --var-color-control-accent-hover: #{$color-teal-lighten-2};
-            --var-color-control-accent-active: #{$color-teal-medium};
+            @include list-vars-values(dark);
         }
     }
 }
@@ -81,29 +109,39 @@ $color-accent-transparent-light: rgba($color-teal-medium, 0.05);
     #{$property}: rgba($color-teal-medium, $opacity);
 }
 
-@mixin use-css-variable($property, $variable-name, $default-value) {
+@mixin use-css-variable($property, $variable-name) {
+    $default-property: light;
+    $variable-map: map-get($vars, $variable-name);
+    @if ($variable-map == null) {
+        @error "ERROR: missing variable '" + $variable-name + "'.";
+    }
+    $default-value: map-get(map-get($vars, $variable-name), $default-property);
+    @if ($default-value == null) {
+        @error "ERROR: missing default property '" + $default-property + "' was in variable '" + $variable-name + "'.";
+    }
+
     #{$property}: $default-value; // fallback for IE11
-    #{$property}: var($variable-name, $default-value);
+    #{$property}: var(--var-#{$variable-name}, $default-value);
 }
 
 @mixin color-theme($property) {
-    @include use-css-variable($property, --var-color-theme, white);
+    @include use-css-variable($property, color-theme);
 }
 
 @mixin color-control-neutral($property) {
-    @include use-css-variable($property, --var-color-control-neutral, $grey-lighten-3);
+    @include use-css-variable($property, color-control-neutral);
 }
 
 @mixin color-control-accent($property) {
-    @include use-css-variable($property, --var-color-control-accent, $color-teal-medium);
+    @include use-css-variable($property, color-control-accent);
 }
 
 @mixin color-control-accent-hover($property) {
-    @include use-css-variable($property, --var-color-control-accent-hover, $color-teal-lighten-1);
+    @include use-css-variable($property, color-control-accent-hover);
 }
 
 @mixin color-control-accent-active($property) {
-    @include use-css-variable($property, --var-color-control-accent-active, $color-teal-darken-1);
+    @include use-css-variable($property, color-control-accent-active);
 }
 
 @mixin color-control-accent-disabled($property) {
@@ -111,13 +149,13 @@ $color-accent-transparent-light: rgba($color-teal-medium, 0.05);
 }
 
 @mixin page-theme {
-    @include use-css-variable(background, --var-color-page-background, $grey-lighten-5);
-    @include use-css-variable(background-image, --var-page-background-image, url('../images/noise.png'));
-    @include use-css-variable(color, --var-color-text, $grey-darken-2);
+    @include use-css-variable(background, color-page-background);
+    @include use-css-variable(background-image, page-background-image);
+    @include use-css-variable(color, color-text);
 }
 
 @mixin color-title($property) {
-    @include use-css-variable($property, --var-color-title, $grey-darken-4);
+    @include use-css-variable($property, color-title);
 }
 
 @mixin color-title-interactible($property) {
@@ -125,22 +163,22 @@ $color-accent-transparent-light: rgba($color-teal-medium, 0.05);
 }
 
 @mixin block-background-color($property) {
-    @include use-css-variable($property, --var-color-block-background, $grey-lighten-5);
+    @include use-css-variable($property, color-block-background);
 }
 
 @mixin block-border($property) {
-    @include use-css-variable($property, --var-color-block-border, 1px solid $grey-lighten-3);
+    @include use-css-variable($property, color-block-border);
 }
 
 @mixin block-actionitem($property) {
-    @include use-css-variable($property, --var-color-block-actionitem, $grey-darken-2);
+    @include use-css-variable($property, color-block-actionitem);
 
     &:focus,
     &:hover {
-        @include use-css-variable($property, --var-color-block-actionitem-hover, $grey-darken-1);
+        @include use-css-variable($property, color-block-actionitem-hover);
     }
 
     &:active {
-        @include use-css-variable($property, --var-color-block-actionitem-active, $grey-darken-3);
+        @include use-css-variable($property, color-block-actionitem-active);
     }
 }
