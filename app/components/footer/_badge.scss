@@ -4,10 +4,9 @@
 $badge-size: 32px;
 
 .badge {
-    display: inline-block;
     width: 32px;
     height: 32px;
-    margin: 8px 6px;
+    margin: 8px 12px;
     border: none;
 
     & > svg {
@@ -28,5 +27,7 @@ $badge-size: 32px;
 }
 
 .badge-shelf {
-    margin-top: 2px;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
 }
