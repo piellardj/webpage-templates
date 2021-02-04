@@ -84,14 +84,19 @@ $vars: (
     ),
 );
 
+@function compute-var-name($var-map-name) {
+    @return --var-#{$var-map-name};
+}
+
 @mixin list-vars-values($attribute-name) {
     @each $var-map-name, $var-map in $vars {
-        $value: map-get($var-map, $attribute-name);
-        @if ($value == null) {
+        $var-value: map-get($var-map, $attribute-name);
+        @if ($var-value == null) {
             @error "ERROR: missing property '" + $attribute-name + "' was in variable '" + $var-map-name + "'.";
         }
 
-        --var-#{$var-map-name}: #{$value};
+        $var-name: compute-var-name($var-map-name);
+        #{$var-name}: #{$var-value};
     }
 }
 
@@ -121,7 +126,7 @@ $vars: (
     }
 
     #{$property}: $default-value; // fallback for IE11
-    #{$property}: var(--var-#{$variable-name}, $default-value);
+    #{$property}: var(#{compute-var-name($variable-name)}, $default-value);
 }
 
 @mixin color-theme($property) {
