@@ -17,7 +17,7 @@ $grey-darken-3:  #5e5e5e;
 $grey-darken-4:  #535353;
 $grey-darken-5:  #202020;
 
-$color-accent-transparent-medium: rgba($color-teal-medium, 0.10);
+$color-accent-transparent-medium: rgba($color-teal-medium, 0.1);
 $color-accent-transparent-light: rgba($color-teal-medium, 0.05);
 
 $vars: (
@@ -27,7 +27,7 @@ $vars: (
     ),
 
     color-page-background: (
-        light: #EDEDED,
+        light: #ededed,
         dark: #191919,
     ),
     page-background-image: (
@@ -92,7 +92,7 @@ $vars: (
     @each $var-map-name, $var-map in $vars {
         $var-value: map-get($var-map, $attribute-name);
         @if ($var-value == null) {
-            @error "ERROR: missing property '" + $attribute-name + "' was in variable '" + $var-map-name + "'.";
+            @error 'ERROR: missing property "' + $attribute-name + '" was in variable "' + $var-map-name + '".';
         }
 
         $var-name: compute-var-name($var-map-name);
@@ -118,13 +118,14 @@ $vars: (
     $default-property: light;
     $variable-map: map-get($vars, $variable-name);
     @if ($variable-map == null) {
-        @error "ERROR: missing variable '" + $variable-name + "'.";
+        @error 'ERROR: missing variable "' + $variable-name + '".';
     }
     $default-value: map-get(map-get($vars, $variable-name), $default-property);
     @if ($default-value == null) {
-        @error "ERROR: missing default property '" + $default-property + "' was in variable '" + $variable-name + "'.";
+        @error 'ERROR: missing default property "' + $default-property + '" was in variable "' + $variable-name + '".';
     }
 
+    // sass-lint:disable-block no-duplicate-properties
     #{$property}: $default-value; // fallback for IE11
     #{$property}: var(#{compute-var-name($variable-name)}, $default-value);
 }

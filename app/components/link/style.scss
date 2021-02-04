@@ -9,7 +9,7 @@ a {
 
     &:focus,
     &:hover {
-        border-width: 0 0 2px 0;
+        border-width: 0 0 2px;
         border-style: solid;
         @include color-control-accent(border-color);
     }
