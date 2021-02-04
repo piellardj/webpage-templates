@@ -4,7 +4,6 @@ var Page;
 (function (Page) {
     var Picker;
     (function (Picker) {
-        var DISABLED_BUTTON_CLASS = "disabled";
         /**
          * Populates pickers dictionary and binds events.
          */
@@ -35,12 +34,7 @@ var Page;
             return -1;
         }
         function enableButton(button, enable) {
-            if (enable) {
-                button.classList.remove(DISABLED_BUTTON_CLASS);
-            }
-            else if (!button.classList.contains(DISABLED_BUTTON_CLASS)) {
-                button.classList.add(DISABLED_BUTTON_CLASS);
-            }
+            button.disabled = !enable;
         }
         /**
          *  Updates selector text and disables/enables buttons if needed.
@@ -72,35 +66,28 @@ var Page;
                 }
             }
         }
-        function isButtonEnabled(button) {
-            return !button.classList.contains(DISABLED_BUTTON_CLASS);
-        }
         function bindPickerEvents(picker) {
             picker.leftButton.addEventListener("click", function () {
-                if (isButtonEnabled(picker.leftButton)) {
-                    var index = getIndexOfCheckedInput(picker);
-                    if (index < 0) {
-                        picker.inputs[picker.inputs.length - 1].checked = true;
-                    }
-                    else if (index > 0) {
-                        picker.inputs[index].checked = false;
-                        picker.inputs[index - 1].checked = true;
-                    }
-                    updateVisibleValue(picker, true);
+                var index = getIndexOfCheckedInput(picker);
+                if (index < 0) {
+                    picker.inputs[picker.inputs.length - 1].checked = true;
                 }
+                else if (index > 0) {
+                    picker.inputs[index].checked = false;
+                    picker.inputs[index - 1].checked = true;
+                }
+                updateVisibleValue(picker, true);
             });
             picker.rightButton.addEventListener("click", function () {
-                if (isButtonEnabled(picker.rightButton)) {
-                    var index = getIndexOfCheckedInput(picker);
-                    if (index < 0) {
-                        picker.inputs[0].checked = true;
-                    }
-                    else if (index < picker.inputs.length - 1) {
-                        picker.inputs[index].checked = false;
-                        picker.inputs[index + 1].checked = true;
-                    }
-                    updateVisibleValue(picker, true);
+                var index = getIndexOfCheckedInput(picker);
+                if (index < 0) {
+                    picker.inputs[0].checked = true;
                 }
+                else if (index < picker.inputs.length - 1) {
+                    picker.inputs[index].checked = false;
+                    picker.inputs[index + 1].checked = true;
+                }
+                updateVisibleValue(picker, true);
             });
             updateVisibleValue(picker, true);
         }

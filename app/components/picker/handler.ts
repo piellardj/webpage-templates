@@ -6,8 +6,8 @@ namespace Page.Picker {
 
     interface IPickerObject {
         wrapper: HTMLElement;
-        leftButton: HTMLElement;
-        rightButton: HTMLElement;
+        leftButton: HTMLButtonElement;
+        rightButton: HTMLButtonElement;
         span: HTMLSpanElement;
         inputs: NodeListOf<HTMLInputElement>;
         observers: PickerObserver[];
@@ -16,8 +16,6 @@ namespace Page.Picker {
     interface IPickersDictionary {
         [id: string]: IPickerObject;
     }
-
-    const DISABLED_BUTTON_CLASS = "disabled";
 
     /**
      * Populates pickers dictionary and binds events.
@@ -54,12 +52,8 @@ namespace Page.Picker {
         return -1;
     }
 
-    function enableButton(button: HTMLElement, enable: boolean): void {
-        if (enable) {
-            button.classList.remove(DISABLED_BUTTON_CLASS);
-        } else if (!button.classList.contains(DISABLED_BUTTON_CLASS)) {
-            button.classList.add(DISABLED_BUTTON_CLASS);
-        }
+    function enableButton(button: HTMLButtonElement, enable: boolean): void {
+        button.disabled = !enable;
     }
 
     /**
@@ -94,37 +88,29 @@ namespace Page.Picker {
         }
     }
 
-    function isButtonEnabled(button: HTMLElement): boolean {
-        return !button.classList.contains(DISABLED_BUTTON_CLASS);
-    }
-
     function bindPickerEvents(picker: IPickerObject): void {
         picker.leftButton.addEventListener("click", function () {
-            if (isButtonEnabled(picker.leftButton)) {
-                const index = getIndexOfCheckedInput(picker);
-                if (index < 0) {
-                    picker.inputs[picker.inputs.length - 1].checked = true;
-                } else if (index > 0) {
-                    picker.inputs[index].checked = false;
-                    picker.inputs[index - 1].checked = true;
-                }
-
-                updateVisibleValue(picker, true);
+            const index = getIndexOfCheckedInput(picker);
+            if (index < 0) {
+                picker.inputs[picker.inputs.length - 1].checked = true;
+            } else if (index > 0) {
+                picker.inputs[index].checked = false;
+                picker.inputs[index - 1].checked = true;
             }
+
+            updateVisibleValue(picker, true);
         });
 
         picker.rightButton.addEventListener("click", function () {
-            if (isButtonEnabled(picker.rightButton)) {
-                const index = getIndexOfCheckedInput(picker);
-                if (index < 0) {
-                    picker.inputs[0].checked = true;
-                } else if (index < picker.inputs.length - 1) {
-                    picker.inputs[index].checked = false;
-                    picker.inputs[index + 1].checked = true;
-                }
-
-                updateVisibleValue(picker, true);
+            const index = getIndexOfCheckedInput(picker);
+            if (index < 0) {
+                picker.inputs[0].checked = true;
+            } else if (index < picker.inputs.length - 1) {
+                picker.inputs[index].checked = false;
+                picker.inputs[index + 1].checked = true;
             }
+
+            updateVisibleValue(picker, true);
         });
 
         updateVisibleValue(picker, true);

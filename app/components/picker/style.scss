@@ -2,10 +2,12 @@
 @import 'common/utils';
 
 .inline-picker {
+    $height: 32px;
+
     display: flex;
     position: relative;
     justify-content: space-between;
-    min-height: 32px;
+    min-height: $height;
     user-select: none;
 
     & span {
@@ -16,12 +18,34 @@
 
     & .picker-button {
         display: inline-block;
-        width: 18px;
-        line-height: 32px;
-        cursor: pointer;
+        width: 32px;
+        height: $height;
+        margin: 0;
+        padding: 0;
+        border: none;
+        outline: none;
+        background: none;
 
-        &.disabled {
-            cursor: default;
+        &:not(:disabled) {
+            cursor: pointer;
+        }
+
+        &.left {
+            transform: translateX(-10px);
+
+            &::after {
+                left: 13px;
+                @include transform(rotate(135deg));
+            }
+        }
+
+        &.right {
+            transform: translateX(10px);
+
+            &::after {
+                right: 13px;
+                @include transform(rotate(-45deg));
+            }
         }
 
         &::after {
@@ -37,7 +61,8 @@
             @include box-sizing(border-box);
         }
 
-        &:hover::after {
+        &:hover::after,
+        &:focus::after {
             @include color-control-accent-hover(border-color);
         }
 
@@ -45,27 +70,18 @@
             @include color-control-accent-active(border-color);
         }
 
-        &.disabled::after {
+        &:disabled::after {
             @include color-control-accent-disabled(border-color);
-        }
-
-        &.left::after {
-            left: 3px;
-            @include transform(rotate(135deg));
-        }
-
-        &.right::after {
-            right: 3px;
-            @include transform(rotate(-45deg));
         }
     }
 
     &.compact {
-        min-height: 26px;
+        $height: 26px;
+        min-height: $height;
         font-size: 95%;
 
         & .picker-button {
-            line-height: 26px;
+            height: $height;
         }
     }
 
