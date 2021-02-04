@@ -2,9 +2,9 @@
 # const styleStr = (typeof style !== undefined && style !== "") ? "style='" + style + "'" : "";
 # const dataplaceholder = (typeof placeholder !== "undefined") ? "data-placeholder=" + placeholder : "";
 <div class="inline-picker #=(compactStr)" id="#=(id)" #=(styleStr) #=(dataplaceholder)>
-    <button class="picker-button left" aria-label="Previous value"></button>
+    <button class="picker-button left" aria-label="Previous value">&nbsp;</button>
     <span></span>
-    <button class="picker-button right" aria-label="Next value"></button>
+    <button class="picker-button right" aria-label="Next value">&nbsp;</button>
     # options.forEach(function(option) {
         # const checked = option.checked ? "checked" : "";
         <input type="radio" name="#=(id)" value="#=(option.value)" #=(checked) data-label="#=(option.label)">
