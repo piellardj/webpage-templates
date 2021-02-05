@@ -1,5 +1,8 @@
-@import 'common/theme';
 @import 'common/utils';
+
+body {
+    text-align: center;
+}
 
 #error-messages {
     margin: 32px 8px;

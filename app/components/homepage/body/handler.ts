@@ -33,7 +33,7 @@ namespace Page.Homepage {
         }
     }
 
-    const logo = document.querySelector("a#logo") as HTMLLinkElement;
+    const logo = document.getElementById("random-project-button") as HTMLLinkElement;
     if (logo) {
         const projectsUrls = retrieveProjectsUrls();
 

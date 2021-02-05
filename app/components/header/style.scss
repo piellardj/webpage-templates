@@ -1,0 +1,84 @@
+@import 'common/theme';
+@import 'common/utils';
+
+$logo-size: 64px;
+$logo-border-width: 1px;
+
+.logo {
+    display: block;
+    position: relative;
+    width: $logo-size;
+    height: $logo-size;
+    margin: 8px auto 16px;
+    border-radius: 50%;
+    user-select: none;
+    box-sizing: border-box;
+
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+        border-width: $logo-border-width;
+        border-style: solid;
+        @include color-control-accent(border-color);
+    }
+
+    &::before,
+    svg.logo-icon,
+    &::after {
+        position: absolute;
+        top: -$logo-border-width;
+        left: -$logo-border-width;
+        width: $logo-size;
+        height: $logo-size;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    svg.logo-icon {
+        @include color-control-accent(stroke);
+        @include color-control-accent(fill);
+    }
+
+    &::before {
+        content: '';
+        @include transform(scale(0));
+        @include transition(.1s ease);
+    }
+
+    &.logo-animate-fill
+    &::before {
+        content: '';
+        @include transform(scale(0));
+        @include transition(.1s ease);
+    }
+
+    &:hover::before {
+        @include transform(scale(1));
+    }
+}
+
+.logo.logo-animate-fill {
+    @include block-background-color(background);
+
+    &::before {
+        @include color-control-accent(background);
+    }
+
+    &:hover svg.logo-icon {
+        fill: white;
+        stroke: white;
+    }
+}
+
+.logo.logo-animate-empty {
+    @include color-control-accent(background);
+
+    &::before {
+        top: 0;
+        left: 0;
+        width: #{$logo-size - 2 * $logo-border-width};
+        height: #{$logo-size - 2 * $logo-border-width};
+        @include block-background-color(background);
+    }
+}
