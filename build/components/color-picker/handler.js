@@ -313,6 +313,24 @@ var Page;
                     writeNewColor(currentControl, hexString);
                 }
             }
+            function fitPopupToContainer() {
+                if (popupElement && popupElement.parentElement) {
+                    var container = document.querySelector(".controls-block") || document.body;
+                    var containerBox = container.getBoundingClientRect();
+                    var margin = 16;
+                    popupElement.style.maxWidth = (containerBox.width - 2 * margin) + "px";
+                    popupElement.style.maxHeight = (containerBox.height - 2 * margin) + "px";
+                    popupElement.style.left = "0";
+                    popupElement.style.top = "0";
+                    var popupBox = popupElement.getBoundingClientRect();
+                    var leftOffset = Math.max(0, (containerBox.left + margin) - popupBox.left);
+                    var rightOffset = Math.min(0, (containerBox.left + containerBox.width - margin) - (popupBox.left + popupBox.width));
+                    var topOffset = Math.max(0, (containerBox.top + margin) - popupBox.top);
+                    var bottomOffset = Math.min(0, (containerBox.top + containerBox.height - margin) - (popupBox.top + popupBox.height));
+                    popupElement.style.left = (leftOffset + rightOffset) + "px";
+                    popupElement.style.top = (topOffset + bottomOffset) + "px";
+                }
+            }
             function createPopup(colorPickerContainer) {
                 currentControl = colorPickerContainer;
                 var currentHex = readCurrentColor(colorPickerContainer);
@@ -326,6 +344,7 @@ var Page;
                 }
                 onColorChange();
                 colorPickerContainer.parentElement.appendChild(popupElement);
+                fitPopupToContainer();
             }
             Popup.createPopup = createPopup;
         })(Popup || (Popup = {}));

@@ -300,7 +300,7 @@ namespace Page.ColorPicker {
                             break;
                         }
                     }
-    
+
                     if (!alreadyRegistered) {
                         currentTouchIds.push(touch.identifier);
                     }
@@ -323,7 +323,7 @@ namespace Page.ColorPicker {
                         }
                     }
                 }
-    
+
                 if (knewAtLeastOneTouch && currentTouchIds.length === 0) {
                     isBeingDragged = false;
                 }
@@ -343,7 +343,7 @@ namespace Page.ColorPicker {
                         }
                     }
 
-                    
+
                 }
             }, { passive: false });
         }
@@ -379,6 +379,27 @@ namespace Page.ColorPicker {
             }
         }
 
+        function fitPopupToContainer(): void {
+            if (popupElement && popupElement.parentElement) {
+                const container = document.querySelector(".controls-block") || document.body;
+                const containerBox = container.getBoundingClientRect();
+                const margin = 16;
+                
+                popupElement.style.maxWidth = (containerBox.width - 2 * margin) + "px";
+                popupElement.style.maxHeight = (containerBox.height - 2 * margin) + "px";
+                
+                popupElement.style.left = "0";
+                popupElement.style.top = "0";
+                const popupBox = popupElement.getBoundingClientRect();
+                const leftOffset = Math.max(0, (containerBox.left + margin) - popupBox.left);
+                const rightOffset = Math.min(0, (containerBox.left + containerBox.width - margin) - (popupBox.left + popupBox.width));
+                const topOffset = Math.max(0, (containerBox.top + margin) - popupBox.top);
+                const bottomOffset = Math.min(0, (containerBox.top + containerBox.height - margin) - (popupBox.top + popupBox.height));
+                popupElement.style.left = (leftOffset + rightOffset) + "px";
+                popupElement.style.top = (topOffset + bottomOffset) + "px";
+            }
+        }
+
         export function createPopup(colorPickerContainer: ColorPicker): void {
             currentControl = colorPickerContainer;
 
@@ -395,6 +416,7 @@ namespace Page.ColorPicker {
             onColorChange();
 
             colorPickerContainer.parentElement.appendChild(popupElement);
+            fitPopupToContainer();
         }
     }
 

@@ -54,14 +54,15 @@
     flex-flow: column nowrap;
     min-width: 275px;
     height: 300px;
-    transform: translate(-50%, -50%);
     text-align: left;
     white-space: nowrap;
+    z-index: 100;
 
     .picker .cursor {
         position: absolute;
         transform: translate(-50%, -50%);
         border: 2px solid white;
+        cursor: pointer;
     }
 
     .value-saturation-picker {
