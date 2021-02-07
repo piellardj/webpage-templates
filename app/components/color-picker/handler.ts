@@ -103,25 +103,45 @@ namespace Page.ColorPicker {
         }
     }
 
-    type ColorPicker = HTMLElement;
+    type OnChangeObserver = (newValue: ColorSpace.IRGB) => unknown;
+    class ColorPicker {
+        public readonly observers: OnChangeObserver[] = [];
+        private readonly element: HTMLElement
+        private readonly colorPreview: HTMLElement;
+        private readonly colorPreviewText: HTMLElement;
 
-    function readCurrentColor(colorPicker: ColorPicker): ColorSpace.Hexa {
-        return colorPicker.dataset.currentColor;
-    }
+        public constructor(element: HTMLElement) {
+            this.element = element;
+            this.colorPreview = element.querySelector(".color-preview") as HTMLElement;
+            this.colorPreviewText = element.querySelector(".color-value") as HTMLElement;
+            this.updateVisiblePart();
+        }
 
-    function writeNewColor(colorPicker: ColorPicker, color: ColorSpace.Hexa): void {
-        colorPicker.dataset.currentColor = color;
-        updateVisiblePart(colorPicker);
-    }
+        public set value(newValue: ColorSpace.Hexa) {
+            const previousValue = this.value;
+            if (previousValue !== newValue) {
+                this.element.dataset.currentColor = newValue;
+                this.updateVisiblePart();
 
-    function updateVisiblePart(colorPicker: ColorPicker): void {
-        const colorPreview = colorPicker.querySelector(".color-preview") as HTMLElement;
-        const colorPreviewText = colorPicker.querySelector(".color-value") as HTMLElement;
+                const rgb = ColorSpace.hexToRgb(newValue);
+                for (const observer of this.observers) {
+                    observer(rgb);
+                }
+            }
+        }
 
-        const hexValue = readCurrentColor(colorPicker);
-        if (/^#[0-9a-fA-f]{6}$/.test(hexValue) && colorPreview && colorPreviewText) {
-            colorPreview.style.background = hexValue;
-            colorPreviewText.textContent = hexValue;
+        public get value(): ColorSpace.Hexa {
+            return this.element.dataset.currentColor;
+        }
+
+        public attachPopup(popup: HTMLElement): void {
+            this.element.parentElement.appendChild(popup);
+        }
+
+        private updateVisiblePart(): void {
+            const hexValue = this.value;
+            this.colorPreview.style.background = hexValue;
+            this.colorPreviewText.textContent = hexValue;
         }
     }
 
@@ -375,7 +395,7 @@ namespace Page.ColorPicker {
             valueSaturationCursor.style.top = percentageString(1 - hsv.v);
 
             if (currentControl) {
-                writeNewColor(currentControl, hexString);
+                currentControl.value = hexString;
             }
         }
 
@@ -384,10 +404,10 @@ namespace Page.ColorPicker {
                 const container = document.querySelector(".controls-block") || document.body;
                 const containerBox = container.getBoundingClientRect();
                 const margin = 16;
-                
+
                 popupElement.style.maxWidth = (containerBox.width - 2 * margin) + "px";
                 popupElement.style.maxHeight = (containerBox.height - 2 * margin) + "px";
-                
+
                 const parentBox = popupElement.parentElement.getBoundingClientRect();
                 const popupBox = popupElement.getBoundingClientRect();
                 const leftOffset = Math.max(0, (containerBox.left + margin) - parentBox.left);
@@ -399,10 +419,10 @@ namespace Page.ColorPicker {
             }
         }
 
-        export function createPopup(colorPickerContainer: ColorPicker): void {
-            currentControl = colorPickerContainer;
+        export function createPopup(colorPicker: ColorPicker): void {
+            currentControl = colorPicker;
 
-            const currentHex = readCurrentColor(colorPickerContainer);
+            const currentHex = colorPicker.value;
             const currentRgb = ColorSpace.hexToRgb(currentHex);
             const currentHsv = ColorSpace.rgbToHsv(currentRgb);
             hsv.h = currentHsv.h;
@@ -417,7 +437,7 @@ namespace Page.ColorPicker {
             // reset placement to avoid flickering due to the popup being temporarily out of screen
             popupElement.style.top = "";
             popupElement.style.left = "";
-            colorPickerContainer.parentElement.appendChild(popupElement);
+            colorPicker.attachPopup(popupElement);
             fitPopupToContainer();
         }
     }
@@ -427,14 +447,13 @@ namespace Page.ColorPicker {
     window.addEventListener("load", function buildColorPickersMap(): void {
         const list = document.querySelectorAll(".color-picker") as NodeListOf<HTMLElement>;
         for (let i = 0; i < list.length; i++) {
-            const colorPicker = list[i];
-            if (colorPicker.id) {
-                colorPickersMap[colorPicker.id] = colorPicker;
+            const colorPickerElement = list[i];
+            const colorPicker = new ColorPicker(colorPickerElement);
+            if (colorPickerElement.id) {
+                colorPickersMap[colorPickerElement.id] = colorPicker
             }
 
-            updateVisiblePart(colorPicker);
-
-            colorPicker.addEventListener("click", function createPopup(event: MouseEvent): void {
+            colorPickerElement.addEventListener("click", function createPopup(event: MouseEvent): void {
                 Popup.createPopup(colorPicker);
                 event.stopPropagation();
                 event.stopImmediatePropagation();
@@ -473,4 +492,29 @@ namespace Page.ColorPicker {
 
     // Storage.applyStoredState();
     // Storage.attachStorageEvents();
+
+    export function addObserver(id: string, observer: OnChangeObserver): boolean {
+        const colorPicker = colorPickersMap[id];
+        if (colorPicker) {
+            colorPicker.observers.push(observer);
+        }
+        return false;
+    }
+
+    export function getValue(id: string): ColorSpace.IRGB {
+        const hexValue = colorPickersMap[id].value;
+        return ColorSpace.hexToRgb(hexValue);
+    }
+
+    /**
+     * @param id control id
+     * @param r integer in [0, 255]
+     * @param g integer in [0, 255]
+     * @param b integer in [0, 255]
+     */
+    export function setValue(id: string, r: number, g: number, b: number): void {
+        const rgb: ColorSpace.IRGB = { r, g, b };
+        const hexValue = ColorSpace.rgbToHex(rgb);
+        colorPickersMap[id].value = hexValue;
+    }
 }

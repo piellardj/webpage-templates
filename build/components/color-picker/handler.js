@@ -3,7 +3,7 @@
 var Page;
 (function (Page) {
     var ColorPicker;
-    (function (ColorPicker) {
+    (function (ColorPicker_1) {
         function clamp(value, min, max) {
             return Math.max(min, Math.max(min, value));
         }
@@ -86,22 +86,43 @@ var Page;
                 return hex.length === 2 ? hex : "0" + hex;
             }
         })(ColorSpace || (ColorSpace = {}));
-        function readCurrentColor(colorPicker) {
-            return colorPicker.dataset.currentColor;
-        }
-        function writeNewColor(colorPicker, color) {
-            colorPicker.dataset.currentColor = color;
-            updateVisiblePart(colorPicker);
-        }
-        function updateVisiblePart(colorPicker) {
-            var colorPreview = colorPicker.querySelector(".color-preview");
-            var colorPreviewText = colorPicker.querySelector(".color-value");
-            var hexValue = readCurrentColor(colorPicker);
-            if (/^#[0-9a-fA-f]{6}$/.test(hexValue) && colorPreview && colorPreviewText) {
-                colorPreview.style.background = hexValue;
-                colorPreviewText.textContent = hexValue;
+        var ColorPicker = /** @class */ (function () {
+            function ColorPicker(element) {
+                this.observers = [];
+                this.element = element;
+                this.colorPreview = element.querySelector(".color-preview");
+                this.colorPreviewText = element.querySelector(".color-value");
+                this.updateVisiblePart();
             }
-        }
+            Object.defineProperty(ColorPicker.prototype, "value", {
+                get: function () {
+                    return this.element.dataset.currentColor;
+                },
+                set: function (newValue) {
+                    var previousValue = this.value;
+                    if (previousValue !== newValue) {
+                        this.element.dataset.currentColor = newValue;
+                        this.updateVisiblePart();
+                        var rgb = ColorSpace.hexToRgb(newValue);
+                        for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {
+                            var observer = _a[_i];
+                            observer(rgb);
+                        }
+                    }
+                },
+                enumerable: false,
+                configurable: true
+            });
+            ColorPicker.prototype.attachPopup = function (popup) {
+                this.element.parentElement.appendChild(popup);
+            };
+            ColorPicker.prototype.updateVisiblePart = function () {
+                var hexValue = this.value;
+                this.colorPreview.style.background = hexValue;
+                this.colorPreviewText.textContent = hexValue;
+            };
+            return ColorPicker;
+        }());
         var Popup;
         (function (Popup) {
             var ID = "color-picker-popup";
@@ -310,7 +331,7 @@ var Page;
                 valueSaturationCursor.style.left = percentageString(hsv.s);
                 valueSaturationCursor.style.top = percentageString(1 - hsv.v);
                 if (currentControl) {
-                    writeNewColor(currentControl, hexString);
+                    currentControl.value = hexString;
                 }
             }
             function fitPopupToContainer() {
@@ -330,9 +351,9 @@ var Page;
                     popupElement.style.top = (topOffset + bottomOffset) + "px";
                 }
             }
-            function createPopup(colorPickerContainer) {
-                currentControl = colorPickerContainer;
-                var currentHex = readCurrentColor(colorPickerContainer);
+            function createPopup(colorPicker) {
+                currentControl = colorPicker;
+                var currentHex = colorPicker.value;
                 var currentRgb = ColorSpace.hexToRgb(currentHex);
                 var currentHsv = ColorSpace.rgbToHsv(currentRgb);
                 hsv.h = currentHsv.h;
@@ -345,7 +366,7 @@ var Page;
                 // reset placement to avoid flickering due to the popup being temporarily out of screen
                 popupElement.style.top = "";
                 popupElement.style.left = "";
-                colorPickerContainer.parentElement.appendChild(popupElement);
+                colorPicker.attachPopup(popupElement);
                 fitPopupToContainer();
             }
             Popup.createPopup = createPopup;
@@ -354,12 +375,12 @@ var Page;
         window.addEventListener("load", function buildColorPickersMap() {
             var list = document.querySelectorAll(".color-picker");
             var _loop_1 = function (i) {
-                var colorPicker = list[i];
-                if (colorPicker.id) {
-                    colorPickersMap[colorPicker.id] = colorPicker;
+                var colorPickerElement = list[i];
+                var colorPicker = new ColorPicker(colorPickerElement);
+                if (colorPickerElement.id) {
+                    colorPickersMap[colorPickerElement.id] = colorPicker;
                 }
-                updateVisiblePart(colorPicker);
-                colorPicker.addEventListener("click", function createPopup(event) {
+                colorPickerElement.addEventListener("click", function createPopup(event) {
                     Popup.createPopup(colorPicker);
                     event.stopPropagation();
                     event.stopImmediatePropagation();
@@ -397,5 +418,30 @@ var Page;
         // }
         // Storage.applyStoredState();
         // Storage.attachStorageEvents();
+        function addObserver(id, observer) {
+            var colorPicker = colorPickersMap[id];
+            if (colorPicker) {
+                colorPicker.observers.push(observer);
+            }
+            return false;
+        }
+        ColorPicker_1.addObserver = addObserver;
+        function getValue(id) {
+            var hexValue = colorPickersMap[id].value;
+            return ColorSpace.hexToRgb(hexValue);
+        }
+        ColorPicker_1.getValue = getValue;
+        /**
+         * @param id control id
+         * @param r integer in [0, 255]
+         * @param g integer in [0, 255]
+         * @param b integer in [0, 255]
+         */
+        function setValue(id, r, g, b) {
+            var rgb = { r: r, g: g, b: b };
+            var hexValue = ColorSpace.rgbToHex(rgb);
+            colorPickersMap[id].value = hexValue;
+        }
+        ColorPicker_1.setValue = setValue;
     })(ColorPicker = Page.ColorPicker || (Page.ColorPicker = {}));
 })(Page || (Page = {}));
