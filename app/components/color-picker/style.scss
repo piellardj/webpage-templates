@@ -1,0 +1,155 @@
+@import 'common/theme';
+
+.color-picker-container {
+    position: relative;
+}
+
+.color-picker {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    cursor: pointer;
+}
+
+.color-preview {
+    $preview-size: 32px;
+    $preview-border-width: 2px;
+
+    width: $preview-size;
+    height: $preview-size;
+    margin-right: 12px;
+    border-width: 2px;
+    border-style: solid;
+    @include color-control-neutral(border-color);
+    border-radius: 50%;
+    line-height: $preview-size;
+    box-sizing: border-box;
+
+    .color-picker.compact & {
+        $preview-size: 26px;
+        width: $preview-size;
+        height: $preview-size;
+        line-height: $preview-size;
+    }
+
+    .color-picker:hover &,
+    .color-picker:focus & {
+        @include color-control-accent-hover(border-color);
+    }
+
+    .color-picker:active & {
+        @include color-control-accent-active(border-color);
+    }
+}
+
+.color-value {
+    text-transform: uppercase;
+}
+
+.color-picker-popup {
+    position: absolute;
+    display: flex;
+    top: 50%;
+    left: 50%;
+    flex-flow: column nowrap;
+    min-width: 275px;
+    height: 300px;
+    transform: translate(-50%, -50%);
+    text-align: left;
+    white-space: nowrap;
+
+    .picker .cursor {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        border: 2px solid white;
+    }
+
+    .value-saturation-picker {
+        flex: 1;
+
+        .color-filter {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .cursor {
+            $size: 16px;
+
+            top: 0;
+            left: 0;
+            width: $size;
+            height: $size;
+            border-radius: 50%;
+        }
+    }
+
+    .hue-picker {
+        height: 28px;
+
+        .hue-bar {
+            $height: 10px;
+    
+            position: absolute;
+            top: calc(50% - #{0.5 * $height});
+            left: 0;
+            width: 100%;
+            height: $height;
+            border-radius: 0.5 * $height;
+            background: linear-gradient(to right,hsl(0,100%,50%),hsl(60,100%,50%),hsl(120,100%,50%),hsl(180,100%,50%),hsl(240,100%,50%),hsl(300,100%,50%),hsl(360,100%,50%));
+        }
+
+        .cursor {
+            top: 50%;
+            left: 0;
+            width: 10px;
+            height: 28px;
+            border-radius: 6px;
+        }
+    }
+
+    .preview-block {
+        display: flex;
+        flex-flow: row nowrap;
+
+        .preview-color {
+            $size: 50px;
+    
+            flex: 0 0 $size;
+            width: $size;
+            min-height: $size;
+            background: green;
+        }
+
+        .preview-text-label {
+            display: inline-block;
+            width: 2.5em;
+        }
+    }
+
+    .outlined {
+        border-width: 1px;
+        border-style: solid;
+        @include color-control-neutral(border-color);
+        border-radius: 4px;
+    }
+}
+
+.popup {
+    $half-padding: 7px;
+
+    padding: $half-padding;
+
+    @include color-theme(background);
+    @include block-border(border);
+    border-radius: 8px;
+
+    box-shadow: 0 0 10px rgba(50, 50, 50, 0.6);
+
+    .block {
+        position: relative;
+        margin: $half-padding;
+    }
+}

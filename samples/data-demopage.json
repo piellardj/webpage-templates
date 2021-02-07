@@ -325,6 +325,23 @@
                     "enabled": false
                 }
             ]
+        },
+        {
+            "title": "Color pickers",
+            "id": "color-pickers-section-id",
+            "controls": [
+                {
+                    "type": "color-picker",
+                    "id": "color-picker-0-id",
+                    "defaultValueHex": "#FF0000"
+                },
+                {
+                    "type": "color-picker",
+                    "id": "color-picker-1-id",
+                    "title": "My color",
+                    "defaultValueHex": "#00FF00"
+                }
+            ]
         }
     ]
 }

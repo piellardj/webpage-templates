@@ -1,5 +1,6 @@
 import { IButton } from "../../button/template-interface";
 import { ICheckbox } from "../../checkbox/template-interface";
+import { IColorPicker } from "../../color-picker/template-interface";
 import { IFileControlDownload, IFileControlUpload } from "../../file-control/template-interface";
 import { IPicker } from "../../picker/template-interface";
 import { IRange } from "../../range/template-interface";
@@ -41,7 +42,11 @@ declare type ControlTabsKey = "tabs";
 interface IControlTabs extends IControlBase, ITabs {
     type: ControlTabsKey;
 }
-declare type ISupportedControl = IControlTabs | IControlCheckbox | IControlRange | IControlButton | IControlFileUpload | IControlFileDownload | IControlPicker;
+declare type ControlColorPickerKey = "color-picker";
+interface IControlColorPicker extends IControlBase, IColorPicker {
+    type: ControlColorPickerKey;
+}
+declare type ISupportedControl = IControlTabs | IControlCheckbox | IControlRange | IControlButton | IControlFileUpload | IControlFileDownload | IControlPicker | IControlColorPicker;
 interface IControlSection {
     title: string;
     id?: string;
@@ -58,5 +63,6 @@ export declare const supportedControls: {
     Picker: ControlPickerKey;
     Range: ControlRangeKey;
     Tabs: ControlTabsKey;
+    ColorPicker: ControlColorPickerKey;
 };
 export {};

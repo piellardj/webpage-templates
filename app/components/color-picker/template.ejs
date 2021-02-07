@@ -1,0 +1,13 @@
+# { let style = IsFalse(compact) ? "" : " compact";
+# const isValidHex = /^#[0-9a-fA-f]{6}$/.test(defaultValueHex);
+# if (!isValidHex) {
+    # throw "Invalid color picker default value '" + defaultValueHex + "'.";
+# }
+
+<div class="color-picker-container">
+    <div class="color-picker #=(style)" id="#=(id)" data-current-color="#=(defaultValueHex)">
+        <div class="color-preview">&nbsp;</div>
+        <span class="color-value">#=(defaultValueHex)</span>
+    </div>
+</div>
+# }

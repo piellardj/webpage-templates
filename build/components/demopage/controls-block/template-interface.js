@@ -9,4 +9,5 @@ exports.supportedControls = {
     Picker: "picker",
     Range: "range",
     Tabs: "tabs",
+    ColorPicker: "color-picker"
 };
