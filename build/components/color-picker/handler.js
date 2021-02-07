@@ -320,13 +320,12 @@ var Page;
                     var margin = 16;
                     popupElement.style.maxWidth = (containerBox.width - 2 * margin) + "px";
                     popupElement.style.maxHeight = (containerBox.height - 2 * margin) + "px";
-                    popupElement.style.left = "0";
-                    popupElement.style.top = "0";
+                    var parentBox = popupElement.parentElement.getBoundingClientRect();
                     var popupBox = popupElement.getBoundingClientRect();
-                    var leftOffset = Math.max(0, (containerBox.left + margin) - popupBox.left);
-                    var rightOffset = Math.min(0, (containerBox.left + containerBox.width - margin) - (popupBox.left + popupBox.width));
-                    var topOffset = Math.max(0, (containerBox.top + margin) - popupBox.top);
-                    var bottomOffset = Math.min(0, (containerBox.top + containerBox.height - margin) - (popupBox.top + popupBox.height));
+                    var leftOffset = Math.max(0, (containerBox.left + margin) - parentBox.left);
+                    var rightOffset = Math.min(0, (containerBox.left + containerBox.width - margin) - (parentBox.left + popupBox.width));
+                    var topOffset = Math.max(0, (containerBox.top + margin) - parentBox.top);
+                    var bottomOffset = Math.min(0, (containerBox.top + containerBox.height - margin) - (parentBox.top + popupBox.height));
                     popupElement.style.left = (leftOffset + rightOffset) + "px";
                     popupElement.style.top = (topOffset + bottomOffset) + "px";
                 }
@@ -343,6 +342,9 @@ var Page;
                     buildPopup();
                 }
                 onColorChange();
+                // reset placement to avoid flickering due to the popup being temporarily out of screen
+                popupElement.style.top = "";
+                popupElement.style.left = "";
                 colorPickerContainer.parentElement.appendChild(popupElement);
                 fitPopupToContainer();
             }

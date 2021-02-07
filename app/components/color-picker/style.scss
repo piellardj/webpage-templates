@@ -49,8 +49,8 @@
 .color-picker-popup {
     position: absolute;
     display: flex;
-    top: 50%;
-    left: 50%;
+    top: 0;
+    left: 0;
     flex-flow: column nowrap;
     min-width: 275px;
     height: 300px;

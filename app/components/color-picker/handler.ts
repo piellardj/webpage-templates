@@ -388,13 +388,12 @@ namespace Page.ColorPicker {
                 popupElement.style.maxWidth = (containerBox.width - 2 * margin) + "px";
                 popupElement.style.maxHeight = (containerBox.height - 2 * margin) + "px";
                 
-                popupElement.style.left = "0";
-                popupElement.style.top = "0";
+                const parentBox = popupElement.parentElement.getBoundingClientRect();
                 const popupBox = popupElement.getBoundingClientRect();
-                const leftOffset = Math.max(0, (containerBox.left + margin) - popupBox.left);
-                const rightOffset = Math.min(0, (containerBox.left + containerBox.width - margin) - (popupBox.left + popupBox.width));
-                const topOffset = Math.max(0, (containerBox.top + margin) - popupBox.top);
-                const bottomOffset = Math.min(0, (containerBox.top + containerBox.height - margin) - (popupBox.top + popupBox.height));
+                const leftOffset = Math.max(0, (containerBox.left + margin) - parentBox.left);
+                const rightOffset = Math.min(0, (containerBox.left + containerBox.width - margin) - (parentBox.left + popupBox.width));
+                const topOffset = Math.max(0, (containerBox.top + margin) - parentBox.top);
+                const bottomOffset = Math.min(0, (containerBox.top + containerBox.height - margin) - (parentBox.top + popupBox.height));
                 popupElement.style.left = (leftOffset + rightOffset) + "px";
                 popupElement.style.top = (topOffset + bottomOffset) + "px";
             }
@@ -415,6 +414,9 @@ namespace Page.ColorPicker {
             }
             onColorChange();
 
+            // reset placement to avoid flickering due to the popup being temporarily out of screen
+            popupElement.style.top = "";
+            popupElement.style.left = "";
             colorPickerContainer.parentElement.appendChild(popupElement);
             fitPopupToContainer();
         }
