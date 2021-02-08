@@ -526,6 +526,11 @@ namespace Page.ColorPicker {
      */
     export function setValue(id: string, r: number, g: number, b: number): void {
         const rgb: ColorSpace.IRGB = { r, g, b };
+        const rgb: ColorSpace.IRGB = {
+            r: roundAndClamp(r, 0, 255),
+            g: roundAndClamp(g, 0, 255),
+            b: roundAndClamp(b, 0, 255),
+        };
         const hexValue = ColorSpace.rgbToHex(rgb);
         colorPickersMap[id].value = hexValue;
     }
