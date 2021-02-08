@@ -47,13 +47,13 @@
 }
 
 .color-picker-popup {
-    position: absolute;
     display: flex;
+    position: absolute;
     top: 0;
     left: 0;
     flex-flow: column nowrap;
     min-width: 275px;
-    height: 300px;
+    min-height: 300px;
     text-align: left;
     white-space: nowrap;
     z-index: 100;
@@ -67,6 +67,7 @@
 
     .value-saturation-picker {
         flex: 1;
+        min-height: 180px;
 
         .color-filter {
             position: absolute;
@@ -122,6 +123,26 @@
             width: $size;
             min-height: $size;
             background: green;
+        }
+
+        tr {
+            height: 28px;
+        }
+
+        input[type=text] {
+            padding: 3px 2px;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 4px;
+            background: none;
+            color: inherit;
+            font-size: inherit;
+            @include color-control-neutral(border-color);
+
+            &:invalid {
+                border-color: red;
+                outline: red solid !important;
+            }
         }
     }
 

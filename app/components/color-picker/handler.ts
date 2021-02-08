@@ -37,7 +37,7 @@ namespace Page.ColorPicker {
 
         export function parseHexa(value: string): Hexa | null {
             if (/^#[0-9a-fA-F]{6}$/.test(value)) {
-                return value;
+                return value.toUpperCase();
             }
             return null;
         }
@@ -45,7 +45,6 @@ namespace Page.ColorPicker {
         export function hsvToRgb(hsv: IHSV): IRGB {
             const h2 = hsv.h / 60;
             const c = hsv.s * hsv.v;
-            const x = c * (1 - Math.abs(h2 % 2 - 1));
             const x = c * (1 - Math.abs(positiveModulus(h2, 2) - 1));
 
             let rgb: IRGB;
@@ -195,7 +194,7 @@ namespace Page.ColorPicker {
         let hueCursor: HTMLElement = null;
 
         let previewColor: HTMLElement = null;
-        let previewHexaValue: HTMLElement = null;
+        let previewHexaValue: HTMLInputElement = null;
         let previewRgbValue: HTMLElement = null;
         let previewHslValue: HTMLElement = null;
 
@@ -261,7 +260,26 @@ namespace Page.ColorPicker {
                         return valueSpan;
                     }
 
-                    previewHexaValue = buildPreviewText("hexa");
+                    const hexaContainer = buildPreviewText("hexa");
+                    previewHexaValue = document.createElement("input");
+                    previewHexaValue.type = "text";
+                    previewHexaValue.minLength = 7;
+                    previewHexaValue.maxLength = 7;
+                    previewHexaValue.size = 7;
+                    previewHexaValue.pattern = "#[0-9a-fA-F]{6}";
+                    previewHexaValue.addEventListener("input", function newHexaInput() {
+                        const newValue = previewHexaValue.value;
+                        const newHexa = ColorSpace.parseHexa(newValue);
+                        if (newHexa) { // valid input
+                            const newRgb = ColorSpace.hexToRgb(newValue);
+                            const newHsl = ColorSpace.rgbToHsv(newRgb);
+                            hsv.h = newHsl.h;
+                            hsv.s = newHsl.s;
+                            hsv.v = newHsl.v;
+                            onInput();
+                        }
+                    });
+                    hexaContainer.appendChild(previewHexaValue);
                     previewRgbValue = buildPreviewText("rgb");
                     previewHslValue = buildPreviewText("hsv");
 
@@ -419,7 +437,7 @@ namespace Page.ColorPicker {
             previewColor.style.background = rgbString;
 
             // text
-            previewHexaValue.textContent = hexString;
+            previewHexaValue.value = hexString;
             previewRgbValue.textContent = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
             previewHslValue.textContent = `${hsv.h}°, ${percentageString(hsv.s)}, ${percentageString(hsv.v)}`;
 
@@ -525,7 +543,6 @@ namespace Page.ColorPicker {
      * @param b integer in [0, 255]
      */
     export function setValue(id: string, r: number, g: number, b: number): void {
-        const rgb: ColorSpace.IRGB = { r, g, b };
         const rgb: ColorSpace.IRGB = {
             r: roundAndClamp(r, 0, 255),
             g: roundAndClamp(g, 0, 255),

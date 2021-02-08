@@ -11,11 +11,14 @@ var Page;
             var rounded = Math.round(value);
             return clamp(rounded, min, max);
         }
+        function positiveModulus(a, b) {
+            return ((a % b) + b) % b;
+        }
         var ColorSpace;
         (function (ColorSpace) {
             function parseHexa(value) {
                 if (/^#[0-9a-fA-F]{6}$/.test(value)) {
-                    return value;
+                    return value.toUpperCase();
                 }
                 return null;
             }
@@ -23,7 +26,7 @@ var Page;
             function hsvToRgb(hsv) {
                 var h2 = hsv.h / 60;
                 var c = hsv.s * hsv.v;
-                var x = c * (1 - Math.abs(h2 % 2 - 1));
+                var x = c * (1 - Math.abs(positiveModulus(h2, 2) - 1));
                 var rgb;
                 if (h2 <= 1) {
                     rgb = { r: c, g: x, b: 0 };
@@ -72,6 +75,7 @@ var Page;
                 if (cmax !== 0) {
                     result.s = delta / cmax;
                 }
+                result.h = positiveModulus(result.h, 360);
                 result.h = roundAndClamp(result.h, 0, 360);
                 return result;
             }
@@ -211,7 +215,26 @@ var Page;
                             previewText_1.appendChild(row);
                             return valueSpan;
                         }
-                        previewHexaValue = buildPreviewText("hexa");
+                        var hexaContainer = buildPreviewText("hexa");
+                        previewHexaValue = document.createElement("input");
+                        previewHexaValue.type = "text";
+                        previewHexaValue.minLength = 7;
+                        previewHexaValue.maxLength = 7;
+                        previewHexaValue.size = 7;
+                        previewHexaValue.pattern = "#[0-9a-fA-F]{6}";
+                        previewHexaValue.addEventListener("input", function newHexaInput() {
+                            var newValue = previewHexaValue.value;
+                            var newHexa = ColorSpace.parseHexa(newValue);
+                            if (newHexa) { // valid input
+                                var newRgb = ColorSpace.hexToRgb(newValue);
+                                var newHsl = ColorSpace.rgbToHsv(newRgb);
+                                hsv.h = newHsl.h;
+                                hsv.s = newHsl.s;
+                                hsv.v = newHsl.v;
+                                onInput();
+                            }
+                        });
+                        hexaContainer.appendChild(previewHexaValue);
                         previewRgbValue = buildPreviewText("rgb");
                         previewHslValue = buildPreviewText("hsv");
                         previewBlock.appendChild(previewText_1);
@@ -349,7 +372,7 @@ var Page;
                 valueSaturationCursor.style.background = rgbString;
                 previewColor.style.background = rgbString;
                 // text
-                previewHexaValue.textContent = hexString;
+                previewHexaValue.value = hexString;
                 previewRgbValue.textContent = rgb.r + ", " + rgb.g + ", " + rgb.b;
                 previewHslValue.textContent = hsv.h + "\u00B0, " + percentageString(hsv.s) + ", " + percentageString(hsv.v);
                 // cursors positions
@@ -444,7 +467,11 @@ var Page;
          * @param b integer in [0, 255]
          */
         function setValue(id, r, g, b) {
-            var rgb = { r: r, g: g, b: b };
+            var rgb = {
+                r: roundAndClamp(r, 0, 255),
+                g: roundAndClamp(g, 0, 255),
+                b: roundAndClamp(b, 0, 255),
+            };
             var hexValue = ColorSpace.rgbToHex(rgb);
             colorPickersMap[id].value = hexValue;
         }
