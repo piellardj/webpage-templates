@@ -16,6 +16,10 @@ namespace Page.ColorPicker {
         return clamp(rounded, min, max);
     }
 
+    function positiveModulus(a: number, b: number): number {
+        return ((a % b) + b) % b;
+    }
+
     namespace ColorSpace {
         export interface IRGB {
             r: number; // integer in [0, 255]
@@ -42,6 +46,7 @@ namespace Page.ColorPicker {
             const h2 = hsv.h / 60;
             const c = hsv.s * hsv.v;
             const x = c * (1 - Math.abs(h2 % 2 - 1));
+            const x = c * (1 - Math.abs(positiveModulus(h2, 2) - 1));
 
             let rgb: IRGB;
             if (h2 <= 1) {
@@ -88,6 +93,7 @@ namespace Page.ColorPicker {
             if (cmax !== 0) {
                 result.s = delta / cmax;
             }
+            result.h = positiveModulus(result.h, 360);
             result.h = roundAndClamp(result.h, 0, 360);
             return result;
         }
