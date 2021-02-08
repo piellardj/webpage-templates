@@ -8,7 +8,7 @@ namespace Page.ColorPicker {
     }
 
     function clamp(value: number, min: number, max: number): number {
-        return Math.max(min, Math.max(min, value));
+        return Math.max(min, Math.min(max, value));
     }
 
     function roundAndClamp(value: number, min: number, max: number): number {
@@ -132,7 +132,7 @@ namespace Page.ColorPicker {
             this.updateVisiblePart();
 
             this.element.addEventListener("click", () => {
-                Popup.createPopup(this);
+                Popup.assignPopup(this);
             });
         }
 
@@ -195,144 +195,208 @@ namespace Page.ColorPicker {
         }
     }
 
-    namespace Popup {
-        const ID = "color-picker-popup";
-
-        let currentControl: ColorPicker;
-
-        let popupElement: HTMLElement = null;
-        let valueSaturationPicker: HTMLElement = null;
-        let hueColorFilter: HTMLElement = null;
-        let valueSaturationCursor: HTMLElement = null;
-
-        let huePicker: HTMLElement = null;
-        let hueCursor: HTMLElement = null;
-
-        let previewColor: HTMLElement = null;
-        let previewHexaValue: HTMLInputElement = null;
-        let previewRgbValue: HTMLElement = null;
-        let previewHslValue: HTMLElement = null;
-
-        const hsv: ColorSpace.IHSV = { h: 200, s: 0.75, v: 0.5 };
-
-        function buildPopup(): void {
-            function buildElement(tagname: string, classList?: string[]): HTMLElement {
-                const element = document.createElement(tagname);
-                if (classList) {
-                    element.className = classList.join(" ");
-                }
-                return element;
+    class Popup {
+        public static assignPopup(colorPicker: ColorPicker): void {
+            if (!Popup.popup) {
+                Popup.popup = new Popup();
             }
+            Popup.popup.attach(colorPicker);
+        }
 
-            popupElement = buildElement("div", ["popup", "color-picker-popup"]);
+        private static popup: Popup;
+
+        private currentControl: ColorPicker;
+
+        private readonly popupElement: HTMLElement;
+
+        private readonly hsv: ColorSpace.IHSV = { h: 200, s: 0.75, v: 0.5 };
+
+        private readonly valueSaturationPicker: HTMLElement;
+        private readonly hueColorFilter: HTMLElement;
+        private readonly valueSaturationCursor: HTMLElement;
+
+        private readonly huePicker: HTMLElement;
+        private readonly hueCursor: HTMLElement;
+
+        private readonly previewColor: HTMLElement;
+        private readonly previewHexaValue: HTMLInputElement;
+        private readonly previewRgbValue: HTMLElement;
+        private readonly previewHslValue: HTMLElement;
+
+        private constructor() {
+            this.popupElement = Popup.buildElement("div", ["popup", "color-picker-popup"]);
 
             {
-                valueSaturationPicker = buildElement("div", ["block", "picker", "value-saturation-picker"]);
+                this.valueSaturationPicker = Popup.buildElement("div", ["block", "picker", "value-saturation-picker"]);
 
-                hueColorFilter = buildElement("span", ["color-filter", "outlined"]);
-                valueSaturationPicker.appendChild(hueColorFilter);
+                this.hueColorFilter = Popup.buildElement("span", ["color-filter", "outlined"]);
+                this.valueSaturationPicker.appendChild(this.hueColorFilter);
 
-                const valueColorFilter = buildElement("span", ["color-filter", "outlined"]);
+                const valueColorFilter = Popup.buildElement("span", ["color-filter", "outlined"]);
                 valueColorFilter.style.background = "linear-gradient(to top, black, rgba(0,0,0,0))";
-                valueSaturationPicker.appendChild(valueColorFilter);
+                this.valueSaturationPicker.appendChild(valueColorFilter);
 
-                valueSaturationCursor = buildElement("span", ["cursor"]);
-                valueSaturationPicker.appendChild(valueSaturationCursor);
+                this.valueSaturationCursor = Popup.buildElement("span", ["cursor"]);
+                this.valueSaturationPicker.appendChild(this.valueSaturationCursor);
 
-                popupElement.appendChild(valueSaturationPicker);
+                this.popupElement.appendChild(this.valueSaturationPicker);
             }
 
             {
-                huePicker = buildElement("div", ["block", "picker", "hue-picker"]);
+                this.huePicker = Popup.buildElement("div", ["block", "picker", "hue-picker"]);
 
-                const hueBar = buildElement("span", ["hue-bar"]);
-                huePicker.appendChild(hueBar);
+                const hueBar = Popup.buildElement("span", ["hue-bar"]);
+                this.huePicker.appendChild(hueBar);
 
-                hueCursor = buildElement("span", ["cursor"]);
-                huePicker.appendChild(hueCursor);
+                this.hueCursor = Popup.buildElement("span", ["cursor"]);
+                this.huePicker.appendChild(this.hueCursor);
 
-                popupElement.appendChild(huePicker);
+                this.popupElement.appendChild(this.huePicker);
             }
 
             {
-                const previewBlock = buildElement("div", ["preview-block"]);
+                const previewBlock = Popup.buildElement("div", ["preview-block"]);
 
-                previewColor = buildElement("div", ["preview-color", "outlined"]);
-                previewColor.classList.add("block");
-                previewBlock.appendChild(previewColor);
+                this.previewColor = Popup.buildElement("div", ["preview-color", "outlined"]);
+                this.previewColor.classList.add("block");
+                previewBlock.appendChild(this.previewColor);
 
                 {
-                    const previewText = buildElement("table", ["block"]);
+                    const previewText = Popup.buildElement("table", ["block"]);
 
-                    function buildPreviewText(name: string): HTMLSpanElement {
-                        const row = document.createElement("tr");
-                        const nameSpan = document.createElement("td");
-                        nameSpan.textContent = name + ":";
-                        const valueSpan = document.createElement("td");
-                        row.appendChild(nameSpan);
-                        row.appendChild(valueSpan);
-                        previewText.appendChild(row);
-                        return valueSpan;
-                    }
-
-                    const hexaContainer = buildPreviewText("hexa");
-                    previewHexaValue = document.createElement("input");
-                    previewHexaValue.type = "text";
-                    previewHexaValue.minLength = 7;
-                    previewHexaValue.maxLength = 7;
-                    previewHexaValue.size = 7;
-                    previewHexaValue.pattern = "#[0-9a-fA-F]{6}";
-                    previewHexaValue.addEventListener("input", function newHexaInput() {
-                        const newValue = previewHexaValue.value;
+                    const hexaContainer = Popup.buildPreviewText(previewText, "hexa");
+                    this.previewHexaValue = document.createElement("input");
+                    this.previewHexaValue.type = "text";
+                    this.previewHexaValue.minLength = 7;
+                    this.previewHexaValue.maxLength = 7;
+                    this.previewHexaValue.size = 7;
+                    this.previewHexaValue.pattern = "#[0-9a-fA-F]{6}";
+                    this.previewHexaValue.addEventListener("input", () => {
+                        const newValue = this.previewHexaValue.value;
                         const newHexa = ColorSpace.parseHexa(newValue);
                         if (newHexa) { // valid input
                             const newRgb = ColorSpace.hexToRgb(newValue);
                             const newHsl = ColorSpace.rgbToHsv(newRgb);
-                            hsv.h = newHsl.h;
-                            hsv.s = newHsl.s;
-                            hsv.v = newHsl.v;
-                            onInput();
+                            this.hsv.h = newHsl.h;
+                            this.hsv.s = newHsl.s;
+                            this.hsv.v = newHsl.v;
+                            this.onInput();
                         }
                     });
-                    hexaContainer.appendChild(previewHexaValue);
-                    previewRgbValue = buildPreviewText("rgb");
-                    previewHslValue = buildPreviewText("hsv");
+                    hexaContainer.appendChild(this.previewHexaValue);
+                    this.previewRgbValue = Popup.buildPreviewText(previewText, "rgb");
+                    this.previewHslValue = Popup.buildPreviewText(previewText, "hsv");
 
                     previewBlock.appendChild(previewText);
                 }
 
-                popupElement.appendChild(previewBlock);
+                this.popupElement.appendChild(previewBlock);
             }
 
-            registerCursorEvent(huePicker, function (coords: IPoint): void {
-                hsv.h = roundAndClamp(360 * coords.x, 0, 360);
-                onInput();
+            this.registerCursorEvent(this.huePicker, (coords: IPoint) => {
+                this.hsv.h = roundAndClamp(360 * coords.x, 0, 360);
+                this.onInput();
             });
-
-            registerCursorEvent(valueSaturationPicker, function (coords: IPoint): void {
-                hsv.s = clamp(coords.x, 0, 1);
-                hsv.v = clamp(1 - coords.y, 0, 1);
-                onInput();
-
+            this.registerCursorEvent(this.valueSaturationPicker, (coords: IPoint) => {
+                this.hsv.s = clamp(coords.x, 0, 1);
+                this.hsv.v = clamp(1 - coords.y, 0, 1);
+                this.onInput();
                 // retain exact position because rebuilding it from color is not exact
-                valueSaturationCursor.style.left = percentageString(coords.x);
-                valueSaturationCursor.style.top = percentageString(coords.y);
+                this.valueSaturationCursor.style.left = Popup.percentageString(coords.x);
+                this.valueSaturationCursor.style.top = Popup.percentageString(coords.y);
             });
 
             let isActive = false;
-            popupElement.addEventListener("mousedown", function setActive() {
+            this.popupElement.addEventListener("mousedown", function setActive() {
                 isActive = true;
             });
-            window.addEventListener("mouseup", function checkIfPopupShouldBeDetached(event: MouseEvent): void {
-                const clickedOutOfPopup = !popupElement.contains(event.target as Node);
-                if (clickedOutOfPopup && popupElement.parentElement && !isActive) {
-                    popupElement.parentElement.removeChild(popupElement);
+            window.addEventListener("mouseup", (event: MouseEvent) => {
+                const clickedOutOfPopup = !this.popupElement.contains(event.target as Node);
+                if (clickedOutOfPopup && this.popupElement.parentElement && !isActive) {
+                    this.popupElement.parentElement.removeChild(this.popupElement);
                 }
                 isActive = false;
             });
         }
 
-        function registerCursorEvent(container: HTMLElement, callback: (normalizedCoords: IPoint) => unknown): void {
+        private updateAppearance(): void {
+            const rgb = ColorSpace.hsvToRgb(this.hsv);
+            const hexString = ColorSpace.rgbToHex(rgb);
+            const rgbString = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`; // real coor
+            const hslString = `hsl(${this.hsv.h}, 100%, 50%)`; // pure color
+
+            // colors
+            this.hueColorFilter.style.background = `linear-gradient(to right, white, ${hslString})`;
+            this.hueCursor.style.background = hslString;
+            this.valueSaturationCursor.style.background = rgbString;
+            this.previewColor.style.background = rgbString;
+
+            // text
+            this.previewHexaValue.value = hexString;
+            this.previewRgbValue.textContent = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+            const percentSaturation = Popup.percentageString(this.hsv.s);
+            const percentValue = Popup.percentageString(this.hsv.v);
+            this.previewHslValue.textContent = `${this.hsv.h}°, ${percentSaturation}, ${percentValue}`;
+
+            // cursors positions
+            this.hueCursor.style.left = Popup.percentageString(this.hsv.h / 360);
+            this.valueSaturationCursor.style.left = percentSaturation;
+            this.valueSaturationCursor.style.top = Popup.percentageString(1 - this.hsv.v);
+        }
+
+        private onInput(): void {
+            const rgb = ColorSpace.hsvToRgb(this.hsv);
+            const hexString = ColorSpace.rgbToHex(rgb);
+            this.updateAppearance();
+
+            if (this.currentControl) {
+                this.currentControl.value = hexString;
+            }
+            Storage.storeState(this.currentControl);
+        }
+
+        private attach(colorPicker: ColorPicker): void {
+            this.currentControl = colorPicker;
+
+            const currentHex = colorPicker.value;
+            const currentRgb = ColorSpace.hexToRgb(currentHex);
+            const currentHsv = ColorSpace.rgbToHsv(currentRgb);
+            Popup.popup.hsv.h = currentHsv.h;
+            Popup.popup.hsv.v = currentHsv.v;
+            Popup.popup.hsv.s = currentHsv.s;
+
+            Popup.popup.updateAppearance();
+
+            // reset placement to avoid flickering due to the popup being temporarily out of screen
+            this.popupElement.style.top = "";
+            this.popupElement.style.left = "";
+            this.currentControl.attachPopup(this.popupElement);
+            this.fitPopupToContainer();
+        }
+
+        private fitPopupToContainer(): void {
+            if (this.popupElement.parentElement) {
+                const container = document.querySelector(".controls-block") || document.body;
+                const containerBox = container.getBoundingClientRect();
+                const margin = 16;
+                const containerRight = containerBox.left + containerBox.width - margin;
+                const containerBottom = containerBox.top + containerBox.height - margin;
+
+                this.popupElement.style.maxWidth = (containerBox.width - 2 * margin) + "px";
+                this.popupElement.style.maxHeight = (containerBox.height - 2 * margin) + "px";
+
+                const parentBox = this.popupElement.parentElement.getBoundingClientRect();
+                const popupBox = this.popupElement.getBoundingClientRect();
+                const leftOffset = Math.max(0, (containerBox.left + margin) - parentBox.left);
+                const rightOffset = Math.min(0, containerRight - (parentBox.left + popupBox.width));
+                const topOffset = Math.max(0, (containerBox.top + margin) - parentBox.top);
+                const bottomOffset = Math.min(0, containerBottom - (parentBox.top + popupBox.height));
+                this.popupElement.style.left = (leftOffset + rightOffset) + "px";
+                this.popupElement.style.top = (topOffset + bottomOffset) + "px";
+            }
+        }
+
+        private registerCursorEvent(container: HTMLElement, callback: (normalizedCoords: IPoint) => unknown): void {
             function absoluteToRelative(clientX: number, clientY: number): IPoint {
                 const containerBox = container.getBoundingClientRect();
                 const relativeX = (clientX - containerBox.left) / containerBox.width;
@@ -435,84 +499,26 @@ namespace Page.ColorPicker {
             }, { passive: false });
         }
 
-        function percentageString(value: number): string {
+        private static buildElement(tagname: string, classList?: string[]): HTMLElement {
+            const element = document.createElement(tagname);
+            if (classList) {
+                element.className = classList.join(" ");
+            }
+            return element;
+        }
+
+        private static buildPreviewText(container: HTMLElement, name: string): HTMLSpanElement {
+            const row = document.createElement("tr");
+            const nameSpan = document.createElement("td");
+            nameSpan.textContent = name + ":";
+            const valueSpan = document.createElement("td");
+            row.appendChild(nameSpan);
+            row.appendChild(valueSpan);
+            container.appendChild(row);
+            return valueSpan;
+        }
+        private static percentageString(value: number): string {
             return Math.round(100 * value) + "%";
-        }
-
-        function updateAppearance(): void {
-            const rgb = ColorSpace.hsvToRgb(hsv);
-            const hexString = ColorSpace.rgbToHex(rgb);
-            const rgbString = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`; // real coor
-            const hslString = `hsl(${hsv.h}, 100%, 50%)`; // pure color
-
-            // colors
-            hueColorFilter.style.background = `linear-gradient(to right, white, ${hslString})`;
-            hueCursor.style.background = hslString;
-            valueSaturationCursor.style.background = rgbString;
-            previewColor.style.background = rgbString;
-
-            // text
-            previewHexaValue.value = hexString;
-            previewRgbValue.textContent = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
-            previewHslValue.textContent = `${hsv.h}°, ${percentageString(hsv.s)}, ${percentageString(hsv.v)}`;
-
-            // cursors positions
-            hueCursor.style.left = percentageString(hsv.h / 360);
-            valueSaturationCursor.style.left = percentageString(hsv.s);
-            valueSaturationCursor.style.top = percentageString(1 - hsv.v);
-        }
-
-        function onInput(): void {
-            const rgb = ColorSpace.hsvToRgb(hsv);
-            const hexString = ColorSpace.rgbToHex(rgb);
-            updateAppearance();
-
-            if (currentControl) {
-                currentControl.value = hexString;
-            }
-            Storage.storeState(currentControl);
-        }
-
-        function fitPopupToContainer(): void {
-            if (popupElement && popupElement.parentElement) {
-                const container = document.querySelector(".controls-block") || document.body;
-                const containerBox = container.getBoundingClientRect();
-                const margin = 16;
-
-                popupElement.style.maxWidth = (containerBox.width - 2 * margin) + "px";
-                popupElement.style.maxHeight = (containerBox.height - 2 * margin) + "px";
-
-                const parentBox = popupElement.parentElement.getBoundingClientRect();
-                const popupBox = popupElement.getBoundingClientRect();
-                const leftOffset = Math.max(0, (containerBox.left + margin) - parentBox.left);
-                const rightOffset = Math.min(0, (containerBox.left + containerBox.width - margin) - (parentBox.left + popupBox.width));
-                const topOffset = Math.max(0, (containerBox.top + margin) - parentBox.top);
-                const bottomOffset = Math.min(0, (containerBox.top + containerBox.height - margin) - (parentBox.top + popupBox.height));
-                popupElement.style.left = (leftOffset + rightOffset) + "px";
-                popupElement.style.top = (topOffset + bottomOffset) + "px";
-            }
-        }
-
-        export function createPopup(colorPicker: ColorPicker): void {
-            currentControl = colorPicker;
-
-            const currentHex = colorPicker.value;
-            const currentRgb = ColorSpace.hexToRgb(currentHex);
-            const currentHsv = ColorSpace.rgbToHsv(currentRgb);
-            hsv.h = currentHsv.h;
-            hsv.v = currentHsv.v;
-            hsv.s = currentHsv.s;
-
-            if (popupElement === null) {
-                buildPopup();
-            }
-            updateAppearance();
-
-            // reset placement to avoid flickering due to the popup being temporarily out of screen
-            popupElement.style.top = "";
-            popupElement.style.left = "";
-            colorPicker.attachPopup(popupElement);
-            fitPopupToContainer();
         }
     }
 
@@ -537,7 +543,7 @@ namespace Page.ColorPicker {
 
     export function getValue(id: string): ColorSpace.IRGB {
         const colorPicker = getColorPicker(id);
-        const hexValue = colorPickersMap[id].value;
+        const hexValue = colorPicker.value;
         return ColorSpace.hexToRgb(hexValue);
     }
 

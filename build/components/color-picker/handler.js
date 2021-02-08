@@ -5,7 +5,7 @@ var Page;
     var ColorPicker;
     (function (ColorPicker_1) {
         function clamp(value, min, max) {
-            return Math.max(min, Math.max(min, value));
+            return Math.max(min, Math.min(max, value));
         }
         function roundAndClamp(value, min, max) {
             var rounded = Math.round(value);
@@ -107,7 +107,7 @@ var Page;
                 this.colorPreviewText = element.querySelector(".color-value");
                 this.updateVisiblePart();
                 this.element.addEventListener("click", function () {
-                    Popup.createPopup(_this);
+                    Popup.assignPopup(_this);
                 });
             }
             Object.defineProperty(ColorPicker.prototype, "value", {
@@ -169,117 +169,158 @@ var Page;
             }
             Storage.applyStoredState = applyStoredState;
         })(Storage || (Storage = {}));
-        var Popup;
-        (function (Popup) {
-            var ID = "color-picker-popup";
-            var currentControl;
-            var popupElement = null;
-            var valueSaturationPicker = null;
-            var hueColorFilter = null;
-            var valueSaturationCursor = null;
-            var huePicker = null;
-            var hueCursor = null;
-            var previewColor = null;
-            var previewHexaValue = null;
-            var previewRgbValue = null;
-            var previewHslValue = null;
-            var hsv = { h: 200, s: 0.75, v: 0.5 };
-            function buildPopup() {
-                function buildElement(tagname, classList) {
-                    var element = document.createElement(tagname);
-                    if (classList) {
-                        element.className = classList.join(" ");
-                    }
-                    return element;
-                }
-                popupElement = buildElement("div", ["popup", "color-picker-popup"]);
+        var Popup = /** @class */ (function () {
+            function Popup() {
+                var _this = this;
+                this.hsv = { h: 200, s: 0.75, v: 0.5 };
+                this.popupElement = Popup.buildElement("div", ["popup", "color-picker-popup"]);
                 {
-                    valueSaturationPicker = buildElement("div", ["block", "picker", "value-saturation-picker"]);
-                    hueColorFilter = buildElement("span", ["color-filter", "outlined"]);
-                    valueSaturationPicker.appendChild(hueColorFilter);
-                    var valueColorFilter = buildElement("span", ["color-filter", "outlined"]);
+                    this.valueSaturationPicker = Popup.buildElement("div", ["block", "picker", "value-saturation-picker"]);
+                    this.hueColorFilter = Popup.buildElement("span", ["color-filter", "outlined"]);
+                    this.valueSaturationPicker.appendChild(this.hueColorFilter);
+                    var valueColorFilter = Popup.buildElement("span", ["color-filter", "outlined"]);
                     valueColorFilter.style.background = "linear-gradient(to top, black, rgba(0,0,0,0))";
-                    valueSaturationPicker.appendChild(valueColorFilter);
-                    valueSaturationCursor = buildElement("span", ["cursor"]);
-                    valueSaturationPicker.appendChild(valueSaturationCursor);
-                    popupElement.appendChild(valueSaturationPicker);
+                    this.valueSaturationPicker.appendChild(valueColorFilter);
+                    this.valueSaturationCursor = Popup.buildElement("span", ["cursor"]);
+                    this.valueSaturationPicker.appendChild(this.valueSaturationCursor);
+                    this.popupElement.appendChild(this.valueSaturationPicker);
                 }
                 {
-                    huePicker = buildElement("div", ["block", "picker", "hue-picker"]);
-                    var hueBar = buildElement("span", ["hue-bar"]);
-                    huePicker.appendChild(hueBar);
-                    hueCursor = buildElement("span", ["cursor"]);
-                    huePicker.appendChild(hueCursor);
-                    popupElement.appendChild(huePicker);
+                    this.huePicker = Popup.buildElement("div", ["block", "picker", "hue-picker"]);
+                    var hueBar = Popup.buildElement("span", ["hue-bar"]);
+                    this.huePicker.appendChild(hueBar);
+                    this.hueCursor = Popup.buildElement("span", ["cursor"]);
+                    this.huePicker.appendChild(this.hueCursor);
+                    this.popupElement.appendChild(this.huePicker);
                 }
                 {
-                    var previewBlock = buildElement("div", ["preview-block"]);
-                    previewColor = buildElement("div", ["preview-color", "outlined"]);
-                    previewColor.classList.add("block");
-                    previewBlock.appendChild(previewColor);
+                    var previewBlock = Popup.buildElement("div", ["preview-block"]);
+                    this.previewColor = Popup.buildElement("div", ["preview-color", "outlined"]);
+                    this.previewColor.classList.add("block");
+                    previewBlock.appendChild(this.previewColor);
                     {
-                        var previewText_1 = buildElement("table", ["block"]);
-                        function buildPreviewText(name) {
-                            var row = document.createElement("tr");
-                            var nameSpan = document.createElement("td");
-                            nameSpan.textContent = name + ":";
-                            var valueSpan = document.createElement("td");
-                            row.appendChild(nameSpan);
-                            row.appendChild(valueSpan);
-                            previewText_1.appendChild(row);
-                            return valueSpan;
-                        }
-                        var hexaContainer = buildPreviewText("hexa");
-                        previewHexaValue = document.createElement("input");
-                        previewHexaValue.type = "text";
-                        previewHexaValue.minLength = 7;
-                        previewHexaValue.maxLength = 7;
-                        previewHexaValue.size = 7;
-                        previewHexaValue.pattern = "#[0-9a-fA-F]{6}";
-                        previewHexaValue.addEventListener("input", function newHexaInput() {
-                            var newValue = previewHexaValue.value;
+                        var previewText = Popup.buildElement("table", ["block"]);
+                        var hexaContainer = Popup.buildPreviewText(previewText, "hexa");
+                        this.previewHexaValue = document.createElement("input");
+                        this.previewHexaValue.type = "text";
+                        this.previewHexaValue.minLength = 7;
+                        this.previewHexaValue.maxLength = 7;
+                        this.previewHexaValue.size = 7;
+                        this.previewHexaValue.pattern = "#[0-9a-fA-F]{6}";
+                        this.previewHexaValue.addEventListener("input", function () {
+                            var newValue = _this.previewHexaValue.value;
                             var newHexa = ColorSpace.parseHexa(newValue);
                             if (newHexa) { // valid input
                                 var newRgb = ColorSpace.hexToRgb(newValue);
                                 var newHsl = ColorSpace.rgbToHsv(newRgb);
-                                hsv.h = newHsl.h;
-                                hsv.s = newHsl.s;
-                                hsv.v = newHsl.v;
-                                onInput();
+                                _this.hsv.h = newHsl.h;
+                                _this.hsv.s = newHsl.s;
+                                _this.hsv.v = newHsl.v;
+                                _this.onInput();
                             }
                         });
-                        hexaContainer.appendChild(previewHexaValue);
-                        previewRgbValue = buildPreviewText("rgb");
-                        previewHslValue = buildPreviewText("hsv");
-                        previewBlock.appendChild(previewText_1);
+                        hexaContainer.appendChild(this.previewHexaValue);
+                        this.previewRgbValue = Popup.buildPreviewText(previewText, "rgb");
+                        this.previewHslValue = Popup.buildPreviewText(previewText, "hsv");
+                        previewBlock.appendChild(previewText);
                     }
-                    popupElement.appendChild(previewBlock);
+                    this.popupElement.appendChild(previewBlock);
                 }
-                registerCursorEvent(huePicker, function (coords) {
-                    hsv.h = roundAndClamp(360 * coords.x, 0, 360);
-                    onInput();
+                this.registerCursorEvent(this.huePicker, function (coords) {
+                    _this.hsv.h = roundAndClamp(360 * coords.x, 0, 360);
+                    _this.onInput();
                 });
-                registerCursorEvent(valueSaturationPicker, function (coords) {
-                    hsv.s = clamp(coords.x, 0, 1);
-                    hsv.v = clamp(1 - coords.y, 0, 1);
-                    onInput();
+                this.registerCursorEvent(this.valueSaturationPicker, function (coords) {
+                    _this.hsv.s = clamp(coords.x, 0, 1);
+                    _this.hsv.v = clamp(1 - coords.y, 0, 1);
+                    _this.onInput();
                     // retain exact position because rebuilding it from color is not exact
-                    valueSaturationCursor.style.left = percentageString(coords.x);
-                    valueSaturationCursor.style.top = percentageString(coords.y);
+                    _this.valueSaturationCursor.style.left = Popup.percentageString(coords.x);
+                    _this.valueSaturationCursor.style.top = Popup.percentageString(coords.y);
                 });
                 var isActive = false;
-                popupElement.addEventListener("mousedown", function setActive() {
+                this.popupElement.addEventListener("mousedown", function setActive() {
                     isActive = true;
                 });
-                window.addEventListener("mouseup", function checkIfPopupShouldBeDetached(event) {
-                    var clickedOutOfPopup = !popupElement.contains(event.target);
-                    if (clickedOutOfPopup && popupElement.parentElement && !isActive) {
-                        popupElement.parentElement.removeChild(popupElement);
+                window.addEventListener("mouseup", function (event) {
+                    var clickedOutOfPopup = !_this.popupElement.contains(event.target);
+                    if (clickedOutOfPopup && _this.popupElement.parentElement && !isActive) {
+                        _this.popupElement.parentElement.removeChild(_this.popupElement);
                     }
                     isActive = false;
                 });
             }
-            function registerCursorEvent(container, callback) {
+            Popup.assignPopup = function (colorPicker) {
+                if (!Popup.popup) {
+                    Popup.popup = new Popup();
+                }
+                Popup.popup.attach(colorPicker);
+            };
+            Popup.prototype.updateAppearance = function () {
+                var rgb = ColorSpace.hsvToRgb(this.hsv);
+                var hexString = ColorSpace.rgbToHex(rgb);
+                var rgbString = "rgb(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ")"; // real coor
+                var hslString = "hsl(" + this.hsv.h + ", 100%, 50%)"; // pure color
+                // colors
+                this.hueColorFilter.style.background = "linear-gradient(to right, white, " + hslString + ")";
+                this.hueCursor.style.background = hslString;
+                this.valueSaturationCursor.style.background = rgbString;
+                this.previewColor.style.background = rgbString;
+                // text
+                this.previewHexaValue.value = hexString;
+                this.previewRgbValue.textContent = rgb.r + ", " + rgb.g + ", " + rgb.b;
+                var percentSaturation = Popup.percentageString(this.hsv.s);
+                var percentValue = Popup.percentageString(this.hsv.v);
+                this.previewHslValue.textContent = this.hsv.h + "\u00B0, " + percentSaturation + ", " + percentValue;
+                // cursors positions
+                this.hueCursor.style.left = Popup.percentageString(this.hsv.h / 360);
+                this.valueSaturationCursor.style.left = percentSaturation;
+                this.valueSaturationCursor.style.top = Popup.percentageString(1 - this.hsv.v);
+            };
+            Popup.prototype.onInput = function () {
+                var rgb = ColorSpace.hsvToRgb(this.hsv);
+                var hexString = ColorSpace.rgbToHex(rgb);
+                this.updateAppearance();
+                if (this.currentControl) {
+                    this.currentControl.value = hexString;
+                }
+                Storage.storeState(this.currentControl);
+            };
+            Popup.prototype.attach = function (colorPicker) {
+                this.currentControl = colorPicker;
+                var currentHex = colorPicker.value;
+                var currentRgb = ColorSpace.hexToRgb(currentHex);
+                var currentHsv = ColorSpace.rgbToHsv(currentRgb);
+                Popup.popup.hsv.h = currentHsv.h;
+                Popup.popup.hsv.v = currentHsv.v;
+                Popup.popup.hsv.s = currentHsv.s;
+                Popup.popup.updateAppearance();
+                // reset placement to avoid flickering due to the popup being temporarily out of screen
+                this.popupElement.style.top = "";
+                this.popupElement.style.left = "";
+                this.currentControl.attachPopup(this.popupElement);
+                this.fitPopupToContainer();
+            };
+            Popup.prototype.fitPopupToContainer = function () {
+                if (this.popupElement.parentElement) {
+                    var container = document.querySelector(".controls-block") || document.body;
+                    var containerBox = container.getBoundingClientRect();
+                    var margin = 16;
+                    var containerRight = containerBox.left + containerBox.width - margin;
+                    var containerBottom = containerBox.top + containerBox.height - margin;
+                    this.popupElement.style.maxWidth = (containerBox.width - 2 * margin) + "px";
+                    this.popupElement.style.maxHeight = (containerBox.height - 2 * margin) + "px";
+                    var parentBox = this.popupElement.parentElement.getBoundingClientRect();
+                    var popupBox = this.popupElement.getBoundingClientRect();
+                    var leftOffset = Math.max(0, (containerBox.left + margin) - parentBox.left);
+                    var rightOffset = Math.min(0, containerRight - (parentBox.left + popupBox.width));
+                    var topOffset = Math.max(0, (containerBox.top + margin) - parentBox.top);
+                    var bottomOffset = Math.min(0, containerBottom - (parentBox.top + popupBox.height));
+                    this.popupElement.style.left = (leftOffset + rightOffset) + "px";
+                    this.popupElement.style.top = (topOffset + bottomOffset) + "px";
+                }
+            };
+            Popup.prototype.registerCursorEvent = function (container, callback) {
                 function absoluteToRelative(clientX, clientY) {
                     var containerBox = container.getBoundingClientRect();
                     var relativeX = (clientX - containerBox.left) / containerBox.width;
@@ -371,75 +412,29 @@ var Page;
                         }
                     }
                 }, { passive: false });
-            }
-            function percentageString(value) {
+            };
+            Popup.buildElement = function (tagname, classList) {
+                var element = document.createElement(tagname);
+                if (classList) {
+                    element.className = classList.join(" ");
+                }
+                return element;
+            };
+            Popup.buildPreviewText = function (container, name) {
+                var row = document.createElement("tr");
+                var nameSpan = document.createElement("td");
+                nameSpan.textContent = name + ":";
+                var valueSpan = document.createElement("td");
+                row.appendChild(nameSpan);
+                row.appendChild(valueSpan);
+                container.appendChild(row);
+                return valueSpan;
+            };
+            Popup.percentageString = function (value) {
                 return Math.round(100 * value) + "%";
-            }
-            function updateAppearance() {
-                var rgb = ColorSpace.hsvToRgb(hsv);
-                var hexString = ColorSpace.rgbToHex(rgb);
-                var rgbString = "rgb(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ")"; // real coor
-                var hslString = "hsl(" + hsv.h + ", 100%, 50%)"; // pure color
-                // colors
-                hueColorFilter.style.background = "linear-gradient(to right, white, " + hslString + ")";
-                hueCursor.style.background = hslString;
-                valueSaturationCursor.style.background = rgbString;
-                previewColor.style.background = rgbString;
-                // text
-                previewHexaValue.value = hexString;
-                previewRgbValue.textContent = rgb.r + ", " + rgb.g + ", " + rgb.b;
-                previewHslValue.textContent = hsv.h + "\u00B0, " + percentageString(hsv.s) + ", " + percentageString(hsv.v);
-                // cursors positions
-                hueCursor.style.left = percentageString(hsv.h / 360);
-                valueSaturationCursor.style.left = percentageString(hsv.s);
-                valueSaturationCursor.style.top = percentageString(1 - hsv.v);
-            }
-            function onInput() {
-                var rgb = ColorSpace.hsvToRgb(hsv);
-                var hexString = ColorSpace.rgbToHex(rgb);
-                updateAppearance();
-                if (currentControl) {
-                    currentControl.value = hexString;
-                }
-                Storage.storeState(currentControl);
-            }
-            function fitPopupToContainer() {
-                if (popupElement && popupElement.parentElement) {
-                    var container = document.querySelector(".controls-block") || document.body;
-                    var containerBox = container.getBoundingClientRect();
-                    var margin = 16;
-                    popupElement.style.maxWidth = (containerBox.width - 2 * margin) + "px";
-                    popupElement.style.maxHeight = (containerBox.height - 2 * margin) + "px";
-                    var parentBox = popupElement.parentElement.getBoundingClientRect();
-                    var popupBox = popupElement.getBoundingClientRect();
-                    var leftOffset = Math.max(0, (containerBox.left + margin) - parentBox.left);
-                    var rightOffset = Math.min(0, (containerBox.left + containerBox.width - margin) - (parentBox.left + popupBox.width));
-                    var topOffset = Math.max(0, (containerBox.top + margin) - parentBox.top);
-                    var bottomOffset = Math.min(0, (containerBox.top + containerBox.height - margin) - (parentBox.top + popupBox.height));
-                    popupElement.style.left = (leftOffset + rightOffset) + "px";
-                    popupElement.style.top = (topOffset + bottomOffset) + "px";
-                }
-            }
-            function createPopup(colorPicker) {
-                currentControl = colorPicker;
-                var currentHex = colorPicker.value;
-                var currentRgb = ColorSpace.hexToRgb(currentHex);
-                var currentHsv = ColorSpace.rgbToHsv(currentRgb);
-                hsv.h = currentHsv.h;
-                hsv.v = currentHsv.v;
-                hsv.s = currentHsv.s;
-                if (popupElement === null) {
-                    buildPopup();
-                }
-                updateAppearance();
-                // reset placement to avoid flickering due to the popup being temporarily out of screen
-                popupElement.style.top = "";
-                popupElement.style.left = "";
-                colorPicker.attachPopup(popupElement);
-                fitPopupToContainer();
-            }
-            Popup.createPopup = createPopup;
-        })(Popup || (Popup = {}));
+            };
+            return Popup;
+        }());
         window.addEventListener("load", function buildColorPickersMap() {
             var list = document.querySelectorAll(".color-picker");
             for (var i = 0; i < list.length; i++) {
@@ -459,7 +454,7 @@ var Page;
         ColorPicker_1.addObserver = addObserver;
         function getValue(id) {
             var colorPicker = getColorPicker(id);
-            var hexValue = colorPickersMap[id].value;
+            var hexValue = colorPicker.value;
             return ColorSpace.hexToRgb(hexValue);
         }
         ColorPicker_1.getValue = getValue;
