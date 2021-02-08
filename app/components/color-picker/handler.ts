@@ -28,7 +28,6 @@ namespace Page.ColorPicker {
         }
 
         export interface IHSV {
-            h: number; // integer in [0°, 360°]
             s: number; // in [0, 1]
             v: number; // in [0, 1]
         }
@@ -93,7 +92,6 @@ namespace Page.ColorPicker {
                 result.s = delta / cmax;
             }
             result.h = positiveModulus(result.h, 360);
-            result.h = roundAndClamp(result.h, 0, 360);
             return result;
         }
 
@@ -325,6 +323,7 @@ namespace Page.ColorPicker {
             const hexString = ColorSpace.rgbToHex(rgb);
             const rgbString = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`; // real coor
             const hslString = `hsl(${this.hsv.h}, 100%, 50%)`; // pure color
+            const hslString = `hsl(${Math.round(this.hsv.h)}, 100%, 50%)`; // pure color
 
             // colors
             this.hueColorFilter.style.background = `linear-gradient(to right, white, ${hslString})`;
@@ -338,6 +337,7 @@ namespace Page.ColorPicker {
             const percentSaturation = Popup.percentageString(this.hsv.s);
             const percentValue = Popup.percentageString(this.hsv.v);
             this.previewHslValue.textContent = `${this.hsv.h}°, ${percentSaturation}, ${percentValue}`;
+            this.previewHslValue.textContent = `${Math.round(this.hsv.h)}°, ${percentSaturation}, ${percentValue}`;
 
             // cursors positions
             this.hueCursor.style.left = Popup.percentageString(this.hsv.h / 360);
