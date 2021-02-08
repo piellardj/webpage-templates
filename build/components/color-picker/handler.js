@@ -99,12 +99,16 @@ var Page;
         })(ColorSpace || (ColorSpace = {}));
         var ColorPicker = /** @class */ (function () {
             function ColorPicker(element) {
+                var _this = this;
                 this.observers = [];
                 this.element = element;
                 this.id = element.id;
                 this.colorPreview = element.querySelector(".color-preview");
                 this.colorPreviewText = element.querySelector(".color-value");
                 this.updateVisiblePart();
+                this.element.addEventListener("click", function () {
+                    Popup.createPopup(_this);
+                });
             }
             Object.defineProperty(ColorPicker.prototype, "value", {
                 get: function () {
@@ -135,6 +139,16 @@ var Page;
             };
             return ColorPicker;
         }());
+        var colorPickersMap = {};
+        function getColorPicker(id) {
+            if (!colorPickersMap[id]) {
+                var element = document.querySelector("#" + id + ".color-picker");
+                if (element) {
+                    colorPickersMap[id] = new ColorPicker(element);
+                }
+            }
+            return colorPickersMap[id];
+        }
         var Storage;
         (function (Storage) {
             var PREFIX = "color-picker";
@@ -146,7 +160,7 @@ var Page;
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
                     var hexValue = ColorSpace.parseHexa(value);
                     if (hexValue) {
-                        var colorPicker = colorPickersMap[controlId];
+                        var colorPicker = getColorPicker(controlId);
                         if (colorPicker) {
                             colorPicker.value = hexValue;
                         }
@@ -426,29 +440,17 @@ var Page;
             }
             Popup.createPopup = createPopup;
         })(Popup || (Popup = {}));
-        var colorPickersMap = {};
         window.addEventListener("load", function buildColorPickersMap() {
             var list = document.querySelectorAll(".color-picker");
-            var _loop_1 = function (i) {
-                var colorPickerElement = list[i];
-                var colorPicker = new ColorPicker(colorPickerElement);
-                if (colorPickerElement.id) {
-                    colorPickersMap[colorPickerElement.id] = colorPicker;
-                }
-                colorPickerElement.addEventListener("click", function createPopup(event) {
-                    Popup.createPopup(colorPicker);
-                    event.stopPropagation();
-                    event.stopImmediatePropagation();
-                    event.preventDefault();
-                });
-            };
             for (var i = 0; i < list.length; i++) {
-                _loop_1(i);
+                var colorPickerElement = list[i];
+                var id = colorPickerElement.id;
+                getColorPicker(id); // register the color picker
             }
             Storage.applyStoredState();
         });
         function addObserver(id, observer) {
-            var colorPicker = colorPickersMap[id];
+            var colorPicker = getColorPicker(id);
             if (colorPicker) {
                 colorPicker.observers.push(observer);
             }
@@ -456,6 +458,7 @@ var Page;
         }
         ColorPicker_1.addObserver = addObserver;
         function getValue(id) {
+            var colorPicker = getColorPicker(id);
             var hexValue = colorPickersMap[id].value;
             return ColorSpace.hexToRgb(hexValue);
         }
@@ -473,7 +476,8 @@ var Page;
                 b: roundAndClamp(b, 0, 255),
             };
             var hexValue = ColorSpace.rgbToHex(rgb);
-            colorPickersMap[id].value = hexValue;
+            var colorPicker = getColorPicker(id);
+            colorPicker.value = hexValue;
         }
         ColorPicker_1.setValue = setValue;
     })(ColorPicker = Page.ColorPicker || (Page.ColorPicker = {}));

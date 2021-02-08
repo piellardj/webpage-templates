@@ -130,6 +130,10 @@ namespace Page.ColorPicker {
             this.colorPreview = element.querySelector(".color-preview") as HTMLElement;
             this.colorPreviewText = element.querySelector(".color-value") as HTMLElement;
             this.updateVisiblePart();
+
+            this.element.addEventListener("click", () => {
+                Popup.createPopup(this);
+            });
         }
 
         public set value(newValue: ColorSpace.Hexa) {
@@ -160,6 +164,17 @@ namespace Page.ColorPicker {
         }
     }
 
+    const colorPickersMap: { [id: string]: ColorPicker } = {};
+    function getColorPicker(id: string): ColorPicker {
+        if (!colorPickersMap[id]) {
+            const element = document.querySelector(`#${id}.color-picker`) as HTMLElement;
+            if (element) {
+                colorPickersMap[id] = new ColorPicker(element);
+            }
+        }
+        return colorPickersMap[id];
+    }
+
     namespace Storage {
         const PREFIX = "color-picker";
 
@@ -171,7 +186,7 @@ namespace Page.ColorPicker {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
                 const hexValue = ColorSpace.parseHexa(value);
                 if (hexValue) {
-                    const colorPicker = colorPickersMap[controlId];
+                    const colorPicker = getColorPicker(controlId);
                     if (colorPicker) {
                         colorPicker.value = hexValue;
                     }
@@ -501,30 +516,19 @@ namespace Page.ColorPicker {
         }
     }
 
-    const colorPickersMap: { [id: string]: ColorPicker } = {};
-
     window.addEventListener("load", function buildColorPickersMap(): void {
         const list = document.querySelectorAll(".color-picker") as NodeListOf<HTMLElement>;
         for (let i = 0; i < list.length; i++) {
             const colorPickerElement = list[i];
-            const colorPicker = new ColorPicker(colorPickerElement);
-            if (colorPickerElement.id) {
-                colorPickersMap[colorPickerElement.id] = colorPicker
-            }
-
-            colorPickerElement.addEventListener("click", function createPopup(event: MouseEvent): void {
-                Popup.createPopup(colorPicker);
-                event.stopPropagation();
-                event.stopImmediatePropagation();
-                event.preventDefault();
-            });
+            const id = colorPickerElement.id;
+            getColorPicker(id); // register the color picker
         }
 
         Storage.applyStoredState();
     });
 
     export function addObserver(id: string, observer: OnChangeObserver): boolean {
-        const colorPicker = colorPickersMap[id];
+        const colorPicker = getColorPicker(id);
         if (colorPicker) {
             colorPicker.observers.push(observer);
         }
@@ -532,6 +536,7 @@ namespace Page.ColorPicker {
     }
 
     export function getValue(id: string): ColorSpace.IRGB {
+        const colorPicker = getColorPicker(id);
         const hexValue = colorPickersMap[id].value;
         return ColorSpace.hexToRgb(hexValue);
     }
@@ -549,6 +554,7 @@ namespace Page.ColorPicker {
             b: roundAndClamp(b, 0, 255),
         };
         const hexValue = ColorSpace.rgbToHex(rgb);
-        colorPickersMap[id].value = hexValue;
+        const colorPicker = getColorPicker(id);
+        colorPicker.value = hexValue;
     }
 }
