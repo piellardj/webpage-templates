@@ -200,20 +200,18 @@ var Page;
                     previewColor.classList.add("block");
                     previewBlock.appendChild(previewColor);
                     {
-                        var previewText_1 = document.createElement("div");
-                        previewText_1.classList.add("block");
+                        var previewText_1 = buildElement("table", ["block"]);
                         function buildPreviewText(name) {
-                            var container = document.createElement("div");
-                            var nameSpan = document.createElement("span");
+                            var row = document.createElement("tr");
+                            var nameSpan = document.createElement("td");
                             nameSpan.textContent = name + ":";
-                            nameSpan.classList.add("preview-text-label");
-                            var valueSpan = document.createElement("span");
-                            container.appendChild(nameSpan);
-                            container.appendChild(valueSpan);
-                            previewText_1.appendChild(container);
+                            var valueSpan = document.createElement("td");
+                            row.appendChild(nameSpan);
+                            row.appendChild(valueSpan);
+                            previewText_1.appendChild(row);
                             return valueSpan;
                         }
-                        previewHexaValue = buildPreviewText("hex");
+                        previewHexaValue = buildPreviewText("hexa");
                         previewRgbValue = buildPreviewText("rgb");
                         previewHslValue = buildPreviewText("hsv");
                         previewBlock.appendChild(previewText_1);

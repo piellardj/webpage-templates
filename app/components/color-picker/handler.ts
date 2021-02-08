@@ -242,22 +242,20 @@ namespace Page.ColorPicker {
                 previewBlock.appendChild(previewColor);
 
                 {
-                    const previewText = document.createElement("div");
-                    previewText.classList.add("block");
+                    const previewText = buildElement("table", ["block"]);
 
                     function buildPreviewText(name: string): HTMLSpanElement {
-                        const container = document.createElement("div");
-                        const nameSpan = document.createElement("span");
+                        const row = document.createElement("tr");
+                        const nameSpan = document.createElement("td");
                         nameSpan.textContent = name + ":";
-                        nameSpan.classList.add("preview-text-label");
-                        const valueSpan = document.createElement("span");
-                        container.appendChild(nameSpan);
-                        container.appendChild(valueSpan);
-                        previewText.appendChild(container);
+                        const valueSpan = document.createElement("td");
+                        row.appendChild(nameSpan);
+                        row.appendChild(valueSpan);
+                        previewText.appendChild(row);
                         return valueSpan;
                     }
 
-                    previewHexaValue = buildPreviewText("hex");
+                    previewHexaValue = buildPreviewText("hexa");
                     previewRgbValue = buildPreviewText("rgb");
                     previewHslValue = buildPreviewText("hsv");
 
