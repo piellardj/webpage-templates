@@ -12,6 +12,7 @@ declare namespace Page.ColorPicker {
             v: number;
         }
         type Hexa = string;
+        function parseHexa(value: string): Hexa | null;
         function hsvToRgb(hsv: IHSV): IRGB;
         function rgbToHsv(rgb: IRGB): IHSV;
         function rgbToHex(rgb: IRGB): Hexa;

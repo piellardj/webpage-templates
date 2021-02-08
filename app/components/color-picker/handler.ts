@@ -31,6 +31,13 @@ namespace Page.ColorPicker {
 
         export type Hexa = string; // in /#[0-9a-fA-F]{6} format
 
+        export function parseHexa(value: string): Hexa | null {
+            if (/^#[0-9a-fA-F]{6}$/.test(value)) {
+                return value;
+            }
+            return null;
+        }
+
         export function hsvToRgb(hsv: IHSV): IRGB {
             const h2 = hsv.h / 60;
             const c = hsv.s * hsv.v;
@@ -106,12 +113,15 @@ namespace Page.ColorPicker {
     type OnChangeObserver = (newValue: ColorSpace.IRGB) => unknown;
     class ColorPicker {
         public readonly observers: OnChangeObserver[] = [];
+        public readonly id: string;
+
         private readonly element: HTMLElement
         private readonly colorPreview: HTMLElement;
         private readonly colorPreviewText: HTMLElement;
 
         public constructor(element: HTMLElement) {
             this.element = element;
+            this.id = element.id;
             this.colorPreview = element.querySelector(".color-preview") as HTMLElement;
             this.colorPreviewText = element.querySelector(".color-value") as HTMLElement;
             this.updateVisiblePart();
@@ -142,6 +152,26 @@ namespace Page.ColorPicker {
             const hexValue = this.value;
             this.colorPreview.style.background = hexValue;
             this.colorPreviewText.textContent = hexValue;
+        }
+    }
+
+    namespace Storage {
+        const PREFIX = "color-picker";
+
+        export function storeState(colorPicker: ColorPicker): void {
+            Page.Helpers.URL.setQueryParameter(PREFIX, colorPicker.id, colorPicker.value);
+        }
+
+        export function applyStoredState(): void {
+            Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
+                const hexValue = ColorSpace.parseHexa(value);
+                if (hexValue) {
+                    const colorPicker = colorPickersMap[controlId];
+                    if (colorPicker) {
+                        colorPicker.value = hexValue;
+                    }
+                }
+            });
         }
     }
 
@@ -239,13 +269,13 @@ namespace Page.ColorPicker {
 
             registerCursorEvent(huePicker, function (coords: IPoint): void {
                 hsv.h = roundAndClamp(360 * coords.x, 0, 360);
-                onColorChange();
+                onInput();
             });
 
             registerCursorEvent(valueSaturationPicker, function (coords: IPoint): void {
                 hsv.s = clamp(coords.x, 0, 1);
                 hsv.v = clamp(1 - coords.y, 0, 1);
-                onColorChange();
+                onInput();
 
                 // retain exact position because rebuilding it from color is not exact
                 valueSaturationCursor.style.left = percentageString(coords.x);
@@ -372,7 +402,7 @@ namespace Page.ColorPicker {
             return Math.round(100 * value) + "%";
         }
 
-        function onColorChange(): void {
+        function updateAppearance(): void {
             const rgb = ColorSpace.hsvToRgb(hsv);
             const hexString = ColorSpace.rgbToHex(rgb);
             const rgbString = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`; // real coor
@@ -393,10 +423,17 @@ namespace Page.ColorPicker {
             hueCursor.style.left = percentageString(hsv.h / 360);
             valueSaturationCursor.style.left = percentageString(hsv.s);
             valueSaturationCursor.style.top = percentageString(1 - hsv.v);
+        }
+
+        function onInput(): void {
+            const rgb = ColorSpace.hsvToRgb(hsv);
+            const hexString = ColorSpace.rgbToHex(rgb);
+            updateAppearance();
 
             if (currentControl) {
                 currentControl.value = hexString;
             }
+            Storage.storeState(currentControl);
         }
 
         function fitPopupToContainer(): void {
@@ -432,7 +469,7 @@ namespace Page.ColorPicker {
             if (popupElement === null) {
                 buildPopup();
             }
-            onColorChange();
+            updateAppearance();
 
             // reset placement to avoid flickering due to the popup being temporarily out of screen
             popupElement.style.top = "";
@@ -460,38 +497,9 @@ namespace Page.ColorPicker {
                 event.preventDefault();
             });
         }
+
+        Storage.applyStoredState();
     });
-
-    // namespace Storage {
-    //     const PREFIX = "color-picker";
-
-    //     export function attachStorageEvents(): void {
-    //         const checkboxesSelector = "div.checkbox > input[type=checkbox][id]";
-    //         const checkboxes = document.querySelectorAll(checkboxesSelector) as NodeListOf<HTMLInputElement>;
-    //         for (let i = 0; i < checkboxes.length; i++) {
-    //             const checkbox = checkboxes[i];
-    //             checkbox.addEventListener("change", () => {
-    //                 const value = checkbox.checked ? CHECKED : UNCHECKED;
-    //                 Page.Helpers.URL.setQueryParameter(PREFIX, checkbox.id, value);
-    //             });
-    //         }
-    //     }
-
-    //     export function applyStoredState(): void {
-    //         Page.Helpers.URL.loopOnParameters(PREFIX, (checkboxId: string, value: string) => {
-    //             const input = getCheckboxFromId(checkboxId);
-    //             if (!input || (value !== CHECKED && value !== UNCHECKED)) {
-    //                 console.log("Removing invalid query parameter '" + checkboxId + "=" + value + "'.");
-    //                 Page.Helpers.URL.removeQueryParameter(PREFIX, checkboxId);
-    //             } else {
-    //                 input.checked = (value === CHECKED);
-    //             }
-    //         });
-    //     }
-    // }
-
-    // Storage.applyStoredState();
-    // Storage.attachStorageEvents();
 
     export function addObserver(id: string, observer: OnChangeObserver): boolean {
         const colorPicker = colorPickersMap[id];

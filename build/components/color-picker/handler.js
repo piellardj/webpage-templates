@@ -13,6 +13,13 @@ var Page;
         }
         var ColorSpace;
         (function (ColorSpace) {
+            function parseHexa(value) {
+                if (/^#[0-9a-fA-F]{6}$/.test(value)) {
+                    return value;
+                }
+                return null;
+            }
+            ColorSpace.parseHexa = parseHexa;
             function hsvToRgb(hsv) {
                 var h2 = hsv.h / 60;
                 var c = hsv.s * hsv.v;
@@ -90,6 +97,7 @@ var Page;
             function ColorPicker(element) {
                 this.observers = [];
                 this.element = element;
+                this.id = element.id;
                 this.colorPreview = element.querySelector(".color-preview");
                 this.colorPreviewText = element.querySelector(".color-value");
                 this.updateVisiblePart();
@@ -123,6 +131,26 @@ var Page;
             };
             return ColorPicker;
         }());
+        var Storage;
+        (function (Storage) {
+            var PREFIX = "color-picker";
+            function storeState(colorPicker) {
+                Page.Helpers.URL.setQueryParameter(PREFIX, colorPicker.id, colorPicker.value);
+            }
+            Storage.storeState = storeState;
+            function applyStoredState() {
+                Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
+                    var hexValue = ColorSpace.parseHexa(value);
+                    if (hexValue) {
+                        var colorPicker = colorPickersMap[controlId];
+                        if (colorPicker) {
+                            colorPicker.value = hexValue;
+                        }
+                    }
+                });
+            }
+            Storage.applyStoredState = applyStoredState;
+        })(Storage || (Storage = {}));
         var Popup;
         (function (Popup) {
             var ID = "color-picker-popup";
@@ -194,12 +222,12 @@ var Page;
                 }
                 registerCursorEvent(huePicker, function (coords) {
                     hsv.h = roundAndClamp(360 * coords.x, 0, 360);
-                    onColorChange();
+                    onInput();
                 });
                 registerCursorEvent(valueSaturationPicker, function (coords) {
                     hsv.s = clamp(coords.x, 0, 1);
                     hsv.v = clamp(1 - coords.y, 0, 1);
-                    onColorChange();
+                    onInput();
                     // retain exact position because rebuilding it from color is not exact
                     valueSaturationCursor.style.left = percentageString(coords.x);
                     valueSaturationCursor.style.top = percentageString(coords.y);
@@ -312,7 +340,7 @@ var Page;
             function percentageString(value) {
                 return Math.round(100 * value) + "%";
             }
-            function onColorChange() {
+            function updateAppearance() {
                 var rgb = ColorSpace.hsvToRgb(hsv);
                 var hexString = ColorSpace.rgbToHex(rgb);
                 var rgbString = "rgb(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ")"; // real coor
@@ -330,9 +358,15 @@ var Page;
                 hueCursor.style.left = percentageString(hsv.h / 360);
                 valueSaturationCursor.style.left = percentageString(hsv.s);
                 valueSaturationCursor.style.top = percentageString(1 - hsv.v);
+            }
+            function onInput() {
+                var rgb = ColorSpace.hsvToRgb(hsv);
+                var hexString = ColorSpace.rgbToHex(rgb);
+                updateAppearance();
                 if (currentControl) {
                     currentControl.value = hexString;
                 }
+                Storage.storeState(currentControl);
             }
             function fitPopupToContainer() {
                 if (popupElement && popupElement.parentElement) {
@@ -362,7 +396,7 @@ var Page;
                 if (popupElement === null) {
                     buildPopup();
                 }
-                onColorChange();
+                updateAppearance();
                 // reset placement to avoid flickering due to the popup being temporarily out of screen
                 popupElement.style.top = "";
                 popupElement.style.left = "";
@@ -390,34 +424,8 @@ var Page;
             for (var i = 0; i < list.length; i++) {
                 _loop_1(i);
             }
+            Storage.applyStoredState();
         });
-        // namespace Storage {
-        //     const PREFIX = "color-picker";
-        //     export function attachStorageEvents(): void {
-        //         const checkboxesSelector = "div.checkbox > input[type=checkbox][id]";
-        //         const checkboxes = document.querySelectorAll(checkboxesSelector) as NodeListOf<HTMLInputElement>;
-        //         for (let i = 0; i < checkboxes.length; i++) {
-        //             const checkbox = checkboxes[i];
-        //             checkbox.addEventListener("change", () => {
-        //                 const value = checkbox.checked ? CHECKED : UNCHECKED;
-        //                 Page.Helpers.URL.setQueryParameter(PREFIX, checkbox.id, value);
-        //             });
-        //         }
-        //     }
-        //     export function applyStoredState(): void {
-        //         Page.Helpers.URL.loopOnParameters(PREFIX, (checkboxId: string, value: string) => {
-        //             const input = getCheckboxFromId(checkboxId);
-        //             if (!input || (value !== CHECKED && value !== UNCHECKED)) {
-        //                 console.log("Removing invalid query parameter '" + checkboxId + "=" + value + "'.");
-        //                 Page.Helpers.URL.removeQueryParameter(PREFIX, checkboxId);
-        //             } else {
-        //                 input.checked = (value === CHECKED);
-        //             }
-        //         });
-        //     }
-        // }
-        // Storage.applyStoredState();
-        // Storage.attachStorageEvents();
         function addObserver(id, observer) {
             var colorPicker = colorPickersMap[id];
             if (colorPicker) {
