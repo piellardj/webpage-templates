@@ -76,7 +76,6 @@ var Page;
                     result.s = delta / cmax;
                 }
                 result.h = positiveModulus(result.h, 360);
-                result.h = roundAndClamp(result.h, 0, 360);
                 return result;
             }
             ColorSpace.rgbToHsv = rgbToHsv;
@@ -201,14 +200,17 @@ var Page;
                     {
                         var previewText = Popup.buildElement("table", ["block"]);
                         var hexaContainer = Popup.buildPreviewText(previewText, "hexa");
+                        var hash = Popup.buildElement("span");
+                        hash.textContent = "#";
+                        hexaContainer.appendChild(hash);
                         this.previewHexaValue = document.createElement("input");
                         this.previewHexaValue.type = "text";
-                        this.previewHexaValue.minLength = 7;
-                        this.previewHexaValue.maxLength = 7;
-                        this.previewHexaValue.size = 7;
-                        this.previewHexaValue.pattern = "#[0-9a-fA-F]{6}";
+                        this.previewHexaValue.minLength = 6;
+                        this.previewHexaValue.maxLength = 6;
+                        this.previewHexaValue.size = 6;
+                        this.previewHexaValue.pattern = "[0-9a-fA-F]{6}";
                         this.previewHexaValue.addEventListener("input", function () {
-                            var newValue = _this.previewHexaValue.value;
+                            var newValue = "#" + _this.previewHexaValue.value;
                             var newHexa = ColorSpace.parseHexa(newValue);
                             if (newHexa) { // valid input
                                 var newRgb = ColorSpace.hexToRgb(newValue);
@@ -260,18 +262,18 @@ var Page;
                 var rgb = ColorSpace.hsvToRgb(this.hsv);
                 var hexString = ColorSpace.rgbToHex(rgb);
                 var rgbString = "rgb(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ")"; // real coor
-                var hslString = "hsl(" + this.hsv.h + ", 100%, 50%)"; // pure color
+                var hslString = "hsl(" + Math.round(this.hsv.h) + ", 100%, 50%)"; // pure color
                 // colors
                 this.hueColorFilter.style.background = "linear-gradient(to right, white, " + hslString + ")";
                 this.hueCursor.style.background = hslString;
                 this.valueSaturationCursor.style.background = rgbString;
                 this.previewColor.style.background = rgbString;
                 // text
-                this.previewHexaValue.value = hexString;
+                this.previewHexaValue.value = hexString.substring(1);
                 this.previewRgbValue.textContent = rgb.r + ", " + rgb.g + ", " + rgb.b;
                 var percentSaturation = Popup.percentageString(this.hsv.s);
                 var percentValue = Popup.percentageString(this.hsv.v);
-                this.previewHslValue.textContent = this.hsv.h + "\u00B0, " + percentSaturation + ", " + percentValue;
+                this.previewHslValue.textContent = Math.round(this.hsv.h) + "\u00B0, " + percentSaturation + ", " + percentValue;
                 // cursors positions
                 this.hueCursor.style.left = Popup.percentageString(this.hsv.h / 360);
                 this.valueSaturationCursor.style.left = percentSaturation;

@@ -28,6 +28,7 @@ namespace Page.ColorPicker {
         }
 
         export interface IHSV {
+            h: number; // in [0°, 360°]
             s: number; // in [0, 1]
             v: number; // in [0, 1]
         }
@@ -264,14 +265,17 @@ namespace Page.ColorPicker {
                     const previewText = Popup.buildElement("table", ["block"]);
 
                     const hexaContainer = Popup.buildPreviewText(previewText, "hexa");
+                    const hash = Popup.buildElement("span");
+                    hash.textContent = "#";
+                    hexaContainer.appendChild(hash);
                     this.previewHexaValue = document.createElement("input");
                     this.previewHexaValue.type = "text";
-                    this.previewHexaValue.minLength = 7;
-                    this.previewHexaValue.maxLength = 7;
-                    this.previewHexaValue.size = 7;
-                    this.previewHexaValue.pattern = "#[0-9a-fA-F]{6}";
+                    this.previewHexaValue.minLength = 6;
+                    this.previewHexaValue.maxLength = 6;
+                    this.previewHexaValue.size = 6;
+                    this.previewHexaValue.pattern = "[0-9a-fA-F]{6}";
                     this.previewHexaValue.addEventListener("input", () => {
-                        const newValue = this.previewHexaValue.value;
+                        const newValue = "#" + this.previewHexaValue.value;
                         const newHexa = ColorSpace.parseHexa(newValue);
                         if (newHexa) { // valid input
                             const newRgb = ColorSpace.hexToRgb(newValue);
@@ -322,7 +326,6 @@ namespace Page.ColorPicker {
             const rgb = ColorSpace.hsvToRgb(this.hsv);
             const hexString = ColorSpace.rgbToHex(rgb);
             const rgbString = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`; // real coor
-            const hslString = `hsl(${this.hsv.h}, 100%, 50%)`; // pure color
             const hslString = `hsl(${Math.round(this.hsv.h)}, 100%, 50%)`; // pure color
 
             // colors
@@ -332,11 +335,10 @@ namespace Page.ColorPicker {
             this.previewColor.style.background = rgbString;
 
             // text
-            this.previewHexaValue.value = hexString;
+            this.previewHexaValue.value = hexString.substring(1);
             this.previewRgbValue.textContent = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
             const percentSaturation = Popup.percentageString(this.hsv.s);
             const percentValue = Popup.percentageString(this.hsv.v);
-            this.previewHslValue.textContent = `${this.hsv.h}°, ${percentSaturation}, ${percentValue}`;
             this.previewHslValue.textContent = `${Math.round(this.hsv.h)}°, ${percentSaturation}, ${percentValue}`;
 
             // cursors positions
