@@ -6,19 +6,11 @@ var Page;
     (function (Range) {
         function update(range) {
             var container = range.parentElement;
-            var handle = container.querySelector(".range-handle");
-            var leftBar = container.querySelector(".range-bar-left");
-            var rightBar = container.querySelector(".range-bar-right");
-            var tooltip = container.querySelector("output.range-tooltip");
+            var progressLeft = container.querySelector(".range-progress-left");
             var progression = (+range.value - +range.min) / (+range.max - +range.min);
-            var width = container.getBoundingClientRect().width;
-            var handleSize = handle.getBoundingClientRect().width;
-            var handleCenterInPx = 0.5 * handleSize + progression * (width - handleSize);
-            var handleCenterInPercent = 100 * handleCenterInPx / width;
-            leftBar.style.width = handleCenterInPercent + "%";
-            rightBar.style.width = (100 - handleCenterInPercent) + "%";
-            handle.style.left = handleCenterInPercent + "%";
-            tooltip.style.left = handleCenterInPercent + "%";
+            progression = Math.max(0, Math.min(1, progression));
+            progressLeft.style.width = (100 * progression) + "%";
+            var tooltip = container.querySelector("output.range-tooltip");
             tooltip.textContent = range.value;
         }
         window.addEventListener("load", function () {
@@ -38,14 +30,6 @@ var Page;
             for (var i = 0; i < rangeElements.length; i++) {
                 _loop_1(i);
             }
-            var updateEverything = function () {
-                for (var _i = 0, updateFunctions_1 = updateFunctions; _i < updateFunctions_1.length; _i++) {
-                    var updateFunction = updateFunctions_1[_i];
-                    updateFunction();
-                }
-            };
-            window.addEventListener("resize", updateEverything);
-            setInterval(updateEverything, 2000); // update on a regular basis
         });
         function getRangeById(id) {
             var selector = "input[type=range][id=" + id + "]";
@@ -59,7 +43,7 @@ var Page;
         (function (Storage) {
             var PREFIX = "range";
             function attachStorageEvents() {
-                var inputsSelector = "div.range input.slider[type=range][id]";
+                var inputsSelector = ".range-container input.slider[type=range][id]";
                 var inputElements = document.querySelectorAll(inputsSelector);
                 var _loop_2 = function (i) {
                     var inputElement = inputElements[i];

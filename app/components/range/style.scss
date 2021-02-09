@@ -2,9 +2,9 @@
 @import 'common/utils';
 
 $control-height: 26px;
-$range-bar-left-thickness: 2px;
-$range-bar-right-thickness: 2px;
-$range-handle-size: 16px;
+$range-bar-left-thickness: 3px;
+$range-bar-right-thickness: 3px;
+$range-handle-size: 15px;
 $range-tooltip-color: $grey-darken-4;
 
 $range-transition-time: .1s ease-in-out;
@@ -14,6 +14,7 @@ $range-transition-time: .1s ease-in-out;
     position: relative;
     flex: 1 1 0%;
     width: 100%;
+    min-width: $range-handle-size;
     height: $control-height;
 
     input[type='range'] {
@@ -29,49 +30,77 @@ $range-transition-time: .1s ease-in-out;
         }
     }
 
-    .range-bar-left,
-    .range-bar-right,
-    .range-handle,
-    .range-tooltip {
+    .range-skin-container {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        flex-flow: nowrap;
+        width: 100%;
+        height: 100%;
         pointer-events: none;
         user-select: none;
     }
 
-    .range-bar-left {
-        position: absolute;
-        top: 0.5 * ($control-height - $range-bar-left-thickness);
-        left: 0;
-        height: $range-bar-left-thickness;
-        border-radius: 0.5 * $range-bar-left-thickness;
+    .range-stub {
+        position: relative;
+        flex-grow: 0;
+        flex-shrink: 0;
+        width: floor(0.5 * $range-handle-size);
     }
 
-    .range-bar-right {
+    .range-progress {
+        display: flex;
+        flex: 1;
+        flex-flow: row nowrap;
+    }
+
+    .range-progress-left {
+        position: relative;
+        flex-grow: 0;
+        flex-shrink: 0;
+        width: 85%;
+    }
+
+    .range-progress-right {
+        position: relative;
+        flex-grow: 1;
+    }
+
+    .range-bar {
         position: absolute;
-        top: 0.5 * ($control-height - $range-bar-right-thickness);
-        right: 0;
+        left: 0;
         width: 100%;
-        height: $range-bar-right-thickness;
-        border-radius: 0.5 * $range-bar-right-thickness;
-        @include color-control-neutral(background);
+        z-index: 0;
+
+        &.range-bar-left {
+            top: round(0.5 * ($control-height - $range-bar-left-thickness));
+            height: $range-bar-left-thickness;
+        }
+
+        &.range-bar-right {
+            top: round(0.5 * ($control-height - $range-bar-right-thickness));
+            height: $range-bar-right-thickness;
+            @include color-control-neutral(background);
+        }
+
+        &.range-stub-left {
+            border-radius: $range-bar-left-thickness 0 0 $range-bar-left-thickness;
+        }
+
+        &.range-stub-right {
+            border-radius: 0 $range-bar-right-thickness $range-bar-right-thickness 0;
+        }
     }
 
     .range-handle {
         position: absolute;
         top: 0.5 * ($control-height - $range-handle-size);
-        left: 0.5 * $range-handle-size;
+        right: -0.5 * $range-handle-size;
         width: $range-handle-size;
         height: $range-handle-size;
-        transform: translateX(-0.5 * $range-handle-size);
         border-radius: 50%;
-    }
-
-    input[type='range']:not(:disabled):hover ~ .range-handle,
-    input[type='range']:not(:disabled):focus ~ .range-handle {
-        @include color-control-accent-hover(background);
-    }
-
-    input[type='range']:not(:disabled):active ~ .range-handle {
-        @include color-control-accent-active(background);
+        z-index: 1;
     }
 
     .range-bar-left,
@@ -79,9 +108,18 @@ $range-transition-time: .1s ease-in-out;
         @include color-control-accent(background);
     }
 
-    input[type='range']:disabled {
-        & ~ .range-bar-left,
-        & ~ .range-handle {
+    input[type='range']:not(:disabled):hover + .range-skin-container .range-handle,
+    input[type='range']:not(:disabled):focus + .range-skin-container .range-handle {
+        @include color-control-accent-hover(background);
+    }
+
+    input[type='range']:not(:disabled):active + .range-skin-container .range-handle {
+        @include color-control-accent-active(background);
+    }
+
+    input[type='range']:disabled + .range-skin-container {
+        .range-bar-left,
+        .range-handle {
             @include color-control-accent-disabled(background);
         }
     }
@@ -89,10 +127,10 @@ $range-transition-time: .1s ease-in-out;
     .range-tooltip {
         position: absolute;
         top: -28px;
-        left: 0;
+        right: 0;
         min-width: 24px;
         padding: 4px;
-        transform: translateX(-50%);
+        transform: translateX(50%);
         transition: opacity $range-transition-time;
         border-radius: 4px;
         background: $range-tooltip-color;
@@ -100,11 +138,12 @@ $range-transition-time: .1s ease-in-out;
         font-size: 87.5%;
         text-align: center;
         opacity: 0;
+        z-index: 2;
     }
 
-    input[type='range']:hover + .range-tooltip,
-    input[type='range']:active + .range-tooltip,
-    input[type='range']:focus + .range-tooltip {
+    input[type='range']:hover + .range-skin-container .range-tooltip,
+    input[type='range']:active + .range-skin-container .range-tooltip,
+    input[type='range']:focus + .range-skin-container .range-tooltip {
         opacity: 1;
     }
 

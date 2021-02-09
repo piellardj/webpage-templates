@@ -4,22 +4,13 @@
 namespace Page.Range {
     function update(range: HTMLInputElement): void {
         const container = range.parentElement;
-        const handle = container.querySelector(".range-handle") as HTMLElement;
-        const leftBar = container.querySelector(".range-bar-left") as HTMLElement;
-        const rightBar = container.querySelector(".range-bar-right") as HTMLElement;
+
+        const progressLeft = container.querySelector(".range-progress-left") as HTMLElement;
+        let progression = (+range.value - +range.min) / (+range.max - +range.min);
+        progression = Math.max(0, Math.min(1, progression));
+        progressLeft.style.width = (100 * progression) + "%";
+
         const tooltip = container.querySelector("output.range-tooltip") as HTMLElement;
-
-        const progression = (+range.value - +range.min) / (+range.max - +range.min);
-
-        const width = container.getBoundingClientRect().width;
-        const handleSize = handle.getBoundingClientRect().width;
-        const handleCenterInPx = 0.5 * handleSize + progression * (width - handleSize);
-        const handleCenterInPercent = 100 * handleCenterInPx / width;
-
-        leftBar.style.width = handleCenterInPercent + "%";
-        rightBar.style.width = (100 - handleCenterInPercent) + "%";
-        handle.style.left = handleCenterInPercent + "%";
-        tooltip.style.left = handleCenterInPercent + "%";
         tooltip.textContent = range.value;
     }
 
@@ -40,14 +31,6 @@ namespace Page.Range {
             rangeElement.addEventListener("change", updateFunction);
             updateFunction();
         }
-
-        const updateEverything = function(): void {
-            for (const updateFunction of updateFunctions) {
-                updateFunction();
-            }
-        }
-        window.addEventListener("resize", updateEverything);
-        setInterval(updateEverything, 2000); // update on a regular basis
     });
 
     function getRangeById(id: string): HTMLInputElement | null {
@@ -63,7 +46,7 @@ namespace Page.Range {
         const PREFIX = "range";
 
         export function attachStorageEvents(): void {
-            const inputsSelector = "div.range input.slider[type=range][id]";
+            const inputsSelector = ".range-container input.slider[type=range][id]";
             const inputElements = document.querySelectorAll(inputsSelector) as NodeListOf<HTMLInputElement>;
             for (let i = 0; i < inputElements.length; i++) {
                 const inputElement = inputElements[i];
