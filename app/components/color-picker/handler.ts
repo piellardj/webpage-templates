@@ -550,6 +550,11 @@ namespace Page.ColorPicker {
         return ColorSpace.hexToRgb(hexValue);
     }
 
+    export function getValueHex(id: string): ColorSpace.Hexa {
+        const colorPicker = ColorPicker.getColorPicker(id);
+        return colorPicker.value;
+    }
+
     /**
      * @param id control id
      * @param r integer in [0, 255]

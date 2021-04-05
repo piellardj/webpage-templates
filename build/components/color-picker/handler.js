@@ -460,6 +460,11 @@ var Page;
             return ColorSpace.hexToRgb(hexValue);
         }
         ColorPicker_1.getValue = getValue;
+        function getValueHex(id) {
+            var colorPicker = ColorPicker.getColorPicker(id);
+            return colorPicker.value;
+        }
+        ColorPicker_1.getValueHex = getValueHex;
         /**
          * @param id control id
          * @param r integer in [0, 255]
