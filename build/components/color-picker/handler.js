@@ -343,7 +343,6 @@ var Page;
                         var cursorBox = cursor.getBoundingClientRect();
                         handleOffset.x = 0.5 * cursorBox.width - (event.clientX - cursorBox.left);
                         handleOffset.y = 0.5 * cursorBox.height - (event.clientY - cursorBox.top);
-                        console.log(JSON.stringify(handleOffset));
                     }
                     else {
                         var coords = absoluteToRelative(event.clientX, event.clientY);
