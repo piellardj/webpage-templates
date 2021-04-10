@@ -89,4 +89,4 @@ export const supportedControls: {
     Range: "range",
     Tabs: "tabs",
     ColorPicker: "color-picker"
-}
+};

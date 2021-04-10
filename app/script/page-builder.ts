@@ -166,7 +166,7 @@ function buildLoadedComponents(dstDir: string): ILoadedComponents {
 
         const styleFilePath = path.join(componentDirectory, "style.css");
         if (fs.existsSync(styleFilePath)) {
-            const style = fs.readFileSync(styleFilePath).toString()
+            const style = fs.readFileSync(styleFilePath).toString();
             components.cssStyles.push(style);
         }
 
