@@ -59,7 +59,12 @@ namespace Page.Picker {
             }
 
             this.updateValue();
-            this.callObservers();
+        }
+
+        public callObservers(): void {
+            for (const observer of this.observers) {
+                observer(this.value);
+            }
         }
 
         private getIndexOfCheckedInput(): number {
@@ -98,12 +103,6 @@ namespace Page.Picker {
             } else {
                 this.enableButton(this.leftButton, !this.radioInputs[0].checked);
                 this.enableButton(this.rightButton, !this.radioInputs[this.radioInputs.length - 1].checked);
-            }
-        }
-
-        private callObservers(): void {
-            for (const observer of this.observers) {
-                observer(this.value);
             }
         }
 
@@ -167,6 +166,7 @@ namespace Page.Picker {
                     Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
                 } else {
                     picker.value = value;
+                    picker.callObservers();
                 }
             });
         }

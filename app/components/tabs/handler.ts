@@ -55,10 +55,9 @@ namespace Page.Tabs {
             }
 
             this.reloadValues();
-            this.callObservers();
         }
 
-        private callObservers(): void {
+        public callObservers(): void {
             for (const observer of this.observers) {
                 observer(this._values);
             }
@@ -121,6 +120,7 @@ namespace Page.Tabs {
                     Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
                 } else {
                     tabs.values = values;
+                    tabs.callObservers();
                 }
             });
         }

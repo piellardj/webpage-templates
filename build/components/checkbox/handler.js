@@ -24,7 +24,6 @@ var Page;
                 set: function (newChecked) {
                     this.element.checked = newChecked;
                     this.reloadValue();
-                    this.callObservers();
                 },
                 enumerable: false,
                 configurable: true
@@ -84,6 +83,7 @@ var Page;
                     }
                     else {
                         checkbox.checked = (value === CHECKED);
+                        checkbox.callObservers();
                     }
                 });
             }

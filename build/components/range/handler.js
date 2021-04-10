@@ -16,19 +16,13 @@ var Page;
                 this.inputElement.addEventListener("input", function (event) {
                     event.stopPropagation();
                     _this.reloadValue();
-                    for (var _i = 0, _a = _this.onInputObservers; _i < _a.length; _i++) {
-                        var observer = _a[_i];
-                        observer(_this.value);
-                    }
+                    _this.callSpecificObservers(_this.onInputObservers);
                 });
                 this.inputElement.addEventListener("change", function (event) {
                     event.stopPropagation();
                     _this.reloadValue();
                     Storage.storeState(_this);
-                    for (var _i = 0, _a = _this.onChangeObservers; _i < _a.length; _i++) {
-                        var observer = _a[_i];
-                        observer(_this.value);
-                    }
+                    _this.callSpecificObservers(_this.onChangeObservers);
                 });
                 this.reloadValue();
             }
@@ -39,14 +33,17 @@ var Page;
                 set: function (newValue) {
                     this.inputElement.value = "" + newValue;
                     this.reloadValue();
-                    this.callObservers();
                 },
                 enumerable: false,
                 configurable: true
             });
             Range.prototype.callObservers = function () {
-                for (var _i = 0, _a = this.onChangeObservers; _i < _a.length; _i++) {
-                    var observer = _a[_i];
+                this.callSpecificObservers(this.onInputObservers);
+                this.callSpecificObservers(this.onChangeObservers);
+            };
+            Range.prototype.callSpecificObservers = function (observers) {
+                for (var _i = 0, observers_1 = observers; _i < observers_1.length; _i++) {
+                    var observer = observers_1[_i];
                     observer(this.value);
                 }
             };
@@ -107,6 +104,7 @@ var Page;
                     }
                     else {
                         range.value = +value;
+                        range.callObservers();
                     }
                 });
             }

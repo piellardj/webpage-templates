@@ -26,19 +26,16 @@ namespace Page.Range {
             this.inputElement.addEventListener("input", (event: Event) => {
                 event.stopPropagation();
                 this.reloadValue();
-                for (const observer of this.onInputObservers) {
-                    observer(this.value);
-                }
+                this.callSpecificObservers(this.onInputObservers);
             });
             this.inputElement.addEventListener("change", (event: Event) => {
                 event.stopPropagation();
                 this.reloadValue();
                 Storage.storeState(this);
-                for (const observer of this.onChangeObservers) {
-                    observer(this.value);
-                }
+                this.callSpecificObservers(this.onChangeObservers);
             });
             this.reloadValue();
+
         }
 
         public get value(): number {
@@ -48,11 +45,15 @@ namespace Page.Range {
         public set value(newValue: number) {
             this.inputElement.value = "" + newValue;
             this.reloadValue();
-            this.callObservers();
         }
 
-        private callObservers(): void {
-            for (const observer of this.onChangeObservers) {
+        public callObservers(): void {
+            this.callSpecificObservers(this.onInputObservers);
+            this.callSpecificObservers(this.onChangeObservers);
+        }
+
+        private callSpecificObservers(observers: RangeObserver[]): void {
+            for (const observer of observers) {
                 observer(this.value);
             }
         }
@@ -120,6 +121,7 @@ namespace Page.Range {
                     Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
                 } else {
                     range.value = +value;
+                    range.callObservers();
                 }
             });
         }

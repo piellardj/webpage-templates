@@ -44,11 +44,16 @@ var Page;
                         radioInput.checked = (radioInput.value === newValue);
                     }
                     this.updateValue();
-                    this.callObservers();
                 },
                 enumerable: false,
                 configurable: true
             });
+            Picker.prototype.callObservers = function () {
+                for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {
+                    var observer = _a[_i];
+                    observer(this.value);
+                }
+            };
             Picker.prototype.getIndexOfCheckedInput = function () {
                 for (var i = 0; i < this.radioInputs.length; i++) {
                     if (this.radioInputs[i].checked) {
@@ -84,12 +89,6 @@ var Page;
                 else {
                     this.enableButton(this.leftButton, !this.radioInputs[0].checked);
                     this.enableButton(this.rightButton, !this.radioInputs[this.radioInputs.length - 1].checked);
-                }
-            };
-            Picker.prototype.callObservers = function () {
-                for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {
-                    var observer = _a[_i];
-                    observer(this.value);
                 }
             };
             Picker.prototype.enableButton = function (button, enable) {
@@ -150,6 +149,7 @@ var Page;
                     }
                     else {
                         picker.value = value;
+                        picker.callObservers();
                     }
                 });
             }

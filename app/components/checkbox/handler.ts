@@ -30,10 +30,9 @@ namespace Page.Checkbox {
         public set checked(newChecked: boolean) {
             this.element.checked = newChecked;
             this.reloadValue();
-            this.callObservers();
         }
 
-        private callObservers(): void {
+        public callObservers(): void {
             for (const observer of this.observers) {
                 observer(this.checked);
             }
@@ -91,6 +90,7 @@ namespace Page.Checkbox {
                     Page.Helpers.URL.removeQueryParameter(PREFIX, checkboxId);
                 } else {
                     checkbox.checked = (value === CHECKED);
+                    checkbox.callObservers();
                 }
             });
         }
