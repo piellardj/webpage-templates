@@ -25,6 +25,10 @@ var Page;
                     event.stopPropagation();
                     _this.reloadValue();
                     Storage.storeState(_this);
+                    for (var _i = 0, _a = _this.onChangeObservers; _i < _a.length; _i++) {
+                        var observer = _a[_i];
+                        observer(_this.value);
+                    }
                 });
                 this.reloadValue();
             }

@@ -34,7 +34,9 @@ namespace Page.Range {
                 event.stopPropagation();
                 this.reloadValue();
                 Storage.storeState(this);
-                
+                for (const observer of this.onChangeObservers) {
+                    observer(this.value);
+                }
             });
             this.reloadValue();
         }
