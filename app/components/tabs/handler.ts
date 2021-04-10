@@ -8,7 +8,7 @@ namespace Page.Tabs {
         private static readonly ID_SUFFIX = "-id";
 
         public static computeShortId(fullId: string): string {
-            if (fullId.indexOf(Tabs.ID_SUFFIX) != fullId.length - Tabs.ID_SUFFIX.length) {
+            if (fullId.lastIndexOf(Tabs.ID_SUFFIX) != fullId.length - Tabs.ID_SUFFIX.length) {
                 throw new Error("Invalid tabs container id: '" + fullId + "'.");
             }
             return fullId.substring(0, fullId.length - Tabs.ID_SUFFIX.length);

@@ -23,7 +23,7 @@ var Page;
                 this.reloadValues();
             }
             Tabs.computeShortId = function (fullId) {
-                if (fullId.indexOf(Tabs.ID_SUFFIX) != fullId.length - Tabs.ID_SUFFIX.length) {
+                if (fullId.lastIndexOf(Tabs.ID_SUFFIX) != fullId.length - Tabs.ID_SUFFIX.length) {
                     throw new Error("Invalid tabs container id: '" + fullId + "'.");
                 }
                 return fullId.substring(0, fullId.length - Tabs.ID_SUFFIX.length);
