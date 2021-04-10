@@ -2,121 +2,153 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Tabs {
-    const ID_SUFFIX = "-id";
+    export type TabsObserver = (selectedValues: string[]) => unknown;
 
-    function getTabsById(id: string): Element | null {
-        const selector = "div.tabs[id=" + id + ID_SUFFIX + "]";
-        const elt = document.querySelector(selector);
-        if (!elt) {
-            console.error("Cannot find tabs '" + selector + "'.");
+    class Tabs {
+        private static readonly ID_SUFFIX = "-id";
+
+        public static computeShortId(fullId: string): string {
+            if (fullId.indexOf(Tabs.ID_SUFFIX) != fullId.length - Tabs.ID_SUFFIX.length) {
+                throw new Error("Invalid tabs container id: '" + fullId + "'.");
+            }
+            return fullId.substring(0, fullId.length - Tabs.ID_SUFFIX.length);
         }
-        return elt;
-    }
 
-    /**
-     * @param {Object} tabsElt Node tab element
-     */
-    function getSelectedValues(tabsElt: Element): string[] {
-        const values = [];
+        public readonly id: string;
 
-        const inputs = tabsElt.querySelectorAll("input");
-        for (let i = 0; i < inputs.length; i++) {
-            const input = inputs[i];
-            if (input.checked) {
-                values.push(input.value);
+        private readonly inputElements: HTMLInputElement[];
+        public readonly observers: TabsObserver[] = [];
+
+        private _values: string[];
+
+        public constructor(container: HTMLElement) {
+            this.id = Tabs.computeShortId(container.id);
+            this.inputElements = [];
+
+            const inputElements = container.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
+            for (let i = 0; i < inputElements.length; i++) {
+                this.inputElements.push(inputElements[i]);
+                inputElements[i].addEventListener("change", (event) => {
+                    event.stopPropagation();
+                    this.reloadValues();
+                    Storage.storeState(this);
+                    this.callObservers();
+                }, false);
+            }
+            this.reloadValues();
+        }
+
+        public get values(): string[] {
+            return this._values;
+        }
+
+        public set values(newValues: string[]) {
+            for (const inputElement of this.inputElements) {
+                let isWanted = false;
+                for (const newValue of newValues) {
+                    if (inputElement.value === newValue) {
+                        isWanted = true;
+                        break;
+                    }
+                }
+                inputElement.checked = isWanted;
+            }
+
+            this.reloadValues();
+        }
+
+        private callObservers(): void {
+            for (const observer of this.observers) {
+                observer(this._values);
             }
         }
 
-        return values;
+        private reloadValues(): void {
+            const values: string[] = [];
+            for (const inputElement of this.inputElements) {
+                if (inputElement.checked) {
+                    values.push(inputElement.value);
+                }
+            }
+            this._values = values;
+        }
+    }
+
+    namespace Cache {
+        type TabsCache = { [id: string]: Tabs };
+
+        function loadCache(): TabsCache {
+            const result: TabsCache = {};
+            const containerElements = document.querySelectorAll("div.tabs[id]") as NodeListOf<HTMLElement>;
+            for (let i = 0; i < containerElements.length; i++) {
+                const tabs = new Tabs(containerElements[i]);
+                result[tabs.id] = tabs;
+            }
+            return result;
+        }
+
+        let tabsCache: TabsCache;
+
+        export function getTabsById(id: string): Tabs {
+            Cache.load();
+            return tabsCache[id] || null;
+        }
+
+        export function load(): void {
+            if (typeof tabsCache === "undefined") {
+                tabsCache = loadCache();
+            }
+        }
     }
 
     namespace Storage {
         const PREFIX = "tabs";
         const SEPARATOR = ";";
 
-        export function attachStorageEvents(): void {
-            const tabsElements = document.querySelectorAll("div.tabs[id]");
-            for (let i = 0; i < tabsElements.length; i++) {
-                const tabsElement = tabsElements[i];
-
-                const fullId = tabsElement.id;
-                if (fullId.indexOf(ID_SUFFIX, fullId.length - ID_SUFFIX.length) !== -1) {
-                    const id = fullId.substring(0, fullId.length - ID_SUFFIX.length);
-
-                    const saveTabsState = (): void => {
-                        const valuesList = getSelectedValues(tabsElement);
-                        const values = valuesList.join(SEPARATOR);
-                        Page.Helpers.URL.setQueryParameter(PREFIX, id, values);
-                    };
-
-                    const inputs = tabsElement.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
-                    for (let i = 0; i < inputs.length; i++) {
-                        inputs[i].addEventListener("change", saveTabsState);
-                    }
-                }
-            }
+        export function storeState(tabs: Tabs): void {
+            const valuesList = tabs.values;
+            const values = valuesList.join(SEPARATOR);
+            Page.Helpers.URL.setQueryParameter(PREFIX, tabs.id, values);
         }
 
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
                 const values = value.split(SEPARATOR);
-                if (!getTabsById(controlId)) {
+                const tabs = Cache.getTabsById(controlId);
+                if (!tabs) {
                     console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
                     Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
                 } else {
-                    setValues(controlId, values);
+                    tabs.values = values;
                 }
             });
         }
     }
 
-    Storage.applyStoredState();
-    Storage.attachStorageEvents();
-
-    type TabsObserver = (selectedValues: string[]) => unknown;
+    Helpers.Events.callAfterDOMLoaded(() => {
+        Cache.load();
+        Storage.applyStoredState();
+    });
 
     /**
      * @return {boolean} Whether or not the observer was added
      */
     export function addObserver(tabsId: string, observer: TabsObserver): boolean {
-        const divWrapper = getTabsById(tabsId);
-        if (divWrapper) {
-            const inputs = divWrapper.querySelectorAll("input");
-            for (let i = 0; i < inputs.length; i++) {
-                const input = inputs[i];
-
-                input.addEventListener("change", function (event) {
-                    event.stopPropagation();
-                    observer(getSelectedValues(divWrapper));
-                }, false);
-            }
+        const tabs = Cache.getTabsById(tabsId);
+        if (tabs) {
+            tabs.observers.push(observer);
             return true;
         }
-
         return false;
     }
 
     export function getValues(tabsId: string): string[] {
-        const divWrapper = getTabsById(tabsId);
-        if (!divWrapper) {
-            return [];
-        }
-
-        return getSelectedValues(divWrapper);
+        const tabs = Cache.getTabsById(tabsId);
+        return tabs.values;
     }
 
     export function setValues(tabsId: string, values: string[]): void {
-        const divWrapper = getTabsById(tabsId);
-        const inputs = divWrapper.querySelectorAll("input");
-
-        for (let i = 0; i < inputs.length; i++) {
-            inputs[i].checked = false;
-        }
-
-        for (const value of values) {
-            const id = tabsId + "-" + value + "-id";
-            const inputElement = divWrapper.querySelector("input[id=" + id + "]") as HTMLInputElement;
-            inputElement.checked = true;
-        }
+        const tabs = Cache.getTabsById(tabsId);
+        tabs.values = values;
     }
 }

@@ -34,12 +34,12 @@ namespace Page.Canvas {
         }
 
         if (fullscreenCheckbox) {
-            window.addEventListener("load", function () {
+            Helpers.Events.callAfterDOMLoaded(function () {
                 hideOverflow(fullscreenCheckbox.checked);
                 fullscreenCheckbox.addEventListener("change", function () {
                     hideOverflow(fullscreenCheckbox.checked);
                 });
-            }, false);
+            });
 
             if (sidePaneCheckbox) {
                 fullscreenCheckbox.addEventListener("change", function () {
@@ -95,7 +95,7 @@ namespace Page.Canvas {
         }
     }
 
-    window.addEventListener("load", updateCanvasSize, false);
+    Helpers.Events.callAfterDOMLoaded(updateCanvasSize);
     fullscreenCheckbox.addEventListener("change", updateCanvasSize, false);
     window.addEventListener("resize", updateCanvasSize, false);
 

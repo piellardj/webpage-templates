@@ -28,7 +28,7 @@ var Page;
         }
         /* Bind event so that filename is displayed on upload */
         var labelsSelector = ".file-control.upload > label";
-        window.addEventListener("load", function () {
+        Page.Helpers.Events.callAfterDOMLoaded(function () {
             var labels = document.querySelectorAll(labelsSelector);
             var _loop_1 = function (i) {
                 var label = labels[i];

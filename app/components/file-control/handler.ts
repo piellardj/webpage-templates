@@ -30,7 +30,7 @@ namespace Page.FileControl {
 
     /* Bind event so that filename is displayed on upload */
     const labelsSelector = ".file-control.upload > label";
-    window.addEventListener("load", function () {
+    Helpers.Events.callAfterDOMLoaded(function () {
         const labels = document.querySelectorAll(labelsSelector) as NodeListOf<HTMLLabelElement>;
         for (let i = 0; i < labels.length; i++) {
             const label = labels[i];

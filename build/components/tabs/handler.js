@@ -3,113 +3,146 @@
 var Page;
 (function (Page) {
     var Tabs;
-    (function (Tabs) {
-        var ID_SUFFIX = "-id";
-        function getTabsById(id) {
-            var selector = "div.tabs[id=" + id + ID_SUFFIX + "]";
-            var elt = document.querySelector(selector);
-            if (!elt) {
-                console.error("Cannot find tabs '" + selector + "'.");
+    (function (Tabs_1) {
+        var Tabs = /** @class */ (function () {
+            function Tabs(container) {
+                var _this = this;
+                this.observers = [];
+                this.id = Tabs.computeShortId(container.id);
+                this.inputElements = [];
+                var inputElements = container.querySelectorAll("input");
+                for (var i = 0; i < inputElements.length; i++) {
+                    this.inputElements.push(inputElements[i]);
+                    inputElements[i].addEventListener("change", function (event) {
+                        event.stopPropagation();
+                        _this.reloadValues();
+                        Storage.storeState(_this);
+                        _this.callObservers();
+                    }, false);
+                }
+                this.reloadValues();
             }
-            return elt;
-        }
-        /**
-         * @param {Object} tabsElt Node tab element
-         */
-        function getSelectedValues(tabsElt) {
-            var values = [];
-            var inputs = tabsElt.querySelectorAll("input");
-            for (var i = 0; i < inputs.length; i++) {
-                var input = inputs[i];
-                if (input.checked) {
-                    values.push(input.value);
+            Tabs.computeShortId = function (fullId) {
+                if (fullId.indexOf(Tabs.ID_SUFFIX) != fullId.length - Tabs.ID_SUFFIX.length) {
+                    throw new Error("Invalid tabs container id: '" + fullId + "'.");
+                }
+                return fullId.substring(0, fullId.length - Tabs.ID_SUFFIX.length);
+            };
+            Object.defineProperty(Tabs.prototype, "values", {
+                get: function () {
+                    return this._values;
+                },
+                set: function (newValues) {
+                    for (var _i = 0, _a = this.inputElements; _i < _a.length; _i++) {
+                        var inputElement = _a[_i];
+                        var isWanted = false;
+                        for (var _b = 0, newValues_1 = newValues; _b < newValues_1.length; _b++) {
+                            var newValue = newValues_1[_b];
+                            if (inputElement.value === newValue) {
+                                isWanted = true;
+                                break;
+                            }
+                        }
+                        inputElement.checked = isWanted;
+                    }
+                    this.reloadValues();
+                },
+                enumerable: false,
+                configurable: true
+            });
+            Tabs.prototype.callObservers = function () {
+                for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {
+                    var observer = _a[_i];
+                    observer(this._values);
+                }
+            };
+            Tabs.prototype.reloadValues = function () {
+                var values = [];
+                for (var _i = 0, _a = this.inputElements; _i < _a.length; _i++) {
+                    var inputElement = _a[_i];
+                    if (inputElement.checked) {
+                        values.push(inputElement.value);
+                    }
+                }
+                this._values = values;
+            };
+            Tabs.ID_SUFFIX = "-id";
+            return Tabs;
+        }());
+        var Cache;
+        (function (Cache) {
+            function loadCache() {
+                var result = {};
+                var containerElements = document.querySelectorAll("div.tabs[id]");
+                for (var i = 0; i < containerElements.length; i++) {
+                    var tabs = new Tabs(containerElements[i]);
+                    result[tabs.id] = tabs;
+                }
+                return result;
+            }
+            var tabsCache;
+            function getTabsById(id) {
+                Cache.load();
+                return tabsCache[id] || null;
+            }
+            Cache.getTabsById = getTabsById;
+            function load() {
+                if (typeof tabsCache === "undefined") {
+                    tabsCache = loadCache();
                 }
             }
-            return values;
-        }
+            Cache.load = load;
+        })(Cache || (Cache = {}));
         var Storage;
         (function (Storage) {
             var PREFIX = "tabs";
             var SEPARATOR = ";";
-            function attachStorageEvents() {
-                var tabsElements = document.querySelectorAll("div.tabs[id]");
-                var _loop_1 = function (i) {
-                    var tabsElement = tabsElements[i];
-                    var fullId = tabsElement.id;
-                    if (fullId.indexOf(ID_SUFFIX, fullId.length - ID_SUFFIX.length) !== -1) {
-                        var id_1 = fullId.substring(0, fullId.length - ID_SUFFIX.length);
-                        var saveTabsState = function () {
-                            var valuesList = getSelectedValues(tabsElement);
-                            var values = valuesList.join(SEPARATOR);
-                            Page.Helpers.URL.setQueryParameter(PREFIX, id_1, values);
-                        };
-                        var inputs = tabsElement.querySelectorAll("input");
-                        for (var i_1 = 0; i_1 < inputs.length; i_1++) {
-                            inputs[i_1].addEventListener("change", saveTabsState);
-                        }
-                    }
-                };
-                for (var i = 0; i < tabsElements.length; i++) {
-                    _loop_1(i);
-                }
+            function storeState(tabs) {
+                var valuesList = tabs.values;
+                var values = valuesList.join(SEPARATOR);
+                Page.Helpers.URL.setQueryParameter(PREFIX, tabs.id, values);
             }
-            Storage.attachStorageEvents = attachStorageEvents;
+            Storage.storeState = storeState;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
                     var values = value.split(SEPARATOR);
-                    if (!getTabsById(controlId)) {
+                    var tabs = Cache.getTabsById(controlId);
+                    if (!tabs) {
                         console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
                         Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
                     }
                     else {
-                        setValues(controlId, values);
+                        tabs.values = values;
                     }
                 });
             }
             Storage.applyStoredState = applyStoredState;
         })(Storage || (Storage = {}));
-        Storage.applyStoredState();
-        Storage.attachStorageEvents();
+        Page.Helpers.Events.callAfterDOMLoaded(function () {
+            Cache.load();
+            Storage.applyStoredState();
+        });
         /**
          * @return {boolean} Whether or not the observer was added
          */
         function addObserver(tabsId, observer) {
-            var divWrapper = getTabsById(tabsId);
-            if (divWrapper) {
-                var inputs = divWrapper.querySelectorAll("input");
-                for (var i = 0; i < inputs.length; i++) {
-                    var input = inputs[i];
-                    input.addEventListener("change", function (event) {
-                        event.stopPropagation();
-                        observer(getSelectedValues(divWrapper));
-                    }, false);
-                }
+            var tabs = Cache.getTabsById(tabsId);
+            if (tabs) {
+                tabs.observers.push(observer);
                 return true;
             }
             return false;
         }
-        Tabs.addObserver = addObserver;
+        Tabs_1.addObserver = addObserver;
         function getValues(tabsId) {
-            var divWrapper = getTabsById(tabsId);
-            if (!divWrapper) {
-                return [];
-            }
-            return getSelectedValues(divWrapper);
+            var tabs = Cache.getTabsById(tabsId);
+            return tabs.values;
         }
-        Tabs.getValues = getValues;
+        Tabs_1.getValues = getValues;
         function setValues(tabsId, values) {
-            var divWrapper = getTabsById(tabsId);
-            var inputs = divWrapper.querySelectorAll("input");
-            for (var i = 0; i < inputs.length; i++) {
-                inputs[i].checked = false;
-            }
-            for (var _i = 0, values_1 = values; _i < values_1.length; _i++) {
-                var value = values_1[_i];
-                var id = tabsId + "-" + value + "-id";
-                var inputElement = divWrapper.querySelector("input[id=" + id + "]");
-                inputElement.checked = true;
-            }
+            var tabs = Cache.getTabsById(tabsId);
+            tabs.values = values;
         }
-        Tabs.setValues = setValues;
+        Tabs_1.setValues = setValues;
     })(Tabs = Page.Tabs || (Page.Tabs = {}));
 })(Page || (Page = {}));

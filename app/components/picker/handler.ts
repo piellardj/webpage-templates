@@ -2,170 +2,192 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Picker {
-    type PickerObserver = (selectedValue: string | null) => unknown;
+    export type PickerObserver = (selectedValue: string | null) => unknown;
 
-    interface IPickerObject {
-        wrapper: HTMLElement;
-        leftButton: HTMLButtonElement;
-        rightButton: HTMLButtonElement;
-        span: HTMLSpanElement;
-        inputs: NodeListOf<HTMLInputElement>;
-        observers: PickerObserver[];
-    }
+    class Picker {
+        public readonly id: string;
+        public readonly observers: PickerObserver[] = [];
 
-    interface IPickersDictionary {
-        [id: string]: IPickerObject;
-    }
+        private readonly container: HTMLElement;
+        private readonly leftButton: HTMLButtonElement;
+        private readonly rightButton: HTMLButtonElement;
+        private readonly spanElement: HTMLSpanElement;
+        private readonly radioInputs: HTMLInputElement[];
 
-    /**
-     * Populates pickers dictionary and binds events.
-     */
-    function buildPickersDictionary(): IPickersDictionary {
-        const dictionary: IPickersDictionary = {};
+        private _value: string;
 
-        const pickers = document.querySelectorAll(".inline-picker");
-        for (let i = 0; i < pickers.length; ++i) {
-            const picker: IPickerObject = {
-                wrapper: pickers[i] as HTMLElement,
-                leftButton: pickers[i].querySelector(".picker-button.left"),
-                rightButton: pickers[i].querySelector(".picker-button.right"),
-                span: pickers[i].querySelector("span"),
-                inputs: pickers[i].querySelectorAll("input"),
-                observers: [],
-            };
+        public constructor(container: HTMLElement) {
+            this.id = container.id;
 
-            bindPickerEvents(picker);
-            dictionary[pickers[i].id] = picker;
-        }
+            this.container = container;
+            this.leftButton = container.querySelector(".picker-button.left");
+            this.rightButton = container.querySelector(".picker-button.right");
+            this.spanElement = container.querySelector("span");
 
-        return dictionary;
-    }
-
-    const pickersDictionary = buildPickersDictionary();
-
-    function getIndexOfCheckedInput(picker: IPickerObject): number {
-        for (let i = 0; i < picker.inputs.length; ++i) {
-            if (picker.inputs[i].checked) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    function enableButton(button: HTMLButtonElement, enable: boolean): void {
-        button.disabled = !enable;
-    }
-
-    /**
-     *  Updates selector text and disables/enables buttons if needed.
-     */
-    function updateVisibleValue(picker: IPickerObject, callObservers: boolean): void {
-        const index = getIndexOfCheckedInput(picker);
-        let selectedLabel: string;
-        let selectedValue: string | null = null;
-        if (index >= 0) {
-            selectedLabel = picker.inputs[index].dataset.label;
-            selectedValue = picker.inputs[index].value;
-        } else {
-            selectedLabel = picker.wrapper.dataset.placeholder || "";
-        }
-
-        picker.span.innerText = selectedLabel;
-
-        if (picker.inputs.length < 0) {
-            enableButton(picker.leftButton, false);
-            enableButton(picker.rightButton, false);
-        } else {
-            enableButton(picker.leftButton, !picker.inputs[0].checked);
-            enableButton(picker.rightButton,
-                !picker.inputs[picker.inputs.length - 1].checked);
-        }
-
-        if (callObservers) {
-            for (const observer of picker.observers) {
-                observer(selectedValue);
-            }
-        }
-    }
-
-    function bindPickerEvents(picker: IPickerObject): void {
-        picker.leftButton.addEventListener("click", function () {
-            const index = getIndexOfCheckedInput(picker);
-            if (index < 0) {
-                picker.inputs[picker.inputs.length - 1].checked = true;
-            } else if (index > 0) {
-                picker.inputs[index].checked = false;
-                picker.inputs[index - 1].checked = true;
+            this.radioInputs = [];
+            const radioInputs = container.querySelectorAll("input");
+            for (let i = 0; i < radioInputs.length; i++) {
+                this.radioInputs.push(radioInputs[i]);
             }
 
-            updateVisibleValue(picker, true);
-        });
+            this.leftButton.addEventListener("click", () => {
+                const index = this.getIndexOfCheckedInput();
+                this.checkOnlyRadio(index - 1, this.radioInputs.length - 1);
+                this.updateValue();
+                Storage.storeState(this);
+                this.callObservers();
+            });
 
-        picker.rightButton.addEventListener("click", function () {
-            const index = getIndexOfCheckedInput(picker);
-            if (index < 0) {
-                picker.inputs[0].checked = true;
-            } else if (index < picker.inputs.length - 1) {
-                picker.inputs[index].checked = false;
-                picker.inputs[index + 1].checked = true;
+            this.rightButton.addEventListener("click", () => {
+                const index = this.getIndexOfCheckedInput();
+                this.checkOnlyRadio(index + 1, 0);
+                this.updateValue();
+                Storage.storeState(this);
+                this.callObservers();
+            });
+
+            this.updateValue();
+        }
+
+        public get value(): string {
+            return this._value;
+        }
+
+        public set value(newValue: string) {
+            for (const radioInput of this.radioInputs) {
+                radioInput.checked = (radioInput.value === newValue);
             }
 
-            updateVisibleValue(picker, true);
-        });
+            this.updateValue();
+        }
 
-        updateVisibleValue(picker, true);
+        private getIndexOfCheckedInput(): number {
+            for (let i = 0; i < this.radioInputs.length; i++) {
+                if (this.radioInputs[i].checked) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private updateValue(): void {
+            const indexOfSelected = this.getIndexOfCheckedInput();
+            if (indexOfSelected >= 0) {
+                this._value = this.radioInputs[indexOfSelected].value;
+            } else {
+                this._value = null;
+            }
+            this.updateAppearance();
+        }
+
+        private updateAppearance(): void {
+            const index = this.getIndexOfCheckedInput();
+            let selectedLabel: string;
+            if (index >= 0) {
+                selectedLabel = this.radioInputs[index].dataset.label;
+            } else {
+                selectedLabel = this.container.dataset.placeholder || "";
+            }
+
+            this.spanElement.innerText = selectedLabel;
+
+            if (this.radioInputs.length < 0) {
+                this.enableButton(this.leftButton, false);
+                this.enableButton(this.rightButton, false);
+            } else {
+                this.enableButton(this.leftButton, !this.radioInputs[0].checked);
+                this.enableButton(this.rightButton, !this.radioInputs[this.radioInputs.length - 1].checked);
+            }
+        }
+
+        private callObservers(): void {
+            for (const observer of this.observers) {
+                observer(this.value);
+            }
+        }
+
+        private enableButton(button: HTMLButtonElement, enable: boolean): void {
+            button.disabled = !enable;
+        }
+
+        private checkOnlyRadio(index: number, defaultIndex: number): void {
+            for (const radioInput of this.radioInputs) {
+                radioInput.checked = false;
+            }
+
+            if (index >= 0 || index < this.radioInputs.length) {
+                this.radioInputs[index].checked = true;
+            } else {
+                this.radioInputs[defaultIndex].checked = true;
+            }
+        }
+    }
+
+    namespace Cache {
+        type PickersCache = { [id: string]: Picker };
+
+        function loadCache(): PickersCache {
+            const result: PickersCache = {};
+            const containerElements = document.querySelectorAll("div.inline-picker[id]") as NodeListOf<HTMLElement>;
+            for (let i = 0; i < containerElements.length; i++) {
+                const tabs = new Picker(containerElements[i]);
+                result[tabs.id] = tabs;
+            }
+            return result;
+        }
+
+        let pickersCache: PickersCache;
+
+        export function getPickerById(id: string): Picker {
+            Cache.load();
+            return pickersCache[id] || null;
+        }
+
+        export function load(): void {
+            if (typeof pickersCache === "undefined") {
+                pickersCache = loadCache();
+            }
+        }
     }
 
     namespace Storage {
         const PREFIX = "picker";
         const NULL_VALUE = "__null__";
 
-        export function attachStorageEvents(): void {
-            const pickersElementsSelectors = "div.inline-picker[id]";
-            const pickersElements = document.querySelectorAll(pickersElementsSelectors);
-            for (let i = 0; i < pickersElements.length; i++) {
-                const pickerElement = pickersElements[i];
-
-                const pickerId = pickerElement.id;
-                addObserver(pickerId, (selectedValue: string | null) => {
-                    const value = (selectedValue === null) ? NULL_VALUE : selectedValue;
-                    Page.Helpers.URL.setQueryParameter(PREFIX, pickerId, value);
-                });
-            }
+        export function storeState(picker: Picker): void {
+            const value = (picker.value === null) ? NULL_VALUE : picker.value;
+            Page.Helpers.URL.setQueryParameter(PREFIX, picker.id, value);
         }
 
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
-                if (pickersDictionary[controlId]) {
-                    setValue(controlId, value);
-                } else {
+                const picker = Cache.getPickerById(controlId);
+                if (!picker) {
                     Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
+                } else {
+                    picker.value = value;
                 }
             });
         }
     }
 
-    Storage.applyStoredState();
-    Storage.attachStorageEvents();
+    Helpers.Events.callAfterDOMLoaded(() => {
+        Cache.load();
+        Storage.applyStoredState();
+    });
 
     export function addObserver(id: string, observer: PickerObserver): void {
-        pickersDictionary[id].observers.push(observer);
+        const picker = Cache.getPickerById(id);
+        picker.observers.push(observer);
     }
 
     export function getValue(id: string): string | null {
-        const picker = pickersDictionary[id];
-        const index = getIndexOfCheckedInput(picker);
-        if (index >= 0) {
-            return picker.inputs[index].value;
-        }
-        return null;
+        const picker = Cache.getPickerById(id);
+        return picker.value;
     }
 
     export function setValue(id: string, value: string): void {
-        const picker = pickersDictionary[id];
-        for (let i = 0; i < picker.inputs.length; ++i) {
-            picker.inputs[i].checked = (picker.inputs[i].value === value);
-        }
-        updateVisibleValue(picker, false);
+        const picker = Cache.getPickerById(id);
+        picker.value = value;
     }
 }

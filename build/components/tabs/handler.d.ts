@@ -4,8 +4,7 @@ declare namespace Page.Tabs {
     /**
      * @return {boolean} Whether or not the observer was added
      */
-    export function addObserver(tabsId: string, observer: TabsObserver): boolean;
-    export function getValues(tabsId: string): string[];
-    export function setValues(tabsId: string, values: string[]): void;
-    export {};
+    function addObserver(tabsId: string, observer: TabsObserver): boolean;
+    function getValues(tabsId: string): string[];
+    function setValues(tabsId: string, values: string[]): void;
 }

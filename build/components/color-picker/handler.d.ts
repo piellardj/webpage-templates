@@ -18,7 +18,7 @@ declare namespace Page.ColorPicker {
         function rgbToHex(rgb: IRGB): Hexa;
         function hexToRgb(hex: Hexa): IRGB;
     }
-    type OnChangeObserver = (newValue: ColorSpace.IRGB) => unknown;
+    export type OnChangeObserver = (newValue: ColorSpace.IRGB) => unknown;
     export function addObserver(id: string, observer: OnChangeObserver): boolean;
     export function getValue(id: string): ColorSpace.IRGB;
     export function getValueHex(id: string): ColorSpace.Hexa;

@@ -3,148 +3,175 @@
 var Page;
 (function (Page) {
     var Picker;
-    (function (Picker) {
-        /**
-         * Populates pickers dictionary and binds events.
-         */
-        function buildPickersDictionary() {
-            var dictionary = {};
-            var pickers = document.querySelectorAll(".inline-picker");
-            for (var i = 0; i < pickers.length; ++i) {
-                var picker = {
-                    wrapper: pickers[i],
-                    leftButton: pickers[i].querySelector(".picker-button.left"),
-                    rightButton: pickers[i].querySelector(".picker-button.right"),
-                    span: pickers[i].querySelector("span"),
-                    inputs: pickers[i].querySelectorAll("input"),
-                    observers: [],
-                };
-                bindPickerEvents(picker);
-                dictionary[pickers[i].id] = picker;
-            }
-            return dictionary;
-        }
-        var pickersDictionary = buildPickersDictionary();
-        function getIndexOfCheckedInput(picker) {
-            for (var i = 0; i < picker.inputs.length; ++i) {
-                if (picker.inputs[i].checked) {
-                    return i;
+    (function (Picker_1) {
+        var Picker = /** @class */ (function () {
+            function Picker(container) {
+                var _this = this;
+                this.observers = [];
+                this.id = container.id;
+                this.container = container;
+                this.leftButton = container.querySelector(".picker-button.left");
+                this.rightButton = container.querySelector(".picker-button.right");
+                this.spanElement = container.querySelector("span");
+                this.radioInputs = [];
+                var radioInputs = container.querySelectorAll("input");
+                for (var i = 0; i < radioInputs.length; i++) {
+                    this.radioInputs.push(radioInputs[i]);
                 }
+                this.leftButton.addEventListener("click", function () {
+                    var index = _this.getIndexOfCheckedInput();
+                    _this.checkOnlyRadio(index - 1, _this.radioInputs.length - 1);
+                    _this.updateValue();
+                    Storage.storeState(_this);
+                    _this.callObservers();
+                });
+                this.rightButton.addEventListener("click", function () {
+                    var index = _this.getIndexOfCheckedInput();
+                    _this.checkOnlyRadio(index + 1, 0);
+                    _this.updateValue();
+                    Storage.storeState(_this);
+                    _this.callObservers();
+                });
+                this.updateValue();
             }
-            return -1;
-        }
-        function enableButton(button, enable) {
-            button.disabled = !enable;
-        }
-        /**
-         *  Updates selector text and disables/enables buttons if needed.
-         */
-        function updateVisibleValue(picker, callObservers) {
-            var index = getIndexOfCheckedInput(picker);
-            var selectedLabel;
-            var selectedValue = null;
-            if (index >= 0) {
-                selectedLabel = picker.inputs[index].dataset.label;
-                selectedValue = picker.inputs[index].value;
-            }
-            else {
-                selectedLabel = picker.wrapper.dataset.placeholder || "";
-            }
-            picker.span.innerText = selectedLabel;
-            if (picker.inputs.length < 0) {
-                enableButton(picker.leftButton, false);
-                enableButton(picker.rightButton, false);
-            }
-            else {
-                enableButton(picker.leftButton, !picker.inputs[0].checked);
-                enableButton(picker.rightButton, !picker.inputs[picker.inputs.length - 1].checked);
-            }
-            if (callObservers) {
-                for (var _i = 0, _a = picker.observers; _i < _a.length; _i++) {
+            Object.defineProperty(Picker.prototype, "value", {
+                get: function () {
+                    return this._value;
+                },
+                set: function (newValue) {
+                    for (var _i = 0, _a = this.radioInputs; _i < _a.length; _i++) {
+                        var radioInput = _a[_i];
+                        radioInput.checked = (radioInput.value === newValue);
+                    }
+                    this.updateValue();
+                },
+                enumerable: false,
+                configurable: true
+            });
+            Picker.prototype.getIndexOfCheckedInput = function () {
+                for (var i = 0; i < this.radioInputs.length; i++) {
+                    if (this.radioInputs[i].checked) {
+                        return i;
+                    }
+                }
+                return -1;
+            };
+            Picker.prototype.updateValue = function () {
+                var indexOfSelected = this.getIndexOfCheckedInput();
+                if (indexOfSelected >= 0) {
+                    this._value = this.radioInputs[indexOfSelected].value;
+                }
+                else {
+                    this._value = null;
+                }
+                this.updateAppearance();
+            };
+            Picker.prototype.updateAppearance = function () {
+                var index = this.getIndexOfCheckedInput();
+                var selectedLabel;
+                if (index >= 0) {
+                    selectedLabel = this.radioInputs[index].dataset.label;
+                }
+                else {
+                    selectedLabel = this.container.dataset.placeholder || "";
+                }
+                this.spanElement.innerText = selectedLabel;
+                if (this.radioInputs.length < 0) {
+                    this.enableButton(this.leftButton, false);
+                    this.enableButton(this.rightButton, false);
+                }
+                else {
+                    this.enableButton(this.leftButton, !this.radioInputs[0].checked);
+                    this.enableButton(this.rightButton, !this.radioInputs[this.radioInputs.length - 1].checked);
+                }
+            };
+            Picker.prototype.callObservers = function () {
+                for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {
                     var observer = _a[_i];
-                    observer(selectedValue);
+                    observer(this.value);
+                }
+            };
+            Picker.prototype.enableButton = function (button, enable) {
+                button.disabled = !enable;
+            };
+            Picker.prototype.checkOnlyRadio = function (index, defaultIndex) {
+                for (var _i = 0, _a = this.radioInputs; _i < _a.length; _i++) {
+                    var radioInput = _a[_i];
+                    radioInput.checked = false;
+                }
+                if (index >= 0 || index < this.radioInputs.length) {
+                    this.radioInputs[index].checked = true;
+                }
+                else {
+                    this.radioInputs[defaultIndex].checked = true;
+                }
+            };
+            return Picker;
+        }());
+        var Cache;
+        (function (Cache) {
+            function loadCache() {
+                var result = {};
+                var containerElements = document.querySelectorAll("div.inline-picker[id]");
+                for (var i = 0; i < containerElements.length; i++) {
+                    var tabs = new Picker(containerElements[i]);
+                    result[tabs.id] = tabs;
+                }
+                return result;
+            }
+            var pickersCache;
+            function getPickerById(id) {
+                Cache.load();
+                return pickersCache[id] || null;
+            }
+            Cache.getPickerById = getPickerById;
+            function load() {
+                if (typeof pickersCache === "undefined") {
+                    pickersCache = loadCache();
                 }
             }
-        }
-        function bindPickerEvents(picker) {
-            picker.leftButton.addEventListener("click", function () {
-                var index = getIndexOfCheckedInput(picker);
-                if (index < 0) {
-                    picker.inputs[picker.inputs.length - 1].checked = true;
-                }
-                else if (index > 0) {
-                    picker.inputs[index].checked = false;
-                    picker.inputs[index - 1].checked = true;
-                }
-                updateVisibleValue(picker, true);
-            });
-            picker.rightButton.addEventListener("click", function () {
-                var index = getIndexOfCheckedInput(picker);
-                if (index < 0) {
-                    picker.inputs[0].checked = true;
-                }
-                else if (index < picker.inputs.length - 1) {
-                    picker.inputs[index].checked = false;
-                    picker.inputs[index + 1].checked = true;
-                }
-                updateVisibleValue(picker, true);
-            });
-            updateVisibleValue(picker, true);
-        }
+            Cache.load = load;
+        })(Cache || (Cache = {}));
         var Storage;
         (function (Storage) {
             var PREFIX = "picker";
             var NULL_VALUE = "__null__";
-            function attachStorageEvents() {
-                var pickersElementsSelectors = "div.inline-picker[id]";
-                var pickersElements = document.querySelectorAll(pickersElementsSelectors);
-                var _loop_1 = function (i) {
-                    var pickerElement = pickersElements[i];
-                    var pickerId = pickerElement.id;
-                    addObserver(pickerId, function (selectedValue) {
-                        var value = (selectedValue === null) ? NULL_VALUE : selectedValue;
-                        Page.Helpers.URL.setQueryParameter(PREFIX, pickerId, value);
-                    });
-                };
-                for (var i = 0; i < pickersElements.length; i++) {
-                    _loop_1(i);
-                }
+            function storeState(picker) {
+                var value = (picker.value === null) ? NULL_VALUE : picker.value;
+                Page.Helpers.URL.setQueryParameter(PREFIX, picker.id, value);
             }
-            Storage.attachStorageEvents = attachStorageEvents;
+            Storage.storeState = storeState;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
-                    if (pickersDictionary[controlId]) {
-                        setValue(controlId, value);
+                    var picker = Cache.getPickerById(controlId);
+                    if (!picker) {
+                        Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
                     }
                     else {
-                        Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
+                        picker.value = value;
                     }
                 });
             }
             Storage.applyStoredState = applyStoredState;
         })(Storage || (Storage = {}));
-        Storage.applyStoredState();
-        Storage.attachStorageEvents();
+        Page.Helpers.Events.callAfterDOMLoaded(function () {
+            Cache.load();
+            Storage.applyStoredState();
+        });
         function addObserver(id, observer) {
-            pickersDictionary[id].observers.push(observer);
+            var picker = Cache.getPickerById(id);
+            picker.observers.push(observer);
         }
-        Picker.addObserver = addObserver;
+        Picker_1.addObserver = addObserver;
         function getValue(id) {
-            var picker = pickersDictionary[id];
-            var index = getIndexOfCheckedInput(picker);
-            if (index >= 0) {
-                return picker.inputs[index].value;
-            }
-            return null;
+            var picker = Cache.getPickerById(id);
+            return picker.value;
         }
-        Picker.getValue = getValue;
+        Picker_1.getValue = getValue;
         function setValue(id, value) {
-            var picker = pickersDictionary[id];
-            for (var i = 0; i < picker.inputs.length; ++i) {
-                picker.inputs[i].checked = (picker.inputs[i].value === value);
-            }
-            updateVisibleValue(picker, false);
+            var picker = Cache.getPickerById(id);
+            picker.value = value;
         }
-        Picker.setValue = setValue;
+        Picker_1.setValue = setValue;
     })(Picker = Page.Picker || (Page.Picker = {}));
 })(Page || (Page = {}));

@@ -30,12 +30,12 @@ var Page;
                 document.body.style.overflow = value ? "hidden" : "auto";
             }
             if (fullscreenCheckbox) {
-                window.addEventListener("load", function () {
+                Page.Helpers.Events.callAfterDOMLoaded(function () {
                     hideOverflow(fullscreenCheckbox.checked);
                     fullscreenCheckbox.addEventListener("change", function () {
                         hideOverflow(fullscreenCheckbox.checked);
                     });
-                }, false);
+                });
                 if (sidePaneCheckbox) {
                     fullscreenCheckbox.addEventListener("change", function () {
                         if (fullscreenCheckbox.checked) {
@@ -81,7 +81,7 @@ var Page;
                 }
             }
         }
-        window.addEventListener("load", updateCanvasSize, false);
+        Page.Helpers.Events.callAfterDOMLoaded(updateCanvasSize);
         fullscreenCheckbox.addEventListener("change", updateCanvasSize, false);
         window.addEventListener("resize", updateCanvasSize, false);
         var fullscreenToggleObservers = [updateCanvasSize];

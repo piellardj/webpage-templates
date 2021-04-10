@@ -2,93 +2,126 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Range {
-    function update(range: HTMLInputElement): void {
-        const container = range.parentElement;
+    export type RangeObserver = (rangeValue: number) => unknown;
 
-        const progressLeft = container.querySelector(".range-progress-left") as HTMLElement;
-        let progression = (+range.value - +range.min) / (+range.max - +range.min);
-        progression = Math.max(0, Math.min(1, progression));
-        progressLeft.style.width = (100 * progression) + "%";
+    class Range {
+        private readonly inputElement: HTMLInputElement;
+        private readonly progressLeftElement: HTMLElement;
+        private readonly tooltipElement: HTMLElement;
 
-        const tooltip = container.querySelector("output.range-tooltip") as HTMLElement;
-        tooltip.textContent = range.value;
+        private _value: number;
+
+        public readonly id: string;
+
+        public readonly onInputObservers: RangeObserver[] = [];
+        public readonly onChangeObservers: RangeObserver[] = [];
+
+        public constructor(container: HTMLElement) {
+            this.inputElement = container.querySelector("input[type='range']");
+            this.progressLeftElement = container.querySelector(".range-progress-left");
+            this.tooltipElement = container.querySelector("output.range-tooltip");
+
+            this.id = this.inputElement.id;
+
+            this.inputElement.addEventListener("input", (event: Event) => {
+                event.stopPropagation();
+                this.reloadValue();
+                for (const observer of this.onInputObservers) {
+                    observer(this.value);
+                }
+            });
+            this.inputElement.addEventListener("change", (event: Event) => {
+                event.stopPropagation();
+                this.reloadValue();
+                Storage.storeState(this);
+                for (const observer of this.onChangeObservers) {
+                    observer(this.value);
+                }
+            });
+            this.reloadValue();
+        }
+
+        public get value(): number {
+            return this._value;
+        }
+
+        public set value(newValue: number) {
+            this.inputElement.value = "" + newValue;
+            this.reloadValue();
+        }
+
+        private updateAppearance(): void {
+            const currentLength = +this.inputElement.value - +this.inputElement.min;
+            const totalLength = +this.inputElement.max - +this.inputElement.min;
+            let progression = currentLength / totalLength;
+            progression = Math.max(0, Math.min(1, progression));
+            this.progressLeftElement.style.width = (100 * progression) + "%";
+
+            this.tooltipElement.textContent = this.inputElement.value;
+        }
+
+        private reloadValue(): void {
+            this._value = +this.inputElement.value;
+            this.updateAppearance();
+        }
     }
 
-    window.addEventListener("load", function (): void {
-        const updateFunctions = [];
+    namespace Cache {
+        type RangesCache = { [id: string]: Range };
 
-        const selector = ".range-container > input[type='range']";
-        const rangeElements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
+        function loadCache(): RangesCache {
+            const result: RangesCache = {};
 
-        for (let i = 0; i < rangeElements.length; i++) {
-            const rangeElement = rangeElements[i];
-            const updateFunction = function (): void {
-                update(rangeElement);
-            };
-            updateFunctions.push(updateFunction);
+            const selector = ".range-container > input[type='range']";
+            const rangeElements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
+            for (let i = 0; i < rangeElements.length; i++) {
+                const container = rangeElements[i].parentElement;
+                const id = rangeElements[i].id;
+                result[id] = new Range(container);
+            }
 
-            rangeElement.addEventListener("input", updateFunction);
-            rangeElement.addEventListener("change", updateFunction);
-            updateFunction();
+            return result;
         }
-    });
 
-    function getRangeById(id: string): HTMLInputElement | null {
-        const selector = "input[type=range][id=" + id + "]";
-        const elt = document.querySelector(selector);
-        if (!elt) {
-            console.error("Cannot find range '" + selector + "'.");
+        let rangesCache: RangesCache;
+
+        export function getRangeById(id: string): Range | null {
+            Cache.load();
+            return rangesCache[id] || null;
         }
-        return elt as HTMLInputElement;
+
+        export function load(): void {
+            if (typeof rangesCache === "undefined") {
+                rangesCache = loadCache();
+            }
+        }
     }
 
     namespace Storage {
         const PREFIX = "range";
 
-        export function attachStorageEvents(): void {
-            const inputsSelector = ".range-container input.slider[type=range][id]";
-            const inputElements = document.querySelectorAll(inputsSelector) as NodeListOf<HTMLInputElement>;
-            for (let i = 0; i < inputElements.length; i++) {
-                const inputElement = inputElements[i];
-                inputElement.addEventListener("change", () => {
-                    Page.Helpers.URL.setQueryParameter(PREFIX, inputElement.id, inputElement.value);
-                });
-            }
+        export function storeState(range: Range): void {
+            const valueAsString = "" + range.value;
+            Page.Helpers.URL.setQueryParameter(PREFIX, range.id, valueAsString);
         }
 
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
-                const input = getRangeById(controlId);
-                if (!input) {
+                const range = Cache.getRangeById(controlId);
+                if (!range) {
                     console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
                     Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
                 } else {
-                    setValue(controlId, +value);
+                    range.value = +value;
                 }
             });
         }
     }
 
-    Storage.applyStoredState();
-    Storage.attachStorageEvents();
-
-    type RangeObserver = (rangeValue: number) => unknown;
-
-    /**
-     * @return {boolean} Whether or not the observer was added
-     */
-    function addObserverInternal(rangeId: string, observer: RangeObserver, eventName: string): boolean {
-        const elt = getRangeById(rangeId);
-        if (elt) {
-            elt.addEventListener(eventName, function (event) {
-                event.stopPropagation();
-                observer(+elt.value);
-            }, false);
-            return true;
-        }
-
-        return false;
-    }
+    Helpers.Events.callAfterDOMLoaded(() => {
+        Cache.load();
+        Storage.applyStoredState();
+    });
 
     const isIE11 = !!window.MSInputMethodContext && !!document["documentMode"];
 
@@ -97,11 +130,16 @@ namespace Page.Range {
      * @return {boolean} Whether or not the observer was added
      */
     export function addObserver(rangeId: string, observer: RangeObserver): boolean {
-        if (isIE11) { // bug in IE 11, input event is never fired
-            return addObserverInternal(rangeId, observer, "change");
-        } else {
-            return addObserverInternal(rangeId, observer, "input");
+        const range = Cache.getRangeById(rangeId);
+        if (range) {
+            if (isIE11) { // bug in IE 11, input event is never fired
+                range.onChangeObservers.push(observer);
+            } else {
+                range.onInputObservers.push(observer);
+            }
+            return true;
         }
+        return false;
     }
 
     /**
@@ -109,22 +147,26 @@ namespace Page.Range {
      * @return {boolean} Whether or not the observer was added
      */
     export function addLazyObserver(rangeId: string, observer: RangeObserver): boolean {
-        return addObserverInternal(rangeId, observer, "change");
+        const range = Cache.getRangeById(rangeId);
+        if (range) {
+            range.onChangeObservers.push(observer);
+            return true;
+        }
+        return false;
     }
 
     export function getValue(rangeId: string): number | null {
-        const elt = getRangeById(rangeId);
-        if (!elt) {
+        const range = Cache.getRangeById(rangeId);
+        if (!range) {
             return null;
         }
-        return +elt.value;
+        return range.value;
     }
 
     export function setValue(rangeId: string, value: number): void {
-        const elt = getRangeById(rangeId);
-        if (elt) {
-            elt.value = "" + value;
-            update(elt);
+        const range = Cache.getRangeById(rangeId);
+        if (range) {
+            range.value = value;
         }
     }
 }

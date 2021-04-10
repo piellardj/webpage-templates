@@ -109,15 +109,6 @@ var Page;
                     Popup.assignPopup(_this);
                 });
             }
-            ColorPicker.getColorPicker = function (id) {
-                if (!ColorPicker.colorPickersMap[id]) {
-                    var element = document.querySelector("#" + id + ".color-picker");
-                    if (element) {
-                        ColorPicker.colorPickersMap[id] = new ColorPicker(element);
-                    }
-                }
-                return ColorPicker.colorPickersMap[id];
-            };
             Object.defineProperty(ColorPicker.prototype, "value", {
                 get: function () {
                     return this.element.dataset.currentColor;
@@ -145,9 +136,32 @@ var Page;
                 this.colorPreview.style.background = hexValue;
                 this.colorPreviewText.textContent = hexValue;
             };
-            ColorPicker.colorPickersMap = {};
             return ColorPicker;
         }());
+        var Cache;
+        (function (Cache) {
+            function loadCache() {
+                var result = {};
+                var containers = document.querySelectorAll(".color-picker[id]");
+                for (var i = 0; i < containers.length; i++) {
+                    var coloPicker = new ColorPicker(containers[i]);
+                    result[containers[i].id] = coloPicker;
+                }
+                return result;
+            }
+            var colorPickersCache;
+            function getColorPickerById(id) {
+                Cache.load();
+                return colorPickersCache[id] || null;
+            }
+            Cache.getColorPickerById = getColorPickerById;
+            function load() {
+                if (typeof colorPickersCache === "undefined") {
+                    colorPickersCache = loadCache();
+                }
+            }
+            Cache.load = load;
+        })(Cache || (Cache = {}));
         var Storage;
         (function (Storage) {
             var PREFIX = "color-picker";
@@ -157,12 +171,14 @@ var Page;
             Storage.storeState = storeState;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
+                    var colorPicker = Cache.getColorPickerById(controlId);
                     var hexValue = ColorSpace.parseHexa(value);
-                    if (hexValue) {
-                        var colorPicker = ColorPicker.getColorPicker(controlId);
-                        if (colorPicker) {
-                            colorPicker.value = hexValue;
-                        }
+                    if (!colorPicker || !hexValue) {
+                        console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
+                        Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
+                    }
+                    else {
+                        colorPicker.value = hexValue;
                     }
                 });
             }
@@ -436,17 +452,12 @@ var Page;
             };
             return Popup;
         }());
-        window.addEventListener("load", function buildColorPickersMap() {
-            var list = document.querySelectorAll(".color-picker");
-            for (var i = 0; i < list.length; i++) {
-                var colorPickerElement = list[i];
-                var id = colorPickerElement.id;
-                ColorPicker.getColorPicker(id); // register the color picker
-            }
+        Page.Helpers.Events.callAfterDOMLoaded(function () {
+            Cache.load();
             Storage.applyStoredState();
         });
         function addObserver(id, observer) {
-            var colorPicker = ColorPicker.getColorPicker(id);
+            var colorPicker = Cache.getColorPickerById(id);
             if (colorPicker) {
                 colorPicker.observers.push(observer);
             }
@@ -454,13 +465,13 @@ var Page;
         }
         ColorPicker_1.addObserver = addObserver;
         function getValue(id) {
-            var colorPicker = ColorPicker.getColorPicker(id);
+            var colorPicker = Cache.getColorPickerById(id);
             var hexValue = colorPicker.value;
             return ColorSpace.hexToRgb(hexValue);
         }
         ColorPicker_1.getValue = getValue;
         function getValueHex(id) {
-            var colorPicker = ColorPicker.getColorPicker(id);
+            var colorPicker = Cache.getColorPickerById(id);
             return colorPicker.value;
         }
         ColorPicker_1.getValueHex = getValueHex;
@@ -477,7 +488,7 @@ var Page;
                 b: roundAndClamp(b, 0, 255),
             };
             var hexValue = ColorSpace.rgbToHex(rgb);
-            var colorPicker = ColorPicker.getColorPicker(id);
+            var colorPicker = Cache.getColorPickerById(id);
             colorPicker.value = hexValue;
         }
         ColorPicker_1.setValue = setValue;

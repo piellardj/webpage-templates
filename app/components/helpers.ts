@@ -53,7 +53,7 @@ namespace Page.Helpers {
                         const shortParameterName = parameterName.substring(prefix.length);
                         callback(shortParameterName, parameterValue);
                     }
-                    
+
                 }
             }
 
@@ -101,6 +101,16 @@ namespace Page.Helpers {
             const fullPrefix = buildPrefix(PARAMETERS_PREFIX, prefix);
             urlBuilder.setQueryParameter(fullPrefix + name, null);
             updateUrl(urlBuilder.buildUrl());
+        }
+    }
+
+    export namespace Events {
+        export function callAfterDOMLoaded(callback: () => unknown): void {
+            if (document.readyState === "loading") {  // Loading hasn't finished yet
+                document.addEventListener("DOMContentLoaded", callback);
+            } else {  // `DOMContentLoaded` has already fired
+                callback();
+            }
         }
     }
 }
