@@ -115,7 +115,7 @@ namespace Page.Picker {
                 radioInput.checked = false;
             }
 
-            if (index >= 0 || index < this.radioInputs.length) {
+            if (index >= 0 && index < this.radioInputs.length) {
                 this.radioInputs[index].checked = true;
             } else {
                 this.radioInputs[defaultIndex].checked = true;

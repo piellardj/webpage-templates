@@ -99,7 +99,7 @@ var Page;
                     var radioInput = _a[_i];
                     radioInput.checked = false;
                 }
-                if (index >= 0 || index < this.radioInputs.length) {
+                if (index >= 0 && index < this.radioInputs.length) {
                     this.radioInputs[index].checked = true;
                 }
                 else {
