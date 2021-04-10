@@ -44,6 +44,7 @@ var Page;
                         radioInput.checked = (radioInput.value === newValue);
                     }
                     this.updateValue();
+                    this.callObservers();
                 },
                 enumerable: false,
                 configurable: true

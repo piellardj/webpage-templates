@@ -19,9 +19,7 @@ namespace Page.Checkbox {
             this.element.addEventListener("change", () => {
                 this.reloadValue();
                 Storage.storeState(this);
-                for (const observer of this.observers) {
-                    observer(this.checked);
-                }
+                this.callObservers();
             });
         }
 
@@ -32,6 +30,13 @@ namespace Page.Checkbox {
         public set checked(newChecked: boolean) {
             this.element.checked = newChecked;
             this.reloadValue();
+            this.callObservers();
+        }
+
+        private callObservers(): void {
+            for (const observer of this.observers) {
+                observer(this.checked);
+            }
         }
 
         private reloadValue(): void {

@@ -14,10 +14,7 @@ var Page;
                 this.element.addEventListener("change", function () {
                     _this.reloadValue();
                     Storage.storeState(_this);
-                    for (var _i = 0, _a = _this.observers; _i < _a.length; _i++) {
-                        var observer = _a[_i];
-                        observer(_this.checked);
-                    }
+                    _this.callObservers();
                 });
             }
             Object.defineProperty(Checkbox.prototype, "checked", {
@@ -27,10 +24,17 @@ var Page;
                 set: function (newChecked) {
                     this.element.checked = newChecked;
                     this.reloadValue();
+                    this.callObservers();
                 },
                 enumerable: false,
                 configurable: true
             });
+            Checkbox.prototype.callObservers = function () {
+                for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {
+                    var observer = _a[_i];
+                    observer(this.checked);
+                }
+            };
             Checkbox.prototype.reloadValue = function () {
                 this._checked = this.element.checked;
             };

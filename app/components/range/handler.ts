@@ -34,9 +34,7 @@ namespace Page.Range {
                 event.stopPropagation();
                 this.reloadValue();
                 Storage.storeState(this);
-                for (const observer of this.onChangeObservers) {
-                    observer(this.value);
-                }
+                
             });
             this.reloadValue();
         }
@@ -48,6 +46,13 @@ namespace Page.Range {
         public set value(newValue: number) {
             this.inputElement.value = "" + newValue;
             this.reloadValue();
+            this.callObservers();
+        }
+
+        private callObservers(): void {
+            for (const observer of this.onChangeObservers) {
+                observer(this.value);
+            }
         }
 
         private updateAppearance(): void {

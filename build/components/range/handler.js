@@ -25,10 +25,6 @@ var Page;
                     event.stopPropagation();
                     _this.reloadValue();
                     Storage.storeState(_this);
-                    for (var _i = 0, _a = _this.onChangeObservers; _i < _a.length; _i++) {
-                        var observer = _a[_i];
-                        observer(_this.value);
-                    }
                 });
                 this.reloadValue();
             }
@@ -39,10 +35,17 @@ var Page;
                 set: function (newValue) {
                     this.inputElement.value = "" + newValue;
                     this.reloadValue();
+                    this.callObservers();
                 },
                 enumerable: false,
                 configurable: true
             });
+            Range.prototype.callObservers = function () {
+                for (var _i = 0, _a = this.onChangeObservers; _i < _a.length; _i++) {
+                    var observer = _a[_i];
+                    observer(this.value);
+                }
+            };
             Range.prototype.updateAppearance = function () {
                 var currentLength = +this.inputElement.value - +this.inputElement.min;
                 var totalLength = +this.inputElement.max - +this.inputElement.min;

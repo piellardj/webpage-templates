@@ -59,6 +59,7 @@ namespace Page.Picker {
             }
 
             this.updateValue();
+            this.callObservers();
         }
 
         private getIndexOfCheckedInput(): number {

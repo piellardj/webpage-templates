@@ -46,6 +46,7 @@ var Page;
                         inputElement.checked = isWanted;
                     }
                     this.reloadValues();
+                    this.callObservers();
                 },
                 enumerable: false,
                 configurable: true

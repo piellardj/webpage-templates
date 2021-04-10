@@ -55,6 +55,7 @@ namespace Page.Tabs {
             }
 
             this.reloadValues();
+            this.callObservers();
         }
 
         private callObservers(): void {
