@@ -13,6 +13,7 @@ var Page;
                 this.progressLeftElement = container.querySelector(".range-progress-left");
                 this.tooltipElement = container.querySelector("output.range-tooltip");
                 this.id = this.inputElement.id;
+                this.nbDecimalsToDisplay = Range.getMaxNbDecimals(+this.inputElement.min, +this.inputElement.max, +this.inputElement.step);
                 this.inputElement.addEventListener("input", function (event) {
                     event.stopPropagation();
                     _this.reloadValue();
@@ -53,11 +54,46 @@ var Page;
                 var progression = currentLength / totalLength;
                 progression = Math.max(0, Math.min(1, progression));
                 this.progressLeftElement.style.width = (100 * progression) + "%";
-                this.tooltipElement.textContent = this.inputElement.value;
+                var text;
+                if (this.nbDecimalsToDisplay < 0) {
+                    text = this.inputElement.value;
+                }
+                else {
+                    text = (+this.inputElement.value).toFixed(this.nbDecimalsToDisplay);
+                }
+                this.tooltipElement.textContent = text;
             };
             Range.prototype.reloadValue = function () {
                 this._value = +this.inputElement.value;
                 this.updateAppearance();
+            };
+            Range.getMaxNbDecimals = function () {
+                var numbers = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    numbers[_i] = arguments[_i];
+                }
+                var nbDecimals = -1;
+                for (var _a = 0, numbers_1 = numbers; _a < numbers_1.length; _a++) {
+                    var n = numbers_1[_a];
+                    var local = Range.nbDecimals(n);
+                    if (n < 0) {
+                        return -1;
+                    }
+                    else if (nbDecimals < local) {
+                        nbDecimals = local;
+                    }
+                }
+                return nbDecimals;
+            };
+            Range.nbDecimals = function (x) {
+                var xAsString = x.toString();
+                if (/^[0-9]+$/.test(xAsString)) {
+                    return 0;
+                }
+                else if (/^[0-9]+\.[0-9]+$/.test(xAsString)) {
+                    return xAsString.length - (xAsString.indexOf(".") + 1);
+                }
+                return -1; // failed to parse
             };
             return Range;
         }());

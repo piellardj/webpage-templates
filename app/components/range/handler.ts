@@ -12,6 +12,7 @@ namespace Page.Range {
         private _value: number;
 
         public readonly id: string;
+        private readonly nbDecimalsToDisplay: number;
 
         public readonly onInputObservers: RangeObserver[] = [];
         public readonly onChangeObservers: RangeObserver[] = [];
@@ -22,6 +23,7 @@ namespace Page.Range {
             this.tooltipElement = container.querySelector("output.range-tooltip");
 
             this.id = this.inputElement.id;
+            this.nbDecimalsToDisplay = Range.getMaxNbDecimals(+this.inputElement.min, +this.inputElement.max, +this.inputElement.step);
 
             this.inputElement.addEventListener("input", (event: Event) => {
                 event.stopPropagation();
@@ -65,12 +67,41 @@ namespace Page.Range {
             progression = Math.max(0, Math.min(1, progression));
             this.progressLeftElement.style.width = (100 * progression) + "%";
 
-            this.tooltipElement.textContent = this.inputElement.value;
+            let text: string;
+            if (this.nbDecimalsToDisplay < 0) {
+                text = this.inputElement.value;
+            } else {
+                text = (+this.inputElement.value).toFixed(this.nbDecimalsToDisplay);
+            }
+            this.tooltipElement.textContent = text;
         }
 
         private reloadValue(): void {
             this._value = +this.inputElement.value;
             this.updateAppearance();
+        }
+
+        private static getMaxNbDecimals(...numbers: number[]): number {
+            let nbDecimals = -1;
+            for (const n of numbers) {
+                const local = Range.nbDecimals(n);
+                if (n < 0) {
+                    return -1;
+                } else if (nbDecimals < local) {
+                    nbDecimals = local;
+                }
+            }
+            return nbDecimals;
+        }
+
+        private static nbDecimals(x: number): number {
+            const xAsString = x.toString();
+            if (/^[0-9]+$/.test(xAsString)) {
+                return 0;
+            } else if (/^[0-9]+\.[0-9]+$/.test(xAsString)) {
+                return xAsString.length - (xAsString.indexOf(".") + 1);
+            }
+            return -1; // failed to parse
         }
     }
 
