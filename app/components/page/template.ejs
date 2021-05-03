@@ -28,6 +28,10 @@
     #include('footer')
     # if (scriptFiles.length > 0) {
 
+        <script type="text/javascript">
+            var Page = Page || (Page = {});
+            Page.version = "#=(version)";
+        </script>
         # for (let scriptFile of scriptFiles) {
             # const finalPath = scriptFile + "?v=" + version;
           <script src="#=(finalPath)"></script>
