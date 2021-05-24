@@ -117,6 +117,7 @@ var Page;
         var Mouse;
         (function (Mouse) {
             var mousePosition = [];
+            var clientMousePosition = [0, 0];
             var isMouseDownInternal = false;
             function getMousePosition() {
                 return mousePosition.slice();
@@ -152,6 +153,8 @@ var Page;
             }
             Mouse.mouseUp = mouseUp;
             function mouseMove(clientX, clientY) {
+                clientMousePosition[0] = clientX;
+                clientMousePosition[1] = clientY;
                 var newPos = clientToRelative(clientX, clientY);
                 var dX = newPos[0] - mousePosition[0];
                 var dY = newPos[1] - mousePosition[1];
@@ -208,6 +211,9 @@ var Page;
                     if (event.button === 0) {
                         mouseUp();
                     }
+                });
+                canvasResizeObservers.push(function () {
+                    mouseMove(clientMousePosition[0], clientMousePosition[1]);
                 });
             }
         })(Mouse || (Mouse = {}));

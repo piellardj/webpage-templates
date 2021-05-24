@@ -143,6 +143,7 @@ namespace Page.Canvas {
 
     namespace Mouse {
         const mousePosition: number[] = [];
+        const clientMousePosition: number[] = [0, 0];
         let isMouseDownInternal = false;
 
         export function getMousePosition(): number[] {
@@ -179,6 +180,9 @@ namespace Page.Canvas {
         }
 
         export function mouseMove(clientX: number, clientY: number): void {
+            clientMousePosition[0] = clientX;
+            clientMousePosition[1] = clientY;
+
             const newPos = clientToRelative(clientX, clientY);
 
             const dX = newPos[0] - mousePosition[0];
@@ -241,6 +245,10 @@ namespace Page.Canvas {
                 if (event.button === 0) {
                     mouseUp();
                 }
+            });
+
+            canvasResizeObservers.push(function() {
+                mouseMove(clientMousePosition[0], clientMousePosition[1]);
             });
         }
     }
