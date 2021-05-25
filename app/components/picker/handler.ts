@@ -187,8 +187,12 @@ namespace Page.Picker {
         return picker.value;
     }
 
-    export function setValue(id: string, value: string): void {
+    export function setValue(id: string, value: string, updateURLStorage: boolean = false): void {
         const picker = Cache.getPickerById(id);
         picker.value = value;
+
+        if (updateURLStorage) {
+            Storage.storeState(picker);
+        }
     }
 }

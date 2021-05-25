@@ -6,5 +6,5 @@ declare namespace Page.Tabs {
      */
     function addObserver(tabsId: string, observer: TabsObserver): boolean;
     function getValues(tabsId: string): string[];
-    function setValues(tabsId: string, values: string[]): void;
+    function setValues(tabsId: string, values: string[], updateURLStorage?: boolean): void;
 }

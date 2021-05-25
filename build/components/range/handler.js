@@ -190,10 +190,14 @@ var Page;
             return range.value;
         }
         Range_1.getValue = getValue;
-        function setValue(rangeId, value) {
+        function setValue(rangeId, value, updateUrlStorage) {
+            if (updateUrlStorage === void 0) { updateUrlStorage = false; }
             var range = Cache.getRangeById(rangeId);
             if (range) {
                 range.value = value;
+                if (updateUrlStorage) {
+                    Storage.storeState(range);
+                }
             }
         }
         Range_1.setValue = setValue;

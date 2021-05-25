@@ -481,7 +481,8 @@ var Page;
          * @param g integer in [0, 255]
          * @param b integer in [0, 255]
          */
-        function setValue(id, r, g, b) {
+        function setValue(id, r, g, b, updateURLStorage) {
+            if (updateURLStorage === void 0) { updateURLStorage = false; }
             var rgb = {
                 r: roundAndClamp(r, 0, 255),
                 g: roundAndClamp(g, 0, 255),
@@ -490,6 +491,9 @@ var Page;
             var hexValue = ColorSpace.rgbToHex(rgb);
             var colorPicker = Cache.getColorPickerById(id);
             colorPicker.value = hexValue;
+            if (updateURLStorage) {
+                Storage.storeState(colorPicker);
+            }
         }
         ColorPicker_1.setValue = setValue;
     })(ColorPicker = Page.ColorPicker || (Page.ColorPicker = {}));

@@ -169,9 +169,13 @@ var Page;
             return picker.value;
         }
         Picker_1.getValue = getValue;
-        function setValue(id, value) {
+        function setValue(id, value, updateURLStorage) {
+            if (updateURLStorage === void 0) { updateURLStorage = false; }
             var picker = Cache.getPickerById(id);
             picker.value = value;
+            if (updateURLStorage) {
+                Storage.storeState(picker);
+            }
         }
         Picker_1.setValue = setValue;
     })(Picker = Page.Picker || (Page.Picker = {}));

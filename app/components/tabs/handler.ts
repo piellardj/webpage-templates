@@ -148,8 +148,12 @@ namespace Page.Tabs {
         return tabs.values;
     }
 
-    export function setValues(tabsId: string, values: string[]): void {
+    export function setValues(tabsId: string, values: string[], updateURLStorage: boolean = false): void {
         const tabs = Cache.getTabsById(tabsId);
         tabs.values = values;
+
+        if (updateURLStorage) {
+            Storage.storeState(tabs);
+        }
     }
 }

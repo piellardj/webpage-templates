@@ -573,7 +573,7 @@ namespace Page.ColorPicker {
      * @param g integer in [0, 255]
      * @param b integer in [0, 255]
      */
-    export function setValue(id: string, r: number, g: number, b: number): void {
+    export function setValue(id: string, r: number, g: number, b: number, updateURLStorage: boolean = false): void {
         const rgb: ColorSpace.IRGB = {
             r: roundAndClamp(r, 0, 255),
             g: roundAndClamp(g, 0, 255),
@@ -582,5 +582,9 @@ namespace Page.ColorPicker {
         const hexValue = ColorSpace.rgbToHex(rgb);
         const colorPicker = Cache.getColorPickerById(id);
         colorPicker.value = hexValue;
+
+        if (updateURLStorage) {
+            Storage.storeState(colorPicker);
+        }
     }
 }

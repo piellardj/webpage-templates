@@ -105,10 +105,14 @@ var Page;
             return false;
         }
         Checkbox_1.addObserver = addObserver;
-        function setChecked(checkboxId, value) {
+        function setChecked(checkboxId, value, updateURLStorage) {
+            if (updateURLStorage === void 0) { updateURLStorage = false; }
             var checkbox = Cache.getCheckboxById(checkboxId);
             if (checkbox) {
                 checkbox.checked = value;
+                if (updateURLStorage) {
+                    Storage.storeState(checkbox);
+                }
             }
         }
         Checkbox_1.setChecked = setChecked;

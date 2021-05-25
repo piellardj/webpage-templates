@@ -113,10 +113,14 @@ namespace Page.Checkbox {
         return false;
     }
 
-    export function setChecked(checkboxId: string, value: boolean): void {
+    export function setChecked(checkboxId: string, value: boolean, updateURLStorage: boolean = false): void {
         const checkbox = Cache.getCheckboxById(checkboxId);
         if (checkbox) {
             checkbox.checked = value;
+
+            if (updateURLStorage) {
+                Storage.storeState(checkbox);
+            }
         }
     }
 

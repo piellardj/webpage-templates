@@ -140,9 +140,13 @@ var Page;
             return tabs.values;
         }
         Tabs_1.getValues = getValues;
-        function setValues(tabsId, values) {
+        function setValues(tabsId, values, updateURLStorage) {
+            if (updateURLStorage === void 0) { updateURLStorage = false; }
             var tabs = Cache.getTabsById(tabsId);
             tabs.values = values;
+            if (updateURLStorage) {
+                Storage.storeState(tabs);
+            }
         }
         Tabs_1.setValues = setValues;
     })(Tabs = Page.Tabs || (Page.Tabs = {}));

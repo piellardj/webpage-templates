@@ -203,10 +203,14 @@ namespace Page.Range {
         return range.value;
     }
 
-    export function setValue(rangeId: string, value: number): void {
+    export function setValue(rangeId: string, value: number, updateUrlStorage: boolean = false): void {
         const range = Cache.getRangeById(rangeId);
         if (range) {
             range.value = value;
+
+            if (updateUrlStorage) {
+                Storage.storeState(range);
+            }
         }
     }
 }
