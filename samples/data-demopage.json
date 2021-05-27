@@ -237,12 +237,65 @@
             ]
         },
         {
+            "title": "Selects",
+            "controls": [
+                {
+                    "type": "select",
+                    "id": "select",
+                    "title": "My select",
+                    "placeholder": "PH",
+                    "options": [
+                        {
+                            "value": "option-1-1",
+                            "label": "Option 11"
+                        },
+                        {
+                            "value": "option-1-2",
+                            "label": "Option 12"
+                        },
+                        {
+                            "value": "option-1-3",
+                            "label": "Option 13"
+                        },
+                        {
+                            "value": "option-1-4",
+                            "label": "Option 14"
+                        },
+                        {
+                            "value": "option-1-5",
+                            "label": "Option 15"
+                        },
+                        {
+                            "value": "option-1-6",
+                            "label": "Option 16"
+                        },
+                        {
+                            "value": "option-1-7",
+                            "label": "Option 17"
+                        },
+                        {
+                            "value": "option-1-8",
+                            "label": "Option 18"
+                        },
+                        {
+                            "value": "option-1-9",
+                            "label": "Option 19"
+                        },
+                        {
+                            "value": "option-20",
+                            "label": "Option 20"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "title": "Pickers",
             "id": "pickers-section-id",
             "controls": [
                 {
                     "type": "picker",
-                    "id": "select-1-id",
+                    "id": "picker-1-id",
                     "placeholder": "default",
                     "options": [
                         {
@@ -260,9 +313,9 @@
                     ]
                 },
                 {
-                    "title": "Select2",
+                    "title": "Picker2",
                     "type": "picker",
-                    "id": "select-2-id",
+                    "id": "picker-2-id",
                     "options": [
                         {
                             "value": "option-2-1",

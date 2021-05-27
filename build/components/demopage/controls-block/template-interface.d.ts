@@ -4,6 +4,7 @@ import { IColorPicker } from "../../color-picker/template-interface";
 import { IFileControlDownload, IFileControlUpload } from "../../file-control/template-interface";
 import { IPicker } from "../../picker/template-interface";
 import { IRange } from "../../range/template-interface";
+import { ISelect } from "../../select/template-interface";
 import { ITabs } from "../../tabs/template-interface";
 interface IControlBase {
     id: string;
@@ -38,6 +39,10 @@ declare type ControlRangeKey = "range";
 interface IControlRange extends IControlBase, IRange {
     type: ControlRangeKey;
 }
+declare type ControlSelectKey = "select";
+interface IControlSelect extends IControlBase, ISelect {
+    type: ControlSelectKey;
+}
 declare type ControlTabsKey = "tabs";
 interface IControlTabs extends IControlBase, ITabs {
     type: ControlTabsKey;
@@ -46,7 +51,7 @@ declare type ControlColorPickerKey = "color-picker";
 interface IControlColorPicker extends IControlBase, IColorPicker {
     type: ControlColorPickerKey;
 }
-declare type ISupportedControl = IControlTabs | IControlCheckbox | IControlRange | IControlButton | IControlFileUpload | IControlFileDownload | IControlPicker | IControlColorPicker;
+declare type ISupportedControl = IControlTabs | IControlCheckbox | IControlRange | IControlButton | IControlFileUpload | IControlFileDownload | IControlPicker | IControlColorPicker | IControlSelect;
 interface IControlSection {
     title: string;
     id?: string;
@@ -62,6 +67,7 @@ export declare const supportedControls: {
     FileDownload: ControlFileDownloadKey;
     Picker: ControlPickerKey;
     Range: ControlRangeKey;
+    Select: ControlSelectKey;
     Tabs: ControlTabsKey;
     ColorPicker: ControlColorPickerKey;
 };

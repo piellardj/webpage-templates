@@ -8,6 +8,7 @@ exports.supportedControls = {
     FileDownload: "file-download",
     Picker: "picker",
     Range: "range",
+    Select: "select",
     Tabs: "tabs",
     ColorPicker: "color-picker"
 };

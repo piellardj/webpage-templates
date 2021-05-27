@@ -1,0 +1,18 @@
+<div class="select-container" id="#=(id)">
+    # {
+        # let selectedOption = null;
+        # options.forEach(function(option) {
+            # if (option.checked) {
+                # selectedOption = option;
+            # }
+        # });
+        # const currentValueAttribute = selectedOption ? selectedOption.value : "";
+        # const currentValueLabel = selectedOption ? selectedOption.label : placeholder;
+    <div class="select-current-value" #=(currentValueAttribute)>#=(currentValueLabel)</div>
+    <div class="select-values-list" data-placeholder="#=(placeholder)">
+        # options.forEach(function(option) {
+            <div class="select-value" data-value="#=(option.value)">#=(option.label)</div>
+        # });
+    </div>
+    # }
+</div>
