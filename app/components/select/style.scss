@@ -7,7 +7,6 @@ $select-border-radius: 4px;
     display: inline-block;
     position: relative;
     font-size: 87.5%;
-    line-height: 22px;
     text-align: left;
     user-select: none;
 
@@ -25,14 +24,15 @@ $select-border-radius: 4px;
         border-style: solid;
         @include color-control-neutral(border-color);
         border-radius: $select-border-radius;
+        line-height: 22px;
 
         &::after {
             position: absolute;
-            top: 11px;
+            top: 10px;
             right: 10px;
             width: 0;
             height: 0;
-            border-width: 5px;
+            border-width: 7px;
             border-style: solid;
             border-color: transparent;
             content: '';
@@ -47,7 +47,7 @@ $select-border-radius: 4px;
         @include color-control-neutral(border-bottom-color);
 
         &::after {
-            top: 5px;
+            top: 2px;
             border-color: transparent;
             @include color-control-accent-hover(border-bottom-color);
         }
@@ -85,6 +85,7 @@ $select-border-radius: 4px;
         border-style: solid;
         @include color-control-accent-hover(border-color);
         border-radius: 0 0 $select-border-radius $select-border-radius;
+        line-height: 32px;
         box-shadow: 0 10px 16px rgba(0, 0, 0, 0.2);
         z-index: 3;
         box-sizing: border-box;
