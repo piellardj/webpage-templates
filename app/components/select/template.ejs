@@ -1,5 +1,5 @@
-<div class="select-container" id="#=(id)">
-    # {
+# { const style = IsFalse(compact) ? "compact2" : "compact";
+<div class="select-container #=(style)" id="#=(id)">
         # let selectedOption = null;
         # options.forEach(function(option) {
             # if (option.checked) {
@@ -14,5 +14,5 @@
             <div class="select-value" data-value="#=(option.value)">#=(option.label)</div>
         # });
     </div>
-    # }
 </div>
+# }

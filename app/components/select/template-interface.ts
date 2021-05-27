@@ -8,4 +8,5 @@ export interface ISelect {
     id: string;
     options: IOption[];
     placeholder: string;
+    compact?: boolean;
 }
