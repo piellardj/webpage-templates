@@ -34,13 +34,7 @@ namespace Page.Select {
                 this.valueElements.push(elements[i] as HTMLElement);
             }
 
-            this.valuesListElement.style.opacity = "0";
-            this.valuesListElement.style.display = "block";
-            this.valuesListElement.style.width = "auto";
-            this.containerElement.style.width = `${this.valuesListElement.getBoundingClientRect().width + 30}px`;
-            this.valuesListElement.style.width = "";
-            this.valuesListElement.style.display = "";
-            this.valuesListElement.style.opacity = "";
+            this.containerElement.style.width = `${this.computeMinimumWidth()}px`;
 
             document.addEventListener("click", (event) => {
                 const clickedElement = event.target as HTMLElement;
@@ -95,6 +89,32 @@ namespace Page.Select {
             for (const observer of this.observers) {
                 observer(this.value);
             }
+        }
+
+        private computeMinimumWidth(): number {
+            let result = 0;
+
+            this.valuesListElement.style.opacity = "0";
+            this.valuesListElement.style.width = "auto";
+            this.valuesListElement.style.fontWeight = "bold";
+            this.valuesListElement.style.display = "block";
+
+            const placeholderValue = document.createElement("div");
+            placeholderValue.classList.add("select-value");
+            placeholderValue.textContent = this.placeholder;
+            this.valuesListElement.appendChild(placeholderValue);
+
+            result = this.valuesListElement.getBoundingClientRect().width;
+
+            this.valuesListElement.removeChild(placeholderValue);
+
+            this.valuesListElement.style.display = "";
+            this.valuesListElement.style.fontWeight = "";
+            this.valuesListElement.style.width = "";
+            this.valuesListElement.style.opacity = "";
+
+            const MARGIN = 30;
+            return result + MARGIN;
         }
     }
 

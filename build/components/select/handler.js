@@ -19,13 +19,7 @@ var Page;
                 for (var i = 0; i < elements.length; i++) {
                     this.valueElements.push(elements[i]);
                 }
-                this.valuesListElement.style.opacity = "0";
-                this.valuesListElement.style.display = "block";
-                this.valuesListElement.style.width = "auto";
-                this.containerElement.style.width = this.valuesListElement.getBoundingClientRect().width + 30 + "px";
-                this.valuesListElement.style.width = "";
-                this.valuesListElement.style.display = "";
-                this.valuesListElement.style.opacity = "";
+                this.containerElement.style.width = this.computeMinimumWidth() + "px";
                 document.addEventListener("click", function (event) {
                     var clickedElement = event.target;
                     var isExpanded = _this.containerElement.classList.contains(Select.EXPANDED_CLASS);
@@ -83,6 +77,25 @@ var Page;
                     var observer = _a[_i];
                     observer(this.value);
                 }
+            };
+            Select.prototype.computeMinimumWidth = function () {
+                var result = 0;
+                this.valuesListElement.style.opacity = "0";
+                this.valuesListElement.style.width = "auto";
+                this.valuesListElement.style.fontWeight = "bold";
+                this.valuesListElement.style.display = "block";
+                var placeholderValue = document.createElement("div");
+                placeholderValue.classList.add("select-value");
+                placeholderValue.textContent = this.placeholder;
+                this.valuesListElement.appendChild(placeholderValue);
+                result = this.valuesListElement.getBoundingClientRect().width;
+                this.valuesListElement.removeChild(placeholderValue);
+                this.valuesListElement.style.display = "";
+                this.valuesListElement.style.fontWeight = "";
+                this.valuesListElement.style.width = "";
+                this.valuesListElement.style.opacity = "";
+                var MARGIN = 30;
+                return result + MARGIN;
             };
             Select.EXPANDED_CLASS = "expanded";
             return Select;
