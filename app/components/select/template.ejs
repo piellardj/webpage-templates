@@ -6,7 +6,7 @@
                 # selectedOption = option;
             # }
         # });
-        # const currentValueAttribute = selectedOption ? selectedOption.value : "";
+        # const currentValueAttribute = selectedOption ? "data-value=\"" + selectedOption.value + "\"" : "";
         # const currentValueLabel = selectedOption ? selectedOption.label : placeholder;
     <div class="select-current-value" #=(currentValueAttribute)>#=(currentValueLabel)</div>
     <div class="select-values-list" data-placeholder="#=(placeholder)">
