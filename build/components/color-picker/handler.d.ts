@@ -28,6 +28,8 @@ declare namespace Page.ColorPicker {
      * @param g integer in [0, 255]
      * @param b integer in [0, 255]
      */
-    export function setValue(id: string, r: number, g: number, b: number, updateURLStorage?: boolean): void;
+    export function setValue(id: string, r: number, g: number, b: number): void;
+    export function storeState(id: string): void;
+    export function clearStoredState(id: string): void;
     export {};
 }

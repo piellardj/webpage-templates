@@ -159,6 +159,10 @@ namespace Page.Picker {
             Page.Helpers.URL.setQueryParameter(PREFIX, picker.id, value);
         }
 
+        export function clearStoredState(picker: Picker): void {
+            Page.Helpers.URL.removeQueryParameter(PREFIX, picker.id);
+        }
+
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
                 const picker = Cache.getPickerById(controlId);
@@ -187,12 +191,17 @@ namespace Page.Picker {
         return picker.value;
     }
 
-    export function setValue(id: string, value: string, updateURLStorage: boolean = false): void {
+    export function setValue(id: string, value: string): void {
         const picker = Cache.getPickerById(id);
         picker.value = value;
+    }
 
-        if (updateURLStorage) {
-            Storage.storeState(picker);
-        }
+    export function storeState(id: string): void {
+        const picker = Cache.getPickerById(id);
+        Storage.storeState(picker);
+    }
+    export function clearStoredState(id: string): void {
+        const picker = Cache.getPickerById(id);
+        Storage.clearStoredState(picker);
     }
 }

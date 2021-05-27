@@ -12,5 +12,7 @@ declare namespace Page.Range {
      */
     function addLazyObserver(rangeId: string, observer: RangeObserver): boolean;
     function getValue(rangeId: string): number | null;
-    function setValue(rangeId: string, value: number, updateUrlStorage?: boolean): void;
+    function setValue(rangeId: string, value: number): void;
+    function storeState(rangeId: string): void;
+    function clearStoredState(rangeId: string): void;
 }

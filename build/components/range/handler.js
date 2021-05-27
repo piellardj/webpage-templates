@@ -131,6 +131,10 @@ var Page;
                 Page.Helpers.URL.setQueryParameter(PREFIX, range.id, valueAsString);
             }
             Storage.storeState = storeState;
+            function clearStoredState(range) {
+                Page.Helpers.URL.removeQueryParameter(PREFIX, range.id);
+            }
+            Storage.clearStoredState = clearStoredState;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
                     var range = Cache.getRangeById(controlId);
@@ -190,16 +194,22 @@ var Page;
             return range.value;
         }
         Range_1.getValue = getValue;
-        function setValue(rangeId, value, updateUrlStorage) {
-            if (updateUrlStorage === void 0) { updateUrlStorage = false; }
+        function setValue(rangeId, value) {
             var range = Cache.getRangeById(rangeId);
             if (range) {
                 range.value = value;
-                if (updateUrlStorage) {
-                    Storage.storeState(range);
-                }
             }
         }
         Range_1.setValue = setValue;
+        function storeState(rangeId) {
+            var range = Cache.getRangeById(rangeId);
+            Storage.storeState(range);
+        }
+        Range_1.storeState = storeState;
+        function clearStoredState(rangeId) {
+            var range = Cache.getRangeById(rangeId);
+            Storage.clearStoredState(range);
+        }
+        Range_1.clearStoredState = clearStoredState;
     })(Range = Page.Range || (Page.Range = {}));
 })(Page || (Page = {}));

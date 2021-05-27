@@ -131,6 +131,10 @@ var Page;
                 Page.Helpers.URL.setQueryParameter(PREFIX, select.id, select.value);
             }
             Storage.storeState = storeState;
+            function clearStoredState(select) {
+                Page.Helpers.URL.removeQueryParameter(PREFIX, select.id);
+            }
+            Storage.clearStoredState = clearStoredState;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
                     var select = Cache.getSelectById(controlId);
@@ -160,14 +164,20 @@ var Page;
             return select.value;
         }
         Select_1.getValue = getValue;
-        function setValue(id, value, updateURLStorage) {
-            if (updateURLStorage === void 0) { updateURLStorage = false; }
+        function setValue(id, value) {
             var select = Cache.getSelectById(id);
             select.value = value;
-            if (updateURLStorage) {
-                Storage.storeState(select);
-            }
         }
         Select_1.setValue = setValue;
+        function storeState(id) {
+            var select = Cache.getSelectById(id);
+            Storage.storeState(select);
+        }
+        Select_1.storeState = storeState;
+        function clearStoredState(id) {
+            var select = Cache.getSelectById(id);
+            Storage.clearStoredState(select);
+        }
+        Select_1.clearStoredState = clearStoredState;
     })(Select = Page.Select || (Page.Select = {}));
 })(Page || (Page = {}));

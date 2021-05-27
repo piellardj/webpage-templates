@@ -74,6 +74,10 @@ var Page;
                 Page.Helpers.URL.setQueryParameter(PREFIX, checkbox.id, stateAsString);
             }
             Storage.storeState = storeState;
+            function clearStoredState(checkbox) {
+                Page.Helpers.URL.removeQueryParameter(PREFIX, checkbox.id);
+            }
+            Storage.clearStoredState = clearStoredState;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (checkboxId, value) {
                     var checkbox = Cache.getCheckboxById(checkboxId);
@@ -105,14 +109,10 @@ var Page;
             return false;
         }
         Checkbox_1.addObserver = addObserver;
-        function setChecked(checkboxId, value, updateURLStorage) {
-            if (updateURLStorage === void 0) { updateURLStorage = false; }
+        function setChecked(checkboxId, value) {
             var checkbox = Cache.getCheckboxById(checkboxId);
             if (checkbox) {
                 checkbox.checked = value;
-                if (updateURLStorage) {
-                    Storage.storeState(checkbox);
-                }
             }
         }
         Checkbox_1.setChecked = setChecked;
@@ -124,5 +124,15 @@ var Page;
             return false;
         }
         Checkbox_1.isChecked = isChecked;
+        function storeState(checkboxId) {
+            var checkbox = Cache.getCheckboxById(checkboxId);
+            Storage.storeState(checkbox);
+        }
+        Checkbox_1.storeState = storeState;
+        function clearStoredState(checkboxId) {
+            var checkbox = Cache.getCheckboxById(checkboxId);
+            Storage.clearStoredState(checkbox);
+        }
+        Checkbox_1.clearStoredState = clearStoredState;
     })(Checkbox = Page.Checkbox || (Page.Checkbox = {}));
 })(Page || (Page = {}));

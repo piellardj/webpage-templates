@@ -152,6 +152,10 @@ namespace Page.Select {
             Page.Helpers.URL.setQueryParameter(PREFIX, select.id, select.value);
         }
 
+        export function clearStoredState(select: Select): void {
+            Page.Helpers.URL.removeQueryParameter(PREFIX, select.id);
+        }
+
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
                 const select = Cache.getSelectById(controlId);
@@ -181,12 +185,17 @@ namespace Page.Select {
         return select.value;
     }
 
-    export function setValue(id: string, value: string, updateURLStorage: boolean = false): void {
+    export function setValue(id: string, value: string): void {
         const select = Cache.getSelectById(id);
         select.value = value;
+    }
 
-        if (updateURLStorage) {
-            Storage.storeState(select);
-        }
+    export function storeState(id: string): void {
+        const select = Cache.getSelectById(id);
+        Storage.storeState(select);
+    }
+    export function clearStoredState(id: string): void {
+        const select = Cache.getSelectById(id);
+        Storage.clearStoredState(select);
     }
 }

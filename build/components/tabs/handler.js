@@ -103,6 +103,10 @@ var Page;
                 Page.Helpers.URL.setQueryParameter(PREFIX, tabs.id, values);
             }
             Storage.storeState = storeState;
+            function clearStoredState(tabs) {
+                Page.Helpers.URL.removeQueryParameter(PREFIX, tabs.id);
+            }
+            Storage.clearStoredState = clearStoredState;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
                     var values = value.split(SEPARATOR);
@@ -149,5 +153,15 @@ var Page;
             }
         }
         Tabs_1.setValues = setValues;
+        function storeState(tabsId) {
+            var tabs = Cache.getTabsById(tabsId);
+            Storage.storeState(tabs);
+        }
+        Tabs_1.storeState = storeState;
+        function clearStoredState(tabsIdd) {
+            var tabs = Cache.getTabsById(tabsIdd);
+            Storage.clearStoredState(tabs);
+        }
+        Tabs_1.clearStoredState = clearStoredState;
     })(Tabs = Page.Tabs || (Page.Tabs = {}));
 })(Page || (Page = {}));

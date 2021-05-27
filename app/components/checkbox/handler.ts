@@ -82,6 +82,10 @@ namespace Page.Checkbox {
             Page.Helpers.URL.setQueryParameter(PREFIX, checkbox.id, stateAsString);
         }
 
+        export function clearStoredState(checkbox: Checkbox): void {
+            Page.Helpers.URL.removeQueryParameter(PREFIX, checkbox.id);
+        }
+
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (checkboxId: string, value: string) => {
                 const checkbox = Cache.getCheckboxById(checkboxId);
@@ -113,14 +117,10 @@ namespace Page.Checkbox {
         return false;
     }
 
-    export function setChecked(checkboxId: string, value: boolean, updateURLStorage: boolean = false): void {
+    export function setChecked(checkboxId: string, value: boolean): void {
         const checkbox = Cache.getCheckboxById(checkboxId);
         if (checkbox) {
             checkbox.checked = value;
-
-            if (updateURLStorage) {
-                Storage.storeState(checkbox);
-            }
         }
     }
 
@@ -130,5 +130,14 @@ namespace Page.Checkbox {
             return checkbox.checked;
         }
         return false;
+    }
+
+    export function storeState(checkboxId: string): void {
+        const checkbox = Cache.getCheckboxById(checkboxId);
+        Storage.storeState(checkbox);
+    }
+    export function clearStoredState(checkboxId: string): void {
+        const checkbox = Cache.getCheckboxById(checkboxId);
+        Storage.clearStoredState(checkbox);
     }
 }

@@ -144,6 +144,10 @@ namespace Page.Range {
             Page.Helpers.URL.setQueryParameter(PREFIX, range.id, valueAsString);
         }
 
+        export function clearStoredState(range: Range): void {
+            Page.Helpers.URL.removeQueryParameter(PREFIX, range.id);
+        }
+
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
                 const range = Cache.getRangeById(controlId);
@@ -203,14 +207,19 @@ namespace Page.Range {
         return range.value;
     }
 
-    export function setValue(rangeId: string, value: number, updateUrlStorage: boolean = false): void {
+    export function setValue(rangeId: string, value: number): void {
         const range = Cache.getRangeById(rangeId);
         if (range) {
             range.value = value;
-
-            if (updateUrlStorage) {
-                Storage.storeState(range);
-            }
         }
+    }
+
+    export function storeState(rangeId: string): void {
+        const range = Cache.getRangeById(rangeId);
+        Storage.storeState(range);
+    }
+    export function clearStoredState(rangeId: string): void {
+        const range = Cache.getRangeById(rangeId);
+        Storage.clearStoredState(range);
     }
 }

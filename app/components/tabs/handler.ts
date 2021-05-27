@@ -111,6 +111,10 @@ namespace Page.Tabs {
             Page.Helpers.URL.setQueryParameter(PREFIX, tabs.id, values);
         }
 
+        export function clearStoredState(tabs: Tabs): void {
+            Page.Helpers.URL.removeQueryParameter(PREFIX, tabs.id);
+        }
+
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
                 const values = value.split(SEPARATOR);
@@ -155,5 +159,14 @@ namespace Page.Tabs {
         if (updateURLStorage) {
             Storage.storeState(tabs);
         }
+    }
+
+    export function storeState(tabsId: string): void {
+        const tabs = Cache.getTabsById(tabsId);
+        Storage.storeState(tabs);
+    }
+    export function clearStoredState(tabsIdd: string): void {
+        const tabs = Cache.getTabsById(tabsIdd);
+        Storage.clearStoredState(tabs);
     }
 }

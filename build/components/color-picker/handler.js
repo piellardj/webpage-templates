@@ -169,6 +169,10 @@ var Page;
                 Page.Helpers.URL.setQueryParameter(PREFIX, colorPicker.id, colorPicker.value);
             }
             Storage.storeState = storeState;
+            function clearStoredState(colorPicker) {
+                Page.Helpers.URL.removeQueryParameter(PREFIX, colorPicker.id);
+            }
+            Storage.clearStoredState = clearStoredState;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
                     var colorPicker = Cache.getColorPickerById(controlId);
@@ -481,8 +485,7 @@ var Page;
          * @param g integer in [0, 255]
          * @param b integer in [0, 255]
          */
-        function setValue(id, r, g, b, updateURLStorage) {
-            if (updateURLStorage === void 0) { updateURLStorage = false; }
+        function setValue(id, r, g, b) {
             var rgb = {
                 r: roundAndClamp(r, 0, 255),
                 g: roundAndClamp(g, 0, 255),
@@ -491,10 +494,17 @@ var Page;
             var hexValue = ColorSpace.rgbToHex(rgb);
             var colorPicker = Cache.getColorPickerById(id);
             colorPicker.value = hexValue;
-            if (updateURLStorage) {
-                Storage.storeState(colorPicker);
-            }
         }
         ColorPicker_1.setValue = setValue;
+        function storeState(id) {
+            var colorPicker = Cache.getColorPickerById(id);
+            Storage.storeState(colorPicker);
+        }
+        ColorPicker_1.storeState = storeState;
+        function clearStoredState(id) {
+            var colorPicker = Cache.getColorPickerById(id);
+            Storage.clearStoredState(colorPicker);
+        }
+        ColorPicker_1.clearStoredState = clearStoredState;
     })(ColorPicker = Page.ColorPicker || (Page.ColorPicker = {}));
 })(Page || (Page = {}));

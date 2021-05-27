@@ -199,6 +199,10 @@ namespace Page.ColorPicker {
             Page.Helpers.URL.setQueryParameter(PREFIX, colorPicker.id, colorPicker.value);
         }
 
+        export function clearStoredState(colorPicker: ColorPicker): void {
+            Page.Helpers.URL.removeQueryParameter(PREFIX, colorPicker.id);
+        }
+
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
                 const colorPicker = Cache.getColorPickerById(controlId);
@@ -573,7 +577,7 @@ namespace Page.ColorPicker {
      * @param g integer in [0, 255]
      * @param b integer in [0, 255]
      */
-    export function setValue(id: string, r: number, g: number, b: number, updateURLStorage: boolean = false): void {
+    export function setValue(id: string, r: number, g: number, b: number): void {
         const rgb: ColorSpace.IRGB = {
             r: roundAndClamp(r, 0, 255),
             g: roundAndClamp(g, 0, 255),
@@ -582,9 +586,14 @@ namespace Page.ColorPicker {
         const hexValue = ColorSpace.rgbToHex(rgb);
         const colorPicker = Cache.getColorPickerById(id);
         colorPicker.value = hexValue;
+    }
 
-        if (updateURLStorage) {
-            Storage.storeState(colorPicker);
-        }
+    export function storeState(id: string): void {
+        const colorPicker = Cache.getColorPickerById(id);
+        Storage.storeState(colorPicker);
+    }
+    export function clearStoredState(id: string): void {
+        const colorPicker = Cache.getColorPickerById(id);
+        Storage.clearStoredState(colorPicker);
     }
 }
