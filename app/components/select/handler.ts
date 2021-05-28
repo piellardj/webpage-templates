@@ -71,6 +71,7 @@ namespace Page.Select {
             if (v === null) {
                 this.currentValueElement.removeAttribute("data-value");
                 this.currentValueElement.textContent = this.placeholder;
+                this.currentValue = null;
             } else {
                 for (const valueElement of this.valueElements) {
                     if (valueElement.dataset.value === v) {
