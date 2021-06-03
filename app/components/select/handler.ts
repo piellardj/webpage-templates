@@ -105,7 +105,15 @@ namespace Page.Select {
             placeholderValue.textContent = this.placeholder;
             this.valuesListElement.appendChild(placeholderValue);
 
+            const parentNode = this.containerElement.parentNode;
+            const nextSiblingNode = this.containerElement.nextSibling;
+            parentNode.removeChild(this.containerElement);
+            document.body.appendChild(this.containerElement);
+
             result = this.valuesListElement.getBoundingClientRect().width;
+
+            document.body.removeChild(this.containerElement);
+            parentNode.insertBefore(this.containerElement, nextSiblingNode);
 
             this.valuesListElement.removeChild(placeholderValue);
 
