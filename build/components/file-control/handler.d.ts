@@ -1,13 +1,13 @@
 declare namespace Page.FileControl {
-    type DownloadObserver = () => unknown;
-    type UploadObserver = (files: FileList) => unknown;
+    type FileDownloadObserver = () => unknown;
+    type FileUploadObserver = (files: FileList) => unknown;
     /**
      * @return {boolean} Whether or not the observer was added
      */
-    export function addDownloadObserver(id: string, observer: DownloadObserver): boolean;
+    function addDownloadObserver(id: string, observer: FileDownloadObserver): boolean;
     /**
      * @return {boolean} Whether or not the observer was added
      */
-    export function addUploadObserver(uploadId: string, observer: UploadObserver): boolean;
-    export {};
+    function addUploadObserver(uploadId: string, observer: FileUploadObserver): boolean;
+    function clearFileUpload(id: string): void;
 }
