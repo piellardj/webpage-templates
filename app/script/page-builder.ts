@@ -240,8 +240,11 @@ function buildPage(dstDir: string, pageData: IPage, options?: IBuildOptions): vo
             safeWriteFile(path.join(dstDir, pageJsFolder), pageJsFilename, script);
             safeWriteFile(path.join(dstDir, pageJsFolder), pageJsMinFilename, scriptMinified);
         } else {
-            console.log("The page needs scripts but the page build options prevents from including them.");
-            process.exit(1);
+            console.warn("WARNING: The page needs scripts but the page build options prevents from including them.");
+            console.warn("The scripts are:");
+            console.warn("======= START =======");
+            console.warn(script);
+            console.warn("======== END ========");
         }
     }
 }
