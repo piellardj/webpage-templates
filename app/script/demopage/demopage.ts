@@ -25,21 +25,17 @@ interface IBuildOptions {
     debug: boolean;
 }
 
-interface IBuildResult {
-    pageScriptDeclaration: string;
-}
-
 /**
  * @param data Data describing the contents of the page
  * @param destinationDir Root directory in which the generated files will be copied
  * @param options Optional build options
  */
-function build(data: IDemopageData, destinationDir: string, options?: IBuildOptions): IBuildResult {
+function build(data: IDemopageData, destinationDir: string, options?: IBuildOptions): void {
     const pageData: IPage = buildPageData(data);
     const adjustCanvasScript = `Page.Canvas.setMaxSize(${data.canvas.width},${data.canvas.height});`;
     const minifyScript = (typeof options !== "undefined") ? !options.debug : false;
 
-    return Builder.buildPage(destinationDir, pageData, {
+    Builder.buildPage(destinationDir, pageData, {
         additionalScript: adjustCanvasScript,
         minifyScript: minifyScript,
     });

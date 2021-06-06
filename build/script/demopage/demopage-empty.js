@@ -41,7 +41,7 @@ function buildPageData(demopageEmptyData) {
  */
 function build(data, destinationDir) {
     var pageData = buildPageData(data);
-    return Builder.buildPage(destinationDir, pageData, {
+    Builder.buildPage(destinationDir, pageData, {
         noScript: true,
     });
 }

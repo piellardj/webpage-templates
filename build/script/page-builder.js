@@ -213,8 +213,5 @@ function buildPage(dstDir, pageData, options) {
             process.exit(1);
         }
     }
-    return {
-        pageScriptDeclaration: (includeScript) ? scriptDeclaration : "",
-    };
 }
 exports.buildPage = buildPage;

@@ -45,7 +45,7 @@ function build(data, destinationDir, options) {
     var pageData = buildPageData(data);
     var adjustCanvasScript = "Page.Canvas.setMaxSize(" + data.canvas.width + "," + data.canvas.height + ");";
     var minifyScript = (typeof options !== "undefined") ? !options.debug : false;
-    return Builder.buildPage(destinationDir, pageData, {
+    Builder.buildPage(destinationDir, pageData, {
         additionalScript: adjustCanvasScript,
         minifyScript: minifyScript,
     });

@@ -193,11 +193,7 @@ interface IBuildOptions {
     noScript?: boolean;
 }
 
-interface IBuildResult {
-    pageScriptDeclaration: string;
-}
-
-function buildPage(dstDir: string, pageData: IPage, options?: IBuildOptions): IBuildResult {
+function buildPage(dstDir: string, pageData: IPage, options?: IBuildOptions): void {
     const pageJsFolder = "script";
     const pageJsFilename = "page.js";
     const pageJsMinFilename = "page.min.js";
@@ -248,10 +244,6 @@ function buildPage(dstDir: string, pageData: IPage, options?: IBuildOptions): IB
             process.exit(1);
         }
     }
-
-    return {
-        pageScriptDeclaration: (includeScript) ? scriptDeclaration : "",
-    };
 }
 
 export {

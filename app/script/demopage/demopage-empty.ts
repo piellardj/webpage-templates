@@ -20,20 +20,15 @@ function buildPageData(demopageEmptyData: IDemopageEmptyData): IPage {
     };
 }
 
-
-interface IBuildResult {
-    pageScriptDeclaration: string;
-}
-
 /**
  * @param data Data describing the contents of the page
  * @param destinationDir Root directory in which the generated files will be copied
  * @param options Optional build options
  */
-function build(data: IDemopageEmptyData, destinationDir: string): IBuildResult {
+function build(data: IDemopageEmptyData, destinationDir: string): void {
     const pageData: IPage = buildPageData(data);
 
-    return Builder.buildPage(destinationDir, pageData, {
+    Builder.buildPage(destinationDir, pageData, {
         noScript: true,
     });
 }
