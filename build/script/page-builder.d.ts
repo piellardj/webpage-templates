@@ -5,5 +5,8 @@ interface IBuildOptions {
     minifyScript?: boolean;
     noScript?: boolean;
 }
-declare function buildPage(dstDir: string, pageData: IPage, options?: IBuildOptions): void;
+interface IBuildResult {
+    pageScriptDeclaration: string;
+}
+declare function buildPage(dstDir: string, pageData: IPage, options?: IBuildOptions): IBuildResult;
 export { buildPage, CustomEjs, };

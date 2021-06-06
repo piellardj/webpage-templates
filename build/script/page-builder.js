@@ -216,5 +216,8 @@ function buildPage(dstDir, pageData, options) {
             console.warn("======== END ========");
         }
     }
+    return {
+        pageScriptDeclaration: (includeScript) ? scriptDeclaration : "",
+    };
 }
 exports.buildPage = buildPage;
