@@ -30,7 +30,10 @@
 
         <script type="text/javascript">
             var Page = Page || {};
-            Page.version = "#=(version)";
+            Object.defineProperty(Page, "version", {
+              value: "#=(version)",
+              writable: false,
+            });
         </script>
         # for (let scriptFile of scriptFiles) {
             # const finalPath = scriptFile + "?v=" + version;

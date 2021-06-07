@@ -1,3 +1,3 @@
-declare namespace Page {
-    export let version: string;
+namespace Page {
+    export const version: string;
 }

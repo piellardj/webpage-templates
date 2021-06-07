@@ -1,3 +1,3 @@
 declare namespace Page {
-    let version: string;
+    const version: string;
 }
