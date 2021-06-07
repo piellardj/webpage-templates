@@ -239,21 +239,22 @@ function buildPage(dstDir: string, pageData: IPage, options?: IBuildOptions): IB
         scriptMinified += options.additionalScript;
     }
 
-    if (script) {
+    const hasScript = script && !/\s*/.test(script);
+    if (hasScript) {
         if (includeScript) {
             safeWriteFile(path.join(dstDir, pageJsFolder), pageJsFilename, script);
             safeWriteFile(path.join(dstDir, pageJsFolder), pageJsMinFilename, scriptMinified);
         } else {
-            console.warn("WARNING: The page needs scripts but the page build options prevents from including them.");
-            console.warn("The scripts are:");
-            console.warn("======= START =======");
-            console.warn(script);
-            console.warn("======== END ========");
+            console.log("The page needs scripts but the page build options prevents from including them.");
+            console.log("===");
+            console.log(script);
+            console.log("===");
+            process.exit(1);
         }
     }
 
     return {
-        pageScriptDeclaration: (includeScript) ? scriptDeclaration : "",
+        pageScriptDeclaration: scriptDeclaration,
     };
 }
 
