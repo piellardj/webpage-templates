@@ -239,7 +239,7 @@ function buildPage(dstDir: string, pageData: IPage, options?: IBuildOptions): IB
         scriptMinified += options.additionalScript;
     }
 
-    const hasScript = script && !/\s*/.test(script);
+    const hasScript = script && /\S/.test(script); // script must have at least one non-whistespace character
     if (hasScript) {
         if (includeScript) {
             safeWriteFile(path.join(dstDir, pageJsFolder), pageJsFilename, script);

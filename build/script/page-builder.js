@@ -203,7 +203,7 @@ function buildPage(dstDir, pageData, options) {
         script += options.additionalScript;
         scriptMinified += options.additionalScript;
     }
-    var hasScript = script && !/\s*/.test(script);
+    var hasScript = script && /\S/.test(script); // script must have at least one non-whistespace character
     if (hasScript) {
         if (includeScript) {
             safeWriteFile(path.join(dstDir, pageJsFolder), pageJsFilename, script);
