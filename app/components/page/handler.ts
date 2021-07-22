@@ -1,3 +1,3 @@
-namespace Page {
-    export const version: string;
+declare namespace Page {
+    const version: string;
 }
