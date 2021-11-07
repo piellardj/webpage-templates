@@ -89,9 +89,9 @@ namespace Page.Picker {
             const index = this.getIndexOfCheckedInput();
             let selectedLabel: string;
             if (index >= 0) {
-                selectedLabel = this.radioInputs[index].dataset.label;
+                selectedLabel = this.radioInputs[index].dataset["label"];
             } else {
-                selectedLabel = this.container.dataset.placeholder || "";
+                selectedLabel = this.container.dataset["placeholder"] || "";
             }
 
             this.spanElement.innerText = selectedLabel;

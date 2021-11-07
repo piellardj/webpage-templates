@@ -22,7 +22,7 @@ var Page;
             }
             FileUpload.prototype.clear = function () {
                 this.inputElement.value = "";
-                this.labelSpanElement.innerText = this.labelSpanElement.dataset.placeholder;
+                this.labelSpanElement.innerText = this.labelSpanElement.dataset["placeholder"];
             };
             FileUpload.truncate = function (name) {
                 if (name.length > FileUpload.filenameMaxSize) {

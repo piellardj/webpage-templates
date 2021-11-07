@@ -110,12 +110,12 @@ var Page;
             }
             Object.defineProperty(ColorPicker.prototype, "value", {
                 get: function () {
-                    return this.element.dataset.currentColor;
+                    return this.element.dataset["currentColor"];
                 },
                 set: function (newValue) {
                     var previousValue = this.value;
                     if (previousValue !== newValue) {
-                        this.element.dataset.currentColor = newValue;
+                        this.element.dataset["currentColor"] = newValue;
                         this.updateVisiblePart();
                         var rgb = ColorSpace.hexToRgb(newValue);
                         for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {

@@ -24,8 +24,8 @@ namespace Page.Select {
             this.containerElement = container;
             this.currentValueElement = container.querySelector(".select-current-value");
             this.valuesListElement = container.querySelector(".select-values-list");
-            this.placeholder = this.valuesListElement.dataset.placeholder;
-            this.currentValue = this.currentValueElement.dataset.value;
+            this.placeholder = this.valuesListElement.dataset["placeholder"];
+            this.currentValue = this.currentValueElement.dataset["value"];
 
             this.valueElements = [];
             const elements = this.valuesListElement.querySelectorAll(".select-value[data-value]");
@@ -45,8 +45,8 @@ namespace Page.Select {
                     if (clickedOnValuesList) {
                         for (const valueElement of this.valueElements) {
                             if (valueElement.contains(clickedElement)) {
-                                this.currentValue = valueElement.dataset.value;
-                                this.currentValueElement.dataset.value = this.currentValue;
+                                this.currentValue = valueElement.dataset["value"];
+                                this.currentValueElement.dataset["value"] = this.currentValue;
                                 this.currentValueElement.textContent = valueElement.textContent;
                                 Storage.storeState(this);
                                 this.callObservers();
@@ -73,9 +73,10 @@ namespace Page.Select {
                 this.currentValue = null;
             } else {
                 for (const valueElement of this.valueElements) {
-                    if (valueElement.dataset.value === v) {
-                        this.currentValue = valueElement.dataset.value;
-                        this.currentValueElement.dataset.value = valueElement.dataset.value;
+                    const valueFromHtml = valueElement.dataset["value"];
+                    if (valueFromHtml === v) {
+                        this.currentValue = valueFromHtml;
+                        this.currentValueElement.dataset["value"] = valueFromHtml;
                         this.currentValueElement.textContent = valueElement.textContent;
                         return;
                     }

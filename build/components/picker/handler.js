@@ -75,10 +75,10 @@ var Page;
                 var index = this.getIndexOfCheckedInput();
                 var selectedLabel;
                 if (index >= 0) {
-                    selectedLabel = this.radioInputs[index].dataset.label;
+                    selectedLabel = this.radioInputs[index].dataset["label"];
                 }
                 else {
-                    selectedLabel = this.container.dataset.placeholder || "";
+                    selectedLabel = this.container.dataset["placeholder"] || "";
                 }
                 this.spanElement.innerText = selectedLabel;
                 if (this.radioInputs.length < 0) {

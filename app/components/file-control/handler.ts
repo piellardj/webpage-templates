@@ -27,7 +27,7 @@ namespace Page.FileControl {
 
         public clear(): void {
             this.inputElement.value = "";
-            this.labelSpanElement.innerText = this.labelSpanElement.dataset.placeholder;
+            this.labelSpanElement.innerText = this.labelSpanElement.dataset["placeholder"];
         }
 
         private static readonly filenameMaxSize: number = 16;

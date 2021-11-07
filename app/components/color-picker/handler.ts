@@ -137,7 +137,7 @@ namespace Page.ColorPicker {
         public set value(newValue: ColorSpace.Hexa) {
             const previousValue = this.value;
             if (previousValue !== newValue) {
-                this.element.dataset.currentColor = newValue;
+                this.element.dataset["currentColor"] = newValue;
                 this.updateVisiblePart();
 
                 const rgb = ColorSpace.hexToRgb(newValue);
@@ -148,7 +148,7 @@ namespace Page.ColorPicker {
         }
 
         public get value(): ColorSpace.Hexa {
-            return this.element.dataset.currentColor;
+            return this.element.dataset["currentColor"];
         }
 
         public attachPopup(popup: HTMLElement): void {

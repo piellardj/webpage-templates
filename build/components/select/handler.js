@@ -11,8 +11,8 @@ var Page;
                 this.containerElement = container;
                 this.currentValueElement = container.querySelector(".select-current-value");
                 this.valuesListElement = container.querySelector(".select-values-list");
-                this.placeholder = this.valuesListElement.dataset.placeholder;
-                this.currentValue = this.currentValueElement.dataset.value;
+                this.placeholder = this.valuesListElement.dataset["placeholder"];
+                this.currentValue = this.currentValueElement.dataset["value"];
                 this.valueElements = [];
                 var elements = this.valuesListElement.querySelectorAll(".select-value[data-value]");
                 for (var i = 0; i < elements.length; i++) {
@@ -28,8 +28,8 @@ var Page;
                             for (var _i = 0, _a = _this.valueElements; _i < _a.length; _i++) {
                                 var valueElement = _a[_i];
                                 if (valueElement.contains(clickedElement)) {
-                                    _this.currentValue = valueElement.dataset.value;
-                                    _this.currentValueElement.dataset.value = _this.currentValue;
+                                    _this.currentValue = valueElement.dataset["value"];
+                                    _this.currentValueElement.dataset["value"] = _this.currentValue;
                                     _this.currentValueElement.textContent = valueElement.textContent;
                                     Storage.storeState(_this);
                                     _this.callObservers();
@@ -59,9 +59,10 @@ var Page;
                     else {
                         for (var _i = 0, _a = this.valueElements; _i < _a.length; _i++) {
                             var valueElement = _a[_i];
-                            if (valueElement.dataset.value === v) {
-                                this.currentValue = valueElement.dataset.value;
-                                this.currentValueElement.dataset.value = valueElement.dataset.value;
+                            var valueFromHtml = valueElement.dataset["value"];
+                            if (valueFromHtml === v) {
+                                this.currentValue = valueFromHtml;
+                                this.currentValueElement.dataset["value"] = valueFromHtml;
                                 this.currentValueElement.textContent = valueElement.textContent;
                                 return;
                             }
