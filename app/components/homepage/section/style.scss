@@ -1,3 +1,4 @@
+@use 'sass:math';
 @import '../../common/utils';
 
 $grid-cell-margin: 8px;
@@ -10,7 +11,7 @@ $grid-cell-margin: 8px;
 
     & > h1 {
         width: 100%;
-        margin: 0 $grid-cell-margin #{$grid-cell-margin / 2};
+        margin: 0 $grid-cell-margin math.div($grid-cell-margin, 2);
         font-size: 200%;
     }
 }
