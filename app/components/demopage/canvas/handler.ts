@@ -51,7 +51,7 @@ namespace Page.Canvas {
     }
     bindCanvasButtons();
 
-    function getCanvasSize(): number[] {
+    function getCanvasSize(): [number, number] {
         const rect = canvas.getBoundingClientRect();
         return [Math.floor(rect.width), Math.floor(rect.height)];
     }
@@ -105,7 +105,7 @@ namespace Page.Canvas {
     type MouseMoveObserver = (newX: number, newY: number) => unknown;
     type MouseEnterObserver = () => unknown;
     type MouseLeaveObserver = () => unknown;
-    type MouseWheelObserver = (delta: number, mousePosition: number[]) => unknown;
+    type MouseWheelObserver = (delta: number, mousePosition: [number, number]) => unknown;
 
     const fullscreenToggleObservers: FullscreenObserver[] = [updateCanvasSize];
     const mouseDownObservers: MouseDownObserver[] = [];
@@ -132,7 +132,7 @@ namespace Page.Canvas {
         }
     });
 
-    function clientToRelative(clientX: number, clientY: number): number[] {
+    function clientToRelative(clientX: number, clientY: number): [number, number] {
         const rect = canvas.getBoundingClientRect();
         return [
             (clientX - rect.left) / rect.width,
@@ -141,12 +141,12 @@ namespace Page.Canvas {
     }
 
     namespace Mouse {
-        const mousePosition: number[] = [];
-        const clientMousePosition: number[] = [0, 0];
+        const mousePosition: [number, number] = [0, 0];
+        const clientMousePosition: [number, number] = [0, 0];
         let isMouseDownInternal = false;
 
-        export function getMousePosition(): number[] {
-            return mousePosition.slice();
+        export function getMousePosition(): [number, number] {
+            return [mousePosition[0], mousePosition[1]];
         }
 
         export function setMousePosition(x: number, y: number): void {
@@ -455,11 +455,11 @@ namespace Page.Canvas {
         return canvasContainer;
     }
 
-    export function getSize(): number[] {
+    export function getSize(): [number, number] {
         return getCanvasSize();
     }
 
-    export function getMousePosition(): number[] {
+    export function getMousePosition(): [number, number] {
         return Mouse.getMousePosition();
     }
 

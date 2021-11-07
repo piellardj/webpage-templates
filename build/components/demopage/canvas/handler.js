@@ -115,11 +115,11 @@ var Page;
         }
         var Mouse;
         (function (Mouse) {
-            var mousePosition = [];
+            var mousePosition = [0, 0];
             var clientMousePosition = [0, 0];
             var isMouseDownInternal = false;
             function getMousePosition() {
-                return mousePosition.slice();
+                return [mousePosition[0], mousePosition[1]];
             }
             Mouse.getMousePosition = getMousePosition;
             function setMousePosition(x, y) {

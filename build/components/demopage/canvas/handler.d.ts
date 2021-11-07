@@ -8,7 +8,7 @@ declare namespace Page.Canvas {
     type MouseMoveObserver = (newX: number, newY: number) => unknown;
     type MouseEnterObserver = () => unknown;
     type MouseLeaveObserver = () => unknown;
-    type MouseWheelObserver = (delta: number, mousePosition: number[]) => unknown;
+    type MouseWheelObserver = (delta: number, mousePosition: [number, number]) => unknown;
     export const Observers: Readonly<{
         canvasResize: CanvasResizeObserver[];
         fullscreenToggle: FullscreenObserver[];
@@ -23,8 +23,8 @@ declare namespace Page.Canvas {
     export function getAspectRatio(): number;
     export function getCanvas(): HTMLCanvasElement | null;
     export function getCanvasContainer(): HTMLElement | null;
-    export function getSize(): number[];
-    export function getMousePosition(): number[];
+    export function getSize(): [number, number];
+    export function getMousePosition(): [number, number];
     export function isFullScreen(): boolean;
     export function isMouseDown(): boolean;
     export function setIndicatorText(id: string, text: string): void;
