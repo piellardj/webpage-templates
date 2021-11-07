@@ -157,6 +157,7 @@ var Page;
             Cache.load();
             Storage.applyStoredState();
         });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         var isIE11 = !!window.MSInputMethodContext && !!document["documentMode"];
         /**
          * Callback will be called every time the value changes.

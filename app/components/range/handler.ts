@@ -170,7 +170,8 @@ namespace Page.Range {
         Storage.applyStoredState();
     });
 
-    const isIE11 = !!window.MSInputMethodContext && !!document["documentMode"];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const isIE11 = !!(window as any).MSInputMethodContext && !!document["documentMode"];
 
     /**
      * Callback will be called every time the value changes.
