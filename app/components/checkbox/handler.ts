@@ -7,7 +7,7 @@ namespace Page.Checkbox {
     class Checkbox {
         public readonly id: string;
         private readonly element: HTMLInputElement;
-        public readonly observers: CheckboxObserver[] = []
+        public readonly observers: CheckboxObserver[] = [];
 
         private _checked: boolean;
 

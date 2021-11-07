@@ -119,7 +119,7 @@ namespace Page.ColorPicker {
         public readonly observers: OnChangeObserver[] = [];
         public readonly id: string;
 
-        private readonly element: HTMLElement
+        private readonly element: HTMLElement;
         private readonly colorPreview: HTMLElement;
         private readonly colorPreviewText: HTMLElement;
 
