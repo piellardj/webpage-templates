@@ -32,11 +32,11 @@ function processEjs(rawEjs: string): string {
 
     /* includes with parameters */
     processedStr = processedStr.replace(/#include\(*'(.*)',(.*)\)/mg,
-        (math, p1, p2) => "<%- include('" + resolvePartialPath(p1) + "', " + p2 + ") -%>");
+        (_match, p1, p2) => "<%- include('" + resolvePartialPath(p1) + "', " + p2 + ") -%>");
 
     /* includes without parameters */
     processedStr = processedStr.replace(/#include\(*'(.*)'\)/mg,
-        (math, p1) => "<%- include('" + resolvePartialPath(p1) + "') -%>");
+        (_match, p1) => "<%- include('" + resolvePartialPath(p1) + "') -%>");
 
     return processedStr;
 }

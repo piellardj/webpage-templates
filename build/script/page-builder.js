@@ -44,7 +44,7 @@ var LoadedScript = /** @class */ (function () {
         for (var _i = 0, referenceLines_1 = referenceLines; _i < referenceLines_1.length; _i++) {
             var referenceLine = referenceLines_1[_i];
             var match = referenceLine.match(/"(.*)"/);
-            if (match) {
+            if (match && match[1]) {
                 this.dependencies.push(match[1]);
             }
             else {

@@ -30,7 +30,7 @@ class LoadedScript {
         const referenceLines: string[] = rawScript.match(LoadedScript.referenceRegexp) || [];
         for (const referenceLine of referenceLines) {
             const match = referenceLine.match(/"(.*)"/);
-            if (match) {
+            if (match && match[1]) {
                 this.dependencies.push(match[1]);
             } else {
                 throw new Error("Should not happen: failed to extract reference name from '" + referenceLine + "'.");

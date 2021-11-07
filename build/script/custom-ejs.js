@@ -27,9 +27,9 @@ function processEjs(rawEjs) {
     processedStr = processedStr.replace(/IsTrue\(([a-zA-Z0-9]*)\)/mg, "(typeof $1 !== 'undefined' && $1 === true)");
     processedStr = processedStr.replace(/IsFalse\(([a-zA-Z0-9]*)\)/mg, "(typeof $1 !== 'undefined' && $1 === false)");
     /* includes with parameters */
-    processedStr = processedStr.replace(/#include\(*'(.*)',(.*)\)/mg, function (math, p1, p2) { return "<%- include('" + resolvePartialPath(p1) + "', " + p2 + ") -%>"; });
+    processedStr = processedStr.replace(/#include\(*'(.*)',(.*)\)/mg, function (_match, p1, p2) { return "<%- include('" + resolvePartialPath(p1) + "', " + p2 + ") -%>"; });
     /* includes without parameters */
-    processedStr = processedStr.replace(/#include\(*'(.*)'\)/mg, function (math, p1) { return "<%- include('" + resolvePartialPath(p1) + "') -%>"; });
+    processedStr = processedStr.replace(/#include\(*'(.*)'\)/mg, function (_match, p1) { return "<%- include('" + resolvePartialPath(p1) + "') -%>"; });
     return processedStr;
 }
 ejs.fileLoader = function (filepath) {
