@@ -1,6 +1,5 @@
 /// <reference path="../helpers.ts"/>
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Range {
     export type RangeObserver = (rangeValue: number) => unknown;
 

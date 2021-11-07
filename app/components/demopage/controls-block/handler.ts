@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Controls {
     function getElementBySelector(selector: string): HTMLElement | null {
         const elt = document.querySelector(selector);
@@ -16,7 +15,6 @@ namespace Page.Controls {
     }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Sections {
     function getElementBySelector(selector: string): HTMLElement | null {
         const elt = document.querySelector(selector);

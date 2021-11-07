@@ -1,6 +1,5 @@
 /// <reference path="../helpers.ts"/>
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Select {
     export type SelectObserver = (selectedValue: string | null) => unknown;
 

@@ -1,6 +1,5 @@
 /// <reference path="../../helpers.ts"/>
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Canvas {
     function getElementBySelector(selector: string): HTMLElement | null {
         const elt = document.querySelector(selector);

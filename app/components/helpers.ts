@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.Helpers {
     export namespace URL {
         const PARAMETERS_PREFIX = "page";

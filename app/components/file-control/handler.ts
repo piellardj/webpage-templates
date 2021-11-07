@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Page.FileControl {
     export type FileDownloadObserver = () => unknown;
     export type FileUploadObserver = (files: FileList) => unknown;

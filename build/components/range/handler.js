@@ -1,5 +1,4 @@
 /// <reference path="../helpers.ts"/>
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 var Page;
 (function (Page) {
     var Range;
