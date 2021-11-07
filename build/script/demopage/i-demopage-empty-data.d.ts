@@ -9,4 +9,4 @@ interface IDemopageEmptyData {
     cssFiles: string[];
     body: string;
 }
-export { IDemopageEmptyData };
+export type { IDemopageEmptyData };

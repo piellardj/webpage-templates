@@ -37,13 +37,13 @@ var Page;
             /**
              * Updates the logo's href with an url from the shuffled list.
              */
-            function randomizeLogoHref() {
+            var randomizeLogoHref = function () {
                 if (nextIndex_1 === 0) {
                     shuffleList(projectsUrls_1);
                 }
                 logo.href = projectsUrls_1[nextIndex_1];
                 nextIndex_1 = (nextIndex_1 + 1) % projectsUrls_1.length;
-            }
+            };
             logo.classList.add("dynamic-logo");
             logo.href = "#"; // default value if no projects on the page
             logo.onclick = randomizeLogoHref;

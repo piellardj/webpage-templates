@@ -171,7 +171,7 @@ namespace Page.Range {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const isIE11 = !!(window as any).MSInputMethodContext && !!document["documentMode"];
+    const isIE11 = !!(window as any).MSInputMethodContext && !! (document as any).documentMode;
 
     /**
      * Callback will be called every time the value changes.

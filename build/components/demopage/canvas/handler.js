@@ -217,9 +217,7 @@ var Page;
                 });
             }
         })(Mouse || (Mouse = {}));
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        var Touch;
-        (function (Touch) {
+        (function Touch() {
             var currentTouches = [];
             var currentDistance = 0; // for pinching management
             function computeDistance(firstTouch, secondTouch) {
@@ -312,7 +310,7 @@ var Page;
                 window.addEventListener("touchend", handleTouchEnd);
                 window.addEventListener("touchmove", handleTouchMove, { passive: false });
             }
-        })(Touch || (Touch = {}));
+        })();
         var Indicators;
         (function (Indicators) {
             var indicatorSpansCache = {};

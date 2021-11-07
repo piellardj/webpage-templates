@@ -4,4 +4,4 @@ interface IHomepageData {
     title: string;
     sections: ISection[];
 }
-export { IHomepageData };
+export type { IHomepageData };

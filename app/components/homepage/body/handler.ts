@@ -41,14 +41,14 @@ namespace Page.Homepage {
         /**
          * Updates the logo's href with an url from the shuffled list.
          */
-        function randomizeLogoHref(): void {
+        const randomizeLogoHref = (): void => {
             if (nextIndex === 0) {
                 shuffleList(projectsUrls);
             }
 
             logo.href = projectsUrls[nextIndex];
             nextIndex = (nextIndex + 1) % projectsUrls.length;
-        }
+        };
 
         logo.classList.add("dynamic-logo");
         logo.href = "#"; // default value if no projects on the page

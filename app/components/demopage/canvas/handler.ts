@@ -253,8 +253,7 @@ namespace Page.Canvas {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    namespace Touch {
+    (function Touch(): void {
         interface ITouch {
             id: number;
             clientX: number;
@@ -362,7 +361,7 @@ namespace Page.Canvas {
             window.addEventListener("touchend", handleTouchEnd);
             window.addEventListener("touchmove", handleTouchMove, { passive: false });
         }
-    }
+    })();
 
     namespace Indicators {
         const indicatorSpansCache: {

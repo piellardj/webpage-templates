@@ -15,4 +15,4 @@ interface IDemopageEmptyData {
     body: string;
 }
 
-export { IDemopageEmptyData };
+export type { IDemopageEmptyData };

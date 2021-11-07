@@ -158,7 +158,7 @@ var Page;
             Storage.applyStoredState();
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        var isIE11 = !!window.MSInputMethodContext && !!document["documentMode"];
+        var isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
         /**
          * Callback will be called every time the value changes.
          * @return {boolean} Whether or not the observer was added

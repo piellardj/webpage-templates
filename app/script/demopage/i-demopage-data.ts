@@ -20,4 +20,4 @@ interface IDemopageData {
     controlsSections: IDemopageBody["controlsSections"];
 }
 
-export { IDemopageData };
+export type { IDemopageData };

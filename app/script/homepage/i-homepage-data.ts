@@ -7,4 +7,4 @@ interface IHomepageData {
     sections: ISection[];
 }
 
-export { IHomepageData };
+export type { IHomepageData };

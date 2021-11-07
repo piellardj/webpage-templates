@@ -3,11 +3,40 @@
         "../../components/**/handler.ts"
     ],
     "compilerOptions": {
-        "target": "es5",
+		/* Type Checking */
+		"allowUnreachableCode": false,
+		"allowUnusedLabels": false,
+		"alwaysStrict": false,
+		"exactOptionalPropertyTypes": false,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitAny": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noPropertyAccessFromIndexSignature": false,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"strict": true,
+		"strictBindCallApply": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": false,
+		"strictPropertyInitialization": false,
+		"useUnknownInCatchVariables": true,
+
+        /* Modules */
         "module": "none",
-        "outDir": "../../../build",
         "rootDir": "../..",
+
+        /* Emit */
         "declaration": true,
-        "sourceMap": false
+        "outDir": "../../../build",
+        "sourceMap": false,
+
+        /* Interop Constraints */
+		"isolatedModules": false,
+
+        /* Language and Environment */
+		"target": "es5"
     }
 }
