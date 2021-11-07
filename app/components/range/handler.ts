@@ -23,7 +23,10 @@ namespace Page.Range {
             this.tooltipElement = container.querySelector("output.range-tooltip");
 
             this.id = this.inputElement.id;
-            this.nbDecimalsToDisplay = Range.getMaxNbDecimals(+this.inputElement.min, +this.inputElement.max, +this.inputElement.step);
+            const inputMin = +this.inputElement.min;
+            const inputMax = +this.inputElement.max;
+            const inputStep = +this.inputElement.step;
+            this.nbDecimalsToDisplay = Range.getMaxNbDecimals(inputMin, inputMax, inputStep);
 
             this.inputElement.addEventListener("input", (event: Event) => {
                 event.stopPropagation();

@@ -13,7 +13,10 @@ var Page;
                 this.progressLeftElement = container.querySelector(".range-progress-left");
                 this.tooltipElement = container.querySelector("output.range-tooltip");
                 this.id = this.inputElement.id;
-                this.nbDecimalsToDisplay = Range.getMaxNbDecimals(+this.inputElement.min, +this.inputElement.max, +this.inputElement.step);
+                var inputMin = +this.inputElement.min;
+                var inputMax = +this.inputElement.max;
+                var inputStep = +this.inputElement.step;
+                this.nbDecimalsToDisplay = Range.getMaxNbDecimals(inputMin, inputMax, inputStep);
                 this.inputElement.addEventListener("input", function (event) {
                     event.stopPropagation();
                     _this.reloadValue();
