@@ -54,14 +54,12 @@ $card-transition-time: .1s ease-in-out;
     width: $card-max-width;
     height: $card-height;
     z-index: 0;
+}
+picture.card-background {
+    @include transition(opacity $card-transition-time);
 
     .card-frame:hover > & {
-        $blur-radius: 2;
-        // sass-lint:disable-block quotes no-duplicate-properties
-        // no transition for blur because it is expansive
-        filter: blur(#{$blur-radius}px); // fallback in case better blur is not supported. This one produces white artifacts on edges.
-        // SVG blur does not produce artifacts but not all browsers support it
-        filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='1' height='1'%3E%3CfeGaussianBlur stdDeviation='#{$blur-radius}' result='b'/%3E%3CfeMorphology operator='dilate' radius='#{$blur-radius}'/%3E %3CfeMerge%3E%3CfeMergeNode/%3E%3CfeMergeNode in='b'/%3E%3C/feMerge%3E%3C/filter%3E%3C/svg%3E#a");
+        opacity: 0;
     }
 }
 
