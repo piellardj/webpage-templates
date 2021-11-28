@@ -18,7 +18,7 @@ var Page;
                 for (var i = 0; i < elements.length; i++) {
                     this.valueElements.push(elements[i]);
                 }
-                this.containerElement.style.width = this.computeMinimumWidth() + "px";
+                this.containerElement.style.width = "".concat(this.computeMinimumWidth(), "px");
                 document.addEventListener("click", function (event) {
                     var clickedElement = event.target;
                     var isExpanded = _this.containerElement.classList.contains(Select.EXPANDED_CLASS);
@@ -67,7 +67,7 @@ var Page;
                                 return;
                             }
                         }
-                        console.log("No \"" + v + "\" value for \"" + this.id + "\" select.");
+                        console.log("No \"".concat(v, "\" value for \"").concat(this.id, "\" select."));
                     }
                 },
                 enumerable: false,
