@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const UglifyJS = require("uglify-es");
 
 const ROOT_DIR = path.resolve(__dirname, "..", "components");
 const TEMPLATE_EXTENSION = ".ejs";

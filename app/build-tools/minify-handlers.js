@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const UglifyJS = require("uglify-es");
+const UglifyJS = require("uglify-js");
 
 const MINIFIED_EXTENSION = ".min.js";
 
