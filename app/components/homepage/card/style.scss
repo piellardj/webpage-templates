@@ -151,6 +151,10 @@ a.card-link {
         @include color-control-accent-active(color);
         background: $color-accent-transparent-medium;
     }
+
+    span {
+        user-select: none;
+    }
 }
 
 .card-title {
