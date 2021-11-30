@@ -20,13 +20,17 @@
             #include('paragraphs', { paragraphs: body })
         </div>
         <div class="card-action">
-            # if (typeof liveLink === "boolean" && liveLink) {
-                # const linkArguments = (typeof liveLinkArguments !== "undefined") ? "?" + liveLinkArguments : "";
-                # const url = "https://piellardj.github.io/" + projectName + "/" + linkArguments;
-                <a class="card-link" href="#=(url)">See live</a>
-            # } else if (typeof githubLink === "boolean" && githubLink) {
-                # const url = "https://github.com/piellardj/" + projectName + "/";
-                <a class="card-link" href="#=(url)">Github</a>
+            # {
+                # let url, label; // string
+                # if (typeof liveLink === "boolean" && liveLink) {
+                    # const linkArguments = (typeof liveLinkArguments !== "undefined") ? "?" + liveLinkArguments : "";
+                    # url = "https://piellardj.github.io/" + projectName + "/" + linkArguments;
+                    # label = "See live";
+                # } else if (typeof githubLink === "boolean" && githubLink) {
+                    # url = "https://github.com/piellardj/" + projectName + "/";
+                    # label = "Github";
+                # }
+                <a class="card-link" href="#=(url)">#=(label)</a>
             # }
         </div>
     </div>
