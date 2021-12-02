@@ -139,21 +139,49 @@ a.card-link {
     @include color-control-accent(border-color);
     @include color-control-accent(color);
 
-    &:hover,
-    &:focus {
-        @include color-control-accent-hover(border-color);
-        @include color-control-accent-hover(color);
-        background: $color-accent-transparent-light;
-    }
-
     &:active {
         @include color-control-accent-active(border-color);
         @include color-control-accent-active(color);
-        background: $color-accent-transparent-medium;
+    }
+}
+
+.card-link-label {
+    $lateral-shift: 7px;
+    $shift-transition-time: .15s;
+
+    display: block;
+    position: relative;
+    user-select: none;
+    @include transition($shift-transition-time);
+
+    &::after {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        width: 5px;
+        height: 5px;
+        transform: translate(-$lateral-shift, -50%) rotate(45deg);
+        border-width: 2px 2px 0 0;
+        border-style: solid;
+        @include color-control-accent(border-color);
+        @include transition($shift-transition-time);
+        content: '';
+        opacity: 0;
     }
 
-    span {
-        user-select: none;
+    a.card-link:hover &,
+    a.card-link:focus &,
+    a.card-link:active & {
+        transform: translateX(-$lateral-shift);
+
+        &::after {
+            transform: translate(#{2 * $lateral-shift}, -50%) rotate(45deg);
+            opacity: 1;
+        }
+    }
+
+    a.card-link:active &::after {
+        @include color-control-accent-active(border-color);
     }
 }
 
