@@ -1,6 +1,10 @@
 $declare-css-variables: 1;
 @import 'common/theme';
 
+:root {
+    color-scheme: light dark;
+}
+
 html {
     display: flex; // to make footer stick to bottom if short page
     min-height: 100%; // to make footer stick to bottom if short page
