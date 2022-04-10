@@ -38,7 +38,7 @@
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "eslint": "^8.3.0",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "sass": "^1.43.5",
     "sass-lint": "^1.13.1",
     "ts-node": "^10.4.0",
