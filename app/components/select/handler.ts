@@ -194,7 +194,7 @@ namespace Page.Select {
         return select.value;
     }
 
-    export function setValue(id: string, value: string): void {
+    export function setValue(id: string, value: string | null): void {
         const select = Cache.getSelectById(id);
         select.value = value;
     }
