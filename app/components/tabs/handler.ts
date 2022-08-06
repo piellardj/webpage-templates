@@ -30,7 +30,7 @@ namespace Page.Tabs {
                 inputElements[i].addEventListener("change", (event) => {
                     event.stopPropagation();
                     this.reloadValues();
-                    Storage.storeState(this);
+                    tabsStorage.storeState(this);
                     this.callObservers();
                 }, false);
             }
@@ -83,38 +83,25 @@ namespace Page.Tabs {
         return tabsList;
     });
 
-    namespace Storage {
-        const PREFIX = "tabs";
-        const SEPARATOR = ";";
-
-        export function storeState(tabs: Tabs): void {
+    const tabsStorage = new Page.Helpers.Storage<Tabs>("tabs",
+        (tabs: Tabs) => {
             const valuesList = tabs.values;
-            const values = valuesList.join(SEPARATOR);
-            Page.Helpers.URL.setQueryParameter(PREFIX, tabs.id, values);
-        }
-
-        export function clearStoredState(tabs: Tabs): void {
-            Page.Helpers.URL.removeQueryParameter(PREFIX, tabs.id);
-        }
-
-        export function applyStoredState(): void {
-            Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
-                const values = value.split(SEPARATOR);
-                const tabs = tabsCache.getByIdSafe(controlId);
-                if (!tabs) {
-                    console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
-                    Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
-                } else {
-                    tabs.values = values;
-                    tabs.callObservers();
-                }
-            });
-        }
-    }
+            return valuesList.join(";");
+        },
+        (id: string, serializedValue: string) => {
+            const values = serializedValue.split(";");
+            const tabs = tabsCache.getByIdSafe(id);
+            if (tabs) {
+                tabs.values = values;
+                tabs.callObservers();
+                return true;
+            }
+            return false;
+        });
 
     Helpers.Events.callAfterDOMLoaded(() => {
         tabsCache.load();
-        Storage.applyStoredState();
+        tabsStorage.applyStoredState();
     });
 
     export function addObserver(tabsId: string, observer: TabsObserver): void {
@@ -132,16 +119,16 @@ namespace Page.Tabs {
         tabs.values = values;
 
         if (updateURLStorage) {
-            Storage.storeState(tabs);
+            tabsStorage.storeState(tabs);
         }
     }
 
     export function storeState(tabsId: string): void {
         const tabs = tabsCache.getById(tabsId);
-        Storage.storeState(tabs);
+        tabsStorage.storeState(tabs);
     }
     export function clearStoredState(tabsIdd: string): void {
         const tabs = tabsCache.getById(tabsIdd);
-        Storage.clearStoredState(tabs);
+        tabsStorage.clearStoredState(tabs);
     }
 }

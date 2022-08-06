@@ -21,14 +21,14 @@ var Page;
                     var index = _this.getIndexOfCheckedInput();
                     _this.checkOnlyRadio(index - 1, _this.radioInputs.length - 1);
                     _this.updateValue();
-                    Storage.storeState(_this);
+                    pickersStorage.storeState(_this);
                     _this.callObservers();
                 });
                 this.rightButton.addEventListener("click", function () {
                     var index = _this.getIndexOfCheckedInput();
                     _this.checkOnlyRadio(index + 1, 0);
                     _this.updateValue();
-                    Storage.storeState(_this);
+                    pickersStorage.storeState(_this);
                     _this.callObservers();
                 });
                 this.updateValue();
@@ -116,36 +116,19 @@ var Page;
             }
             return pickersList;
         });
-        var Storage;
-        (function (Storage) {
-            var PREFIX = "picker";
-            var NULL_VALUE = "__null__";
-            function storeState(picker) {
-                var value = (picker.value === null) ? NULL_VALUE : picker.value;
-                Page.Helpers.URL.setQueryParameter(PREFIX, picker.id, value);
+        var pickersStorage = new Page.Helpers.Storage("picker", function (picker) {
+            return (picker.value === null) ? "__null__" : picker.value;
+        }, function (id, serializedValue) {
+            var picker = pickersCache.getByIdSafe(id);
+            if (picker) {
+                picker.value = serializedValue;
+                return true;
             }
-            Storage.storeState = storeState;
-            function clearStoredState(picker) {
-                Page.Helpers.URL.removeQueryParameter(PREFIX, picker.id);
-            }
-            Storage.clearStoredState = clearStoredState;
-            function applyStoredState() {
-                Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
-                    var picker = pickersCache.getByIdSafe(controlId);
-                    if (!picker) {
-                        Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
-                    }
-                    else {
-                        picker.value = value;
-                        picker.callObservers();
-                    }
-                });
-            }
-            Storage.applyStoredState = applyStoredState;
-        })(Storage || (Storage = {}));
+            return false;
+        });
         Page.Helpers.Events.callAfterDOMLoaded(function () {
             pickersCache.load();
-            Storage.applyStoredState();
+            pickersStorage.applyStoredState();
         });
         function addObserver(id, observer) {
             var picker = pickersCache.getById(id);
@@ -164,12 +147,12 @@ var Page;
         Picker_1.setValue = setValue;
         function storeState(id) {
             var picker = pickersCache.getById(id);
-            Storage.storeState(picker);
+            pickersStorage.storeState(picker);
         }
         Picker_1.storeState = storeState;
         function clearStoredState(id) {
             var picker = pickersCache.getById(id);
-            Storage.clearStoredState(picker);
+            pickersStorage.clearStoredState(picker);
         }
         Picker_1.clearStoredState = clearStoredState;
     })(Picker = Page.Picker || (Page.Picker = {}));

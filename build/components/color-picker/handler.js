@@ -146,32 +146,17 @@ var Page;
             }
             return colorPickersList;
         });
-        var Storage;
-        (function (Storage) {
-            var PREFIX = "color-picker";
-            function storeState(colorPicker) {
-                Page.Helpers.URL.setQueryParameter(PREFIX, colorPicker.id, colorPicker.value);
+        var colorPickersStorage = new Page.Helpers.Storage("color-picker", function (colorPicker) {
+            return colorPicker.value;
+        }, function (id, serializedValue) {
+            var colorPicker = colorPickersCache.getByIdSafe(id);
+            var hexValue = ColorSpace.parseHexa(serializedValue);
+            if (colorPicker && hexValue) {
+                colorPicker.value = hexValue;
+                return true;
             }
-            Storage.storeState = storeState;
-            function clearStoredState(colorPicker) {
-                Page.Helpers.URL.removeQueryParameter(PREFIX, colorPicker.id);
-            }
-            Storage.clearStoredState = clearStoredState;
-            function applyStoredState() {
-                Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
-                    var colorPicker = colorPickersCache.getByIdSafe(controlId);
-                    var hexValue = ColorSpace.parseHexa(value);
-                    if (!colorPicker || !hexValue) {
-                        console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
-                        Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
-                    }
-                    else {
-                        colorPicker.value = hexValue;
-                    }
-                });
-            }
-            Storage.applyStoredState = applyStoredState;
-        })(Storage || (Storage = {}));
+            return false;
+        });
         var Popup = /** @class */ (function () {
             function Popup() {
                 var _this = this;
@@ -290,7 +275,7 @@ var Page;
                 if (this.currentControl) {
                     this.currentControl.value = hexString;
                 }
-                Storage.storeState(this.currentControl);
+                colorPickersStorage.storeState(this.currentControl);
             };
             Popup.prototype.attach = function (colorPicker) {
                 this.currentControl = colorPicker;
@@ -442,7 +427,7 @@ var Page;
         }());
         Page.Helpers.Events.callAfterDOMLoaded(function () {
             colorPickersCache.load();
-            Storage.applyStoredState();
+            colorPickersStorage.applyStoredState();
         });
         function addObserver(id, observer) {
             var colorPicker = colorPickersCache.getById(id);
@@ -479,12 +464,12 @@ var Page;
         ColorPicker_1.setValue = setValue;
         function storeState(id) {
             var colorPicker = colorPickersCache.getById(id);
-            Storage.storeState(colorPicker);
+            colorPickersStorage.storeState(colorPicker);
         }
         ColorPicker_1.storeState = storeState;
         function clearStoredState(id) {
             var colorPicker = colorPickersCache.getById(id);
-            Storage.clearStoredState(colorPicker);
+            colorPickersStorage.clearStoredState(colorPicker);
         }
         ColorPicker_1.clearStoredState = clearStoredState;
     })(ColorPicker = Page.ColorPicker || (Page.ColorPicker = {}));

@@ -48,7 +48,7 @@ namespace Page.Select {
                                 this.currentValue = valueElement.dataset["value"];
                                 this.currentValueElement.dataset["value"] = this.currentValue;
                                 this.currentValueElement.textContent = valueElement.textContent;
-                                Storage.storeState(this);
+                                selectStorage.storeState(this);
                                 this.callObservers();
                             }
                         }
@@ -137,34 +137,23 @@ namespace Page.Select {
         return selectsList;
     });
 
-    namespace Storage {
-        const PREFIX = "select";
-
-        export function storeState(select: Select): void {
-            Page.Helpers.URL.setQueryParameter(PREFIX, select.id, select.value);
-        }
-
-        export function clearStoredState(select: Select): void {
-            Page.Helpers.URL.removeQueryParameter(PREFIX, select.id);
-        }
-
-        export function applyStoredState(): void {
-            Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
-                const select = selectsCache.getByIdSafe(controlId);
-                if (!select) {
-                    console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
-                    Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
-                } else {
-                    select.value = value;
-                    select.callObservers();
-                }
-            });
-        }
-    }
+    const selectStorage = new Page.Helpers.Storage<Select>("select",
+        (select: Select) => {
+            return select.value;
+        },
+        (id: string, serializedValue: string) => {
+            const select = selectsCache.getByIdSafe(id);
+            if (select) {
+                select.value = serializedValue;
+                select.callObservers();
+                return true;
+            }
+            return false;
+        });
 
     Helpers.Events.callAfterDOMLoaded(() => {
         selectsCache.load();
-        Storage.applyStoredState();
+        selectStorage.applyStoredState();
     });
 
     export function addObserver(id: string, observer: SelectObserver): void {
@@ -184,10 +173,10 @@ namespace Page.Select {
 
     export function storeState(id: string): void {
         const select = selectsCache.getById(id);
-        Storage.storeState(select);
+        selectStorage.storeState(select);
     }
     export function clearStoredState(id: string): void {
         const select = selectsCache.getById(id);
-        Storage.clearStoredState(select);
+        selectStorage.clearStoredState(select);
     }
 }

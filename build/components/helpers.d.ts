@@ -1,16 +1,17 @@
 declare namespace Page.Helpers {
     export namespace URL {
         function loopOnParameters(prefix: string, callback: (name: string, value: string) => unknown): void;
-        function setQueryParameter(prefix: string, name: string, value: string): void;
+        function setQueryParameter(prefix: string, name: string, value: string | null): void;
         function removeQueryParameter(prefix: string, name: string): void;
     }
     export namespace Events {
         function callAfterDOMLoaded(callback: () => unknown): void;
     }
-    type LoadObjectsFunction<T> = () => T[];
-    export class Cache<T extends {
+    interface ICacheable {
         id: string;
-    }> {
+    }
+    type LoadObjectsFunction<T> = () => T[];
+    export class Cache<T extends ICacheable> {
         private readonly objectsName;
         private readonly loadObjectsFunction;
         private cacheObject;
@@ -22,6 +23,18 @@ declare namespace Page.Helpers {
         load(): void;
         private get safeCacheObject();
         private loadCacheObject;
+    }
+    interface IStorable {
+        id: string;
+    }
+    export class Storage<T extends IStorable> {
+        private readonly prefix;
+        private readonly serialize;
+        private readonly tryDeserialize;
+        constructor(prefix: string, serialize: (control: T) => string | null, tryDeserialize: (controlId: string, serializedValue: string) => boolean);
+        storeState(control: T): void;
+        clearStoredState(control: T): void;
+        applyStoredState(): void;
     }
     export {};
 }

@@ -15,7 +15,7 @@ var Page;
                     inputElements[i].addEventListener("change", function (event) {
                         event.stopPropagation();
                         _this.reloadValues();
-                        Storage.storeState(_this);
+                        tabsStorage.storeState(_this);
                         _this.callObservers();
                     }, false);
                 }
@@ -77,39 +77,22 @@ var Page;
             }
             return tabsList;
         });
-        var Storage;
-        (function (Storage) {
-            var PREFIX = "tabs";
-            var SEPARATOR = ";";
-            function storeState(tabs) {
-                var valuesList = tabs.values;
-                var values = valuesList.join(SEPARATOR);
-                Page.Helpers.URL.setQueryParameter(PREFIX, tabs.id, values);
+        var tabsStorage = new Page.Helpers.Storage("tabs", function (tabs) {
+            var valuesList = tabs.values;
+            return valuesList.join(";");
+        }, function (id, serializedValue) {
+            var values = serializedValue.split(";");
+            var tabs = tabsCache.getByIdSafe(id);
+            if (tabs) {
+                tabs.values = values;
+                tabs.callObservers();
+                return true;
             }
-            Storage.storeState = storeState;
-            function clearStoredState(tabs) {
-                Page.Helpers.URL.removeQueryParameter(PREFIX, tabs.id);
-            }
-            Storage.clearStoredState = clearStoredState;
-            function applyStoredState() {
-                Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
-                    var values = value.split(SEPARATOR);
-                    var tabs = tabsCache.getByIdSafe(controlId);
-                    if (!tabs) {
-                        console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
-                        Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
-                    }
-                    else {
-                        tabs.values = values;
-                        tabs.callObservers();
-                    }
-                });
-            }
-            Storage.applyStoredState = applyStoredState;
-        })(Storage || (Storage = {}));
+            return false;
+        });
         Page.Helpers.Events.callAfterDOMLoaded(function () {
             tabsCache.load();
-            Storage.applyStoredState();
+            tabsStorage.applyStoredState();
         });
         function addObserver(tabsId, observer) {
             var tabs = tabsCache.getById(tabsId);
@@ -126,18 +109,18 @@ var Page;
             var tabs = tabsCache.getById(tabsId);
             tabs.values = values;
             if (updateURLStorage) {
-                Storage.storeState(tabs);
+                tabsStorage.storeState(tabs);
             }
         }
         Tabs_1.setValues = setValues;
         function storeState(tabsId) {
             var tabs = tabsCache.getById(tabsId);
-            Storage.storeState(tabs);
+            tabsStorage.storeState(tabs);
         }
         Tabs_1.storeState = storeState;
         function clearStoredState(tabsIdd) {
             var tabs = tabsCache.getById(tabsIdd);
-            Storage.clearStoredState(tabs);
+            tabsStorage.clearStoredState(tabs);
         }
         Tabs_1.clearStoredState = clearStoredState;
     })(Tabs = Page.Tabs || (Page.Tabs = {}));

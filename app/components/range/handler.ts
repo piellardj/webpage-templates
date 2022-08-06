@@ -35,7 +35,7 @@ namespace Page.Range {
             this.inputElement.addEventListener("change", (event: Event) => {
                 event.stopPropagation();
                 this.reloadValue();
-                Storage.storeState(this);
+                rangesStorage.storeState(this);
                 this.callSpecificObservers(this.onChangeObservers);
             });
             this.reloadValue();
@@ -119,35 +119,23 @@ namespace Page.Range {
         return rangesList;
     });
 
-    namespace Storage {
-        const PREFIX = "range";
-
-        export function storeState(range: Range): void {
-            const valueAsString = "" + range.value;
-            Page.Helpers.URL.setQueryParameter(PREFIX, range.id, valueAsString);
-        }
-
-        export function clearStoredState(range: Range): void {
-            Page.Helpers.URL.removeQueryParameter(PREFIX, range.id);
-        }
-
-        export function applyStoredState(): void {
-            Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
-                const range = rangesCache.getByIdSafe(controlId);
-                if (!range) {
-                    console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
-                    Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
-                } else {
-                    range.value = +value;
-                    range.callObservers();
-                }
-            });
-        }
-    }
+    const rangesStorage = new Page.Helpers.Storage<Range>("range",
+        (range: Range) => {
+            return "" + range.value;
+        },
+        (id: string, serializedValue: string) => {
+            const range = rangesCache.getByIdSafe(id);
+            if (range) {
+                range.value = +serializedValue;
+                range.callObservers();
+                return true;
+            }
+            return false;
+        });
 
     Helpers.Events.callAfterDOMLoaded(() => {
         rangesCache.load();
-        Storage.applyStoredState();
+        rangesStorage.applyStoredState();
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -182,10 +170,10 @@ namespace Page.Range {
 
     export function storeState(rangeId: string): void {
         const range = rangesCache.getById(rangeId);
-        Storage.storeState(range);
+        rangesStorage.storeState(range);
     }
     export function clearStoredState(rangeId: string): void {
         const range = rangesCache.getById(rangeId);
-        Storage.clearStoredState(range);
+        rangesStorage.clearStoredState(range);
     }
 }

@@ -12,7 +12,7 @@ var Page;
                 this.reloadValue();
                 this.element.addEventListener("change", function () {
                     _this.reloadValue();
-                    Storage.storeState(_this);
+                    checkboxesStorage.storeState(_this);
                     _this.callObservers();
                 });
             }
@@ -48,38 +48,20 @@ var Page;
             }
             return checkboxesList;
         });
-        var Storage;
-        (function (Storage) {
-            var PREFIX = "checkbox";
-            var CHECKED = "true";
-            var UNCHECKED = "false";
-            function storeState(checkbox) {
-                var stateAsString = checkbox.checked ? CHECKED : UNCHECKED;
-                Page.Helpers.URL.setQueryParameter(PREFIX, checkbox.id, stateAsString);
+        var checkboxesStorage = new Page.Helpers.Storage("checkbox", function (checkbox) {
+            return checkbox.checked ? "true" : "false";
+        }, function (id, serializedValue) {
+            var checkbox = checkboxesCache.getByIdSafe(id);
+            if (checkbox && (serializedValue === "true" || serializedValue === "false")) {
+                checkbox.checked = (serializedValue === "true");
+                checkbox.callObservers();
+                return true;
             }
-            Storage.storeState = storeState;
-            function clearStoredState(checkbox) {
-                Page.Helpers.URL.removeQueryParameter(PREFIX, checkbox.id);
-            }
-            Storage.clearStoredState = clearStoredState;
-            function applyStoredState() {
-                Page.Helpers.URL.loopOnParameters(PREFIX, function (checkboxId, value) {
-                    var checkbox = checkboxesCache.getByIdSafe(checkboxId);
-                    if (!checkbox || (value !== CHECKED && value !== UNCHECKED)) {
-                        console.log("Removing invalid query parameter '" + checkboxId + "=" + value + "'.");
-                        Page.Helpers.URL.removeQueryParameter(PREFIX, checkboxId);
-                    }
-                    else {
-                        checkbox.checked = (value === CHECKED);
-                        checkbox.callObservers();
-                    }
-                });
-            }
-            Storage.applyStoredState = applyStoredState;
-        })(Storage || (Storage = {}));
+            return false;
+        });
         Page.Helpers.Events.callAfterDOMLoaded(function () {
             checkboxesCache.load();
-            Storage.applyStoredState();
+            checkboxesStorage.applyStoredState();
         });
         function addObserver(checkboxId, observer) {
             var checkbox = checkboxesCache.getById(checkboxId);
@@ -98,12 +80,12 @@ var Page;
         Checkbox_1.isChecked = isChecked;
         function storeState(checkboxId) {
             var checkbox = checkboxesCache.getById(checkboxId);
-            Storage.storeState(checkbox);
+            checkboxesStorage.storeState(checkbox);
         }
         Checkbox_1.storeState = storeState;
         function clearStoredState(checkboxId) {
             var checkbox = checkboxesCache.getById(checkboxId);
-            Storage.clearStoredState(checkbox);
+            checkboxesStorage.clearStoredState(checkbox);
         }
         Checkbox_1.clearStoredState = clearStoredState;
     })(Checkbox = Page.Checkbox || (Page.Checkbox = {}));

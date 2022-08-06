@@ -24,7 +24,7 @@ var Page;
                 this.inputElement.addEventListener("change", function (event) {
                     event.stopPropagation();
                     _this.reloadValue();
-                    Storage.storeState(_this);
+                    rangesStorage.storeState(_this);
                     _this.callSpecificObservers(_this.onChangeObservers);
                 });
                 this.reloadValue();
@@ -110,36 +110,20 @@ var Page;
             }
             return rangesList;
         });
-        var Storage;
-        (function (Storage) {
-            var PREFIX = "range";
-            function storeState(range) {
-                var valueAsString = "" + range.value;
-                Page.Helpers.URL.setQueryParameter(PREFIX, range.id, valueAsString);
+        var rangesStorage = new Page.Helpers.Storage("range", function (range) {
+            return "" + range.value;
+        }, function (id, serializedValue) {
+            var range = rangesCache.getByIdSafe(id);
+            if (range) {
+                range.value = +serializedValue;
+                range.callObservers();
+                return true;
             }
-            Storage.storeState = storeState;
-            function clearStoredState(range) {
-                Page.Helpers.URL.removeQueryParameter(PREFIX, range.id);
-            }
-            Storage.clearStoredState = clearStoredState;
-            function applyStoredState() {
-                Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
-                    var range = rangesCache.getByIdSafe(controlId);
-                    if (!range) {
-                        console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
-                        Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
-                    }
-                    else {
-                        range.value = +value;
-                        range.callObservers();
-                    }
-                });
-            }
-            Storage.applyStoredState = applyStoredState;
-        })(Storage || (Storage = {}));
+            return false;
+        });
         Page.Helpers.Events.callAfterDOMLoaded(function () {
             rangesCache.load();
-            Storage.applyStoredState();
+            rangesStorage.applyStoredState();
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         var isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
@@ -173,12 +157,12 @@ var Page;
         Range_1.setValue = setValue;
         function storeState(rangeId) {
             var range = rangesCache.getById(rangeId);
-            Storage.storeState(range);
+            rangesStorage.storeState(range);
         }
         Range_1.storeState = storeState;
         function clearStoredState(rangeId) {
             var range = rangesCache.getById(rangeId);
-            Storage.clearStoredState(range);
+            rangesStorage.clearStoredState(range);
         }
         Range_1.clearStoredState = clearStoredState;
     })(Range = Page.Range || (Page.Range = {}));

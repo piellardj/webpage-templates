@@ -17,7 +17,7 @@ namespace Page.Checkbox {
 
             this.element.addEventListener("change", () => {
                 this.reloadValue();
-                Storage.storeState(this);
+                checkboxesStorage.storeState(this);
                 this.callObservers();
             });
         }
@@ -53,37 +53,23 @@ namespace Page.Checkbox {
         return checkboxesList;
     });
 
-    namespace Storage {
-        const PREFIX = "checkbox";
-        const CHECKED = "true";
-        const UNCHECKED = "false";
-
-        export function storeState(checkbox: Checkbox): void {
-            const stateAsString = checkbox.checked ? CHECKED : UNCHECKED;
-            Page.Helpers.URL.setQueryParameter(PREFIX, checkbox.id, stateAsString);
-        }
-
-        export function clearStoredState(checkbox: Checkbox): void {
-            Page.Helpers.URL.removeQueryParameter(PREFIX, checkbox.id);
-        }
-
-        export function applyStoredState(): void {
-            Page.Helpers.URL.loopOnParameters(PREFIX, (checkboxId: string, value: string) => {
-                const checkbox = checkboxesCache.getByIdSafe(checkboxId);
-                if (!checkbox || (value !== CHECKED && value !== UNCHECKED)) {
-                    console.log("Removing invalid query parameter '" + checkboxId + "=" + value + "'.");
-                    Page.Helpers.URL.removeQueryParameter(PREFIX, checkboxId);
-                } else {
-                    checkbox.checked = (value === CHECKED);
-                    checkbox.callObservers();
-                }
-            });
-        }
-    }
+    const checkboxesStorage = new Page.Helpers.Storage<Checkbox>("checkbox",
+        (checkbox: Checkbox) => {
+            return checkbox.checked ? "true" : "false";
+        },
+        (id: string, serializedValue: string) => {
+            const checkbox = checkboxesCache.getByIdSafe(id);
+            if (checkbox && (serializedValue === "true" || serializedValue === "false")) {
+                checkbox.checked = (serializedValue === "true");
+                checkbox.callObservers();
+                return true;
+            }
+            return false;
+        });
 
     Helpers.Events.callAfterDOMLoaded(() => {
         checkboxesCache.load();
-        Storage.applyStoredState();
+        checkboxesStorage.applyStoredState();
     });
 
     export function addObserver(checkboxId: string, observer: CheckboxObserver): void {
@@ -103,10 +89,10 @@ namespace Page.Checkbox {
 
     export function storeState(checkboxId: string): void {
         const checkbox = checkboxesCache.getById(checkboxId);
-        Storage.storeState(checkbox);
+        checkboxesStorage.storeState(checkbox);
     }
     export function clearStoredState(checkboxId: string): void {
         const checkbox = checkboxesCache.getById(checkboxId);
-        Storage.clearStoredState(checkbox);
+        checkboxesStorage.clearStoredState(checkbox);
     }
 }

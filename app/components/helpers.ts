@@ -88,7 +88,7 @@ namespace Page.Helpers {
             urlBuilder.loopOnParameters(fullPrefix, callback);
         }
 
-        export function setQueryParameter(prefix: string, name: string, value: string): void {
+        export function setQueryParameter(prefix: string, name: string, value: string | null): void {
             const urlBuilder = new URLBuilder(window.location.href);
             const fullPrefix = buildPrefix(PARAMETERS_PREFIX, prefix);
             urlBuilder.setQueryParameter(fullPrefix + name, value);
@@ -113,9 +113,12 @@ namespace Page.Helpers {
         }
     }
 
+    interface ICacheable {
+        id: string;
+    }
     type InternalCacheType<T> = { [id: string]: T };
     type LoadObjectsFunction<T> = () => T[];
-    export class Cache<T extends { id: string }> {
+    export class Cache<T extends ICacheable> {
         private cacheObject: InternalCacheType<T> | null = null;
 
         public constructor(
@@ -162,6 +165,36 @@ namespace Page.Helpers {
             }
 
             return index;
+        }
+    }
+
+    interface IStorable {
+        id: string;
+    }
+    export class Storage<T extends IStorable> {
+        public constructor(
+            private readonly prefix: string,
+            private readonly serialize: (control: T) => string | null,
+            private readonly tryDeserialize: (controlId: string, serializedValue: string) => boolean
+        ) {
+        }
+
+        public storeState(control: T): void {
+            const valueAsString = this.serialize(control);
+            Page.Helpers.URL.setQueryParameter(this.prefix, control.id, valueAsString);
+        }
+
+        public clearStoredState(control: T): void {
+            Page.Helpers.URL.removeQueryParameter(this.prefix, control.id);
+        }
+
+        public applyStoredState(): void {
+            Page.Helpers.URL.loopOnParameters(this.prefix, (controlId: string, value: string) => {
+                if (!this.tryDeserialize(controlId, value)) {
+                    console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
+                    Page.Helpers.URL.removeQueryParameter(this.prefix, controlId);
+                }
+            });
         }
     }
 }

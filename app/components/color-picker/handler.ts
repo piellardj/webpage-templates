@@ -172,31 +172,20 @@ namespace Page.ColorPicker {
         return colorPickersList;
     });
 
-    namespace Storage {
-        const PREFIX = "color-picker";
+    const colorPickersStorage = new Page.Helpers.Storage<ColorPicker>("color-picker",
+        (colorPicker: ColorPicker) => {
+            return colorPicker.value;
+        },
+        (id: string, serializedValue: string) => {
+            const colorPicker = colorPickersCache.getByIdSafe(id);
+            const hexValue = ColorSpace.parseHexa(serializedValue);
 
-        export function storeState(colorPicker: ColorPicker): void {
-            Page.Helpers.URL.setQueryParameter(PREFIX, colorPicker.id, colorPicker.value);
-        }
-
-        export function clearStoredState(colorPicker: ColorPicker): void {
-            Page.Helpers.URL.removeQueryParameter(PREFIX, colorPicker.id);
-        }
-
-        export function applyStoredState(): void {
-            Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
-                const colorPicker = colorPickersCache.getByIdSafe(controlId);
-                const hexValue = ColorSpace.parseHexa(value);
-
-                if (!colorPicker || !hexValue) {
-                    console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
-                    Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
-                } else {
-                    colorPicker.value = hexValue;
-                }
-            });
-        }
-    }
+            if (colorPicker && hexValue) {
+                colorPicker.value = hexValue;
+                return true;
+            }
+            return false;
+        });
 
     class Popup {
         public static assignPopup(colorPicker: ColorPicker): void {
@@ -358,7 +347,7 @@ namespace Page.ColorPicker {
             if (this.currentControl) {
                 this.currentControl.value = hexString;
             }
-            Storage.storeState(this.currentControl);
+            colorPickersStorage.storeState(this.currentControl);
         }
 
         private attach(colorPicker: ColorPicker): void {
@@ -529,7 +518,7 @@ namespace Page.ColorPicker {
 
     Helpers.Events.callAfterDOMLoaded(() => {
         colorPickersCache.load();
-        Storage.applyStoredState();
+        colorPickersStorage.applyStoredState();
     });
 
     export function addObserver(id: string, observer: OnChangeObserver): void {
@@ -567,10 +556,10 @@ namespace Page.ColorPicker {
 
     export function storeState(id: string): void {
         const colorPicker = colorPickersCache.getById(id);
-        Storage.storeState(colorPicker);
+        colorPickersStorage.storeState(colorPicker);
     }
     export function clearStoredState(id: string): void {
         const colorPicker = colorPickersCache.getById(id);
-        Storage.clearStoredState(colorPicker);
+        colorPickersStorage.clearStoredState(colorPicker);
     }
 }

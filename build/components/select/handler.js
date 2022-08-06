@@ -31,7 +31,7 @@ var Page;
                                     _this.currentValue = valueElement.dataset["value"];
                                     _this.currentValueElement.dataset["value"] = _this.currentValue;
                                     _this.currentValueElement.textContent = valueElement.textContent;
-                                    Storage.storeState(_this);
+                                    selectStorage.storeState(_this);
                                     _this.callObservers();
                                 }
                             }
@@ -116,35 +116,20 @@ var Page;
             }
             return selectsList;
         });
-        var Storage;
-        (function (Storage) {
-            var PREFIX = "select";
-            function storeState(select) {
-                Page.Helpers.URL.setQueryParameter(PREFIX, select.id, select.value);
+        var selectStorage = new Page.Helpers.Storage("select", function (select) {
+            return select.value;
+        }, function (id, serializedValue) {
+            var select = selectsCache.getByIdSafe(id);
+            if (select) {
+                select.value = serializedValue;
+                select.callObservers();
+                return true;
             }
-            Storage.storeState = storeState;
-            function clearStoredState(select) {
-                Page.Helpers.URL.removeQueryParameter(PREFIX, select.id);
-            }
-            Storage.clearStoredState = clearStoredState;
-            function applyStoredState() {
-                Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
-                    var select = selectsCache.getByIdSafe(controlId);
-                    if (!select) {
-                        console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
-                        Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
-                    }
-                    else {
-                        select.value = value;
-                        select.callObservers();
-                    }
-                });
-            }
-            Storage.applyStoredState = applyStoredState;
-        })(Storage || (Storage = {}));
+            return false;
+        });
         Page.Helpers.Events.callAfterDOMLoaded(function () {
             selectsCache.load();
-            Storage.applyStoredState();
+            selectStorage.applyStoredState();
         });
         function addObserver(id, observer) {
             var select = selectsCache.getById(id);
@@ -163,12 +148,12 @@ var Page;
         Select_1.setValue = setValue;
         function storeState(id) {
             var select = selectsCache.getById(id);
-            Storage.storeState(select);
+            selectStorage.storeState(select);
         }
         Select_1.storeState = storeState;
         function clearStoredState(id) {
             var select = selectsCache.getById(id);
-            Storage.clearStoredState(select);
+            selectStorage.clearStoredState(select);
         }
         Select_1.clearStoredState = clearStoredState;
     })(Select = Page.Select || (Page.Select = {}));
