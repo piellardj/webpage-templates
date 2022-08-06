@@ -137,30 +137,15 @@ var Page;
             };
             return ColorPicker;
         }());
-        var Cache;
-        (function (Cache) {
-            function loadCache() {
-                var result = {};
-                var containers = document.querySelectorAll(".color-picker[id]");
-                for (var i = 0; i < containers.length; i++) {
-                    var coloPicker = new ColorPicker(containers[i]);
-                    result[containers[i].id] = coloPicker;
-                }
-                return result;
+        var colorPickersCache = new Page.Helpers.Cache("ColorPicker", function () {
+            var colorPickersList = [];
+            var containers = document.querySelectorAll(".color-picker[id]");
+            for (var i = 0; i < containers.length; i++) {
+                var colorPicker = new ColorPicker(containers[i]);
+                colorPickersList.push(colorPicker);
             }
-            var colorPickersCache;
-            function getColorPickerById(id) {
-                Cache.load();
-                return colorPickersCache[id] || null;
-            }
-            Cache.getColorPickerById = getColorPickerById;
-            function load() {
-                if (typeof colorPickersCache === "undefined") {
-                    colorPickersCache = loadCache();
-                }
-            }
-            Cache.load = load;
-        })(Cache || (Cache = {}));
+            return colorPickersList;
+        });
         var Storage;
         (function (Storage) {
             var PREFIX = "color-picker";
@@ -174,7 +159,7 @@ var Page;
             Storage.clearStoredState = clearStoredState;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
-                    var colorPicker = Cache.getColorPickerById(controlId);
+                    var colorPicker = colorPickersCache.getByIdSafe(controlId);
                     var hexValue = ColorSpace.parseHexa(value);
                     if (!colorPicker || !hexValue) {
                         console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
@@ -456,25 +441,22 @@ var Page;
             return Popup;
         }());
         Page.Helpers.Events.callAfterDOMLoaded(function () {
-            Cache.load();
+            colorPickersCache.load();
             Storage.applyStoredState();
         });
         function addObserver(id, observer) {
-            var colorPicker = Cache.getColorPickerById(id);
-            if (colorPicker) {
-                colorPicker.observers.push(observer);
-            }
-            return false;
+            var colorPicker = colorPickersCache.getById(id);
+            colorPicker.observers.push(observer);
         }
         ColorPicker_1.addObserver = addObserver;
         function getValue(id) {
-            var colorPicker = Cache.getColorPickerById(id);
+            var colorPicker = colorPickersCache.getById(id);
             var hexValue = colorPicker.value;
             return ColorSpace.hexToRgb(hexValue);
         }
         ColorPicker_1.getValue = getValue;
         function getValueHex(id) {
-            var colorPicker = Cache.getColorPickerById(id);
+            var colorPicker = colorPickersCache.getById(id);
             return colorPicker.value;
         }
         ColorPicker_1.getValueHex = getValueHex;
@@ -491,17 +473,17 @@ var Page;
                 b: roundAndClamp(b, 0, 255),
             };
             var hexValue = ColorSpace.rgbToHex(rgb);
-            var colorPicker = Cache.getColorPickerById(id);
+            var colorPicker = colorPickersCache.getById(id);
             colorPicker.value = hexValue;
         }
         ColorPicker_1.setValue = setValue;
         function storeState(id) {
-            var colorPicker = Cache.getColorPickerById(id);
+            var colorPicker = colorPickersCache.getById(id);
             Storage.storeState(colorPicker);
         }
         ColorPicker_1.storeState = storeState;
         function clearStoredState(id) {
-            var colorPicker = Cache.getColorPickerById(id);
+            var colorPicker = colorPickersCache.getById(id);
             Storage.clearStoredState(colorPicker);
         }
         ColorPicker_1.clearStoredState = clearStoredState;

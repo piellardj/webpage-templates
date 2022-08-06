@@ -127,32 +127,15 @@ namespace Page.Select {
         }
     }
 
-    namespace Cache {
-        type SelectsCache = { [id: string]: Select };
-
-        function loadCache(): SelectsCache {
-            const result: SelectsCache = {};
-            const containerElements = document.querySelectorAll(".select-container[id]") as NodeListOf<HTMLElement>;
-            for (let i = 0; i < containerElements.length; i++) {
-                const select = new Select(containerElements[i]);
-                result[select.id] = select;
-            }
-            return result;
+    const selectsCache = new Page.Helpers.Cache<Select>("Select", () => {
+        const selectsList: Select[] = [];
+        const containerElements = document.querySelectorAll(".select-container[id]") as NodeListOf<HTMLElement>;
+        for (let i = 0; i < containerElements.length; i++) {
+            const select = new Select(containerElements[i]);
+            selectsList.push(select);
         }
-
-        let selectsCache: SelectsCache;
-
-        export function getSelectById(id: string): Select {
-            Cache.load();
-            return selectsCache[id] || null;
-        }
-
-        export function load(): void {
-            if (typeof selectsCache === "undefined") {
-                selectsCache = loadCache();
-            }
-        }
-    }
+        return selectsList;
+    });
 
     namespace Storage {
         const PREFIX = "select";
@@ -167,7 +150,7 @@ namespace Page.Select {
 
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
-                const select = Cache.getSelectById(controlId);
+                const select = selectsCache.getByIdSafe(controlId);
                 if (!select) {
                     console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
                     Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
@@ -180,31 +163,31 @@ namespace Page.Select {
     }
 
     Helpers.Events.callAfterDOMLoaded(() => {
-        Cache.load();
+        selectsCache.load();
         Storage.applyStoredState();
     });
 
     export function addObserver(id: string, observer: SelectObserver): void {
-        const select = Cache.getSelectById(id);
+        const select = selectsCache.getById(id);
         select.observers.push(observer);
     }
 
     export function getValue(id: string): string | null {
-        const select = Cache.getSelectById(id);
+        const select = selectsCache.getById(id);
         return select.value;
     }
 
     export function setValue(id: string, value: string | null): void {
-        const select = Cache.getSelectById(id);
+        const select = selectsCache.getById(id);
         select.value = value;
     }
 
     export function storeState(id: string): void {
-        const select = Cache.getSelectById(id);
+        const select = selectsCache.getById(id);
         Storage.storeState(select);
     }
     export function clearStoredState(id: string): void {
-        const select = Cache.getSelectById(id);
+        const select = selectsCache.getById(id);
         Storage.clearStoredState(select);
     }
 }

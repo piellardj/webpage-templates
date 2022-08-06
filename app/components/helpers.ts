@@ -112,4 +112,56 @@ namespace Page.Helpers {
             }
         }
     }
+
+    type InternalCacheType<T> = { [id: string]: T };
+    type LoadObjectsFunction<T> = () => T[];
+    export class Cache<T extends { id: string }> {
+        private cacheObject: InternalCacheType<T> | null = null;
+
+        public constructor(
+            private readonly objectsName: string,
+            private readonly loadObjectsFunction: LoadObjectsFunction<T>) {
+        }
+
+        /** @throws An Error if the ID is unknown */
+        public getById(id: string): T {
+            const object = this.safeCacheObject[id];
+            if (!object) {
+                throw new Error(`Invalid '${this.objectsName}' cache object id '${id}'.`);
+            }
+            return object;
+        }
+
+        /** @returns null if the ID is unknown */
+        public getByIdSafe(id: string): T | null {
+            return this.safeCacheObject[id] || null;
+        }
+
+        public load(): void {
+            if (!this.cacheObject) {
+                this.cacheObject = this.loadCacheObject();
+            }
+        }
+
+        private get safeCacheObject(): InternalCacheType<T> {
+            if (!this.cacheObject) {
+                this.load();
+            }
+            return this.cacheObject!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        }
+
+        private loadCacheObject(): InternalCacheType<T> {
+            const index: InternalCacheType<T> = {};
+
+            const objects = this.loadObjectsFunction();
+            for (const object of objects) {
+                if (typeof index[object.id] !== "undefined") {
+                    throw new Error(`Object '${object.id}' is already in cache.`);
+                }
+                index[object.id] = object;
+            }
+
+            return index;
+        }
+    }
 }

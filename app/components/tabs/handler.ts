@@ -73,32 +73,15 @@ namespace Page.Tabs {
         }
     }
 
-    namespace Cache {
-        type TabsCache = { [id: string]: Tabs };
-
-        function loadCache(): TabsCache {
-            const result: TabsCache = {};
-            const containerElements = document.querySelectorAll("div.tabs[id]") as NodeListOf<HTMLElement>;
-            for (let i = 0; i < containerElements.length; i++) {
-                const tabs = new Tabs(containerElements[i]);
-                result[tabs.id] = tabs;
-            }
-            return result;
+    const tabsCache = new Page.Helpers.Cache<Tabs>("Tabs", () => {
+        const tabsList: Tabs[] = [];
+        const containerElements = document.querySelectorAll("div.tabs[id]") as NodeListOf<HTMLElement>;
+        for (let i = 0; i < containerElements.length; i++) {
+            const tabs = new Tabs(containerElements[i]);
+            tabsList.push(tabs);
         }
-
-        let tabsCache: TabsCache;
-
-        export function getTabsById(id: string): Tabs {
-            Cache.load();
-            return tabsCache[id] || null;
-        }
-
-        export function load(): void {
-            if (typeof tabsCache === "undefined") {
-                tabsCache = loadCache();
-            }
-        }
-    }
+        return tabsList;
+    });
 
     namespace Storage {
         const PREFIX = "tabs";
@@ -117,7 +100,7 @@ namespace Page.Tabs {
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
                 const values = value.split(SEPARATOR);
-                const tabs = Cache.getTabsById(controlId);
+                const tabs = tabsCache.getByIdSafe(controlId);
                 if (!tabs) {
                     console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
                     Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
@@ -130,29 +113,22 @@ namespace Page.Tabs {
     }
 
     Helpers.Events.callAfterDOMLoaded(() => {
-        Cache.load();
+        tabsCache.load();
         Storage.applyStoredState();
     });
 
-    /**
-     * @return {boolean} Whether or not the observer was added
-     */
-    export function addObserver(tabsId: string, observer: TabsObserver): boolean {
-        const tabs = Cache.getTabsById(tabsId);
-        if (tabs) {
-            tabs.observers.push(observer);
-            return true;
-        }
-        return false;
+    export function addObserver(tabsId: string, observer: TabsObserver): void {
+        const tabs = tabsCache.getById(tabsId);
+        tabs.observers.push(observer);
     }
 
     export function getValues(tabsId: string): string[] {
-        const tabs = Cache.getTabsById(tabsId);
+        const tabs = tabsCache.getById(tabsId);
         return tabs.values;
     }
 
     export function setValues(tabsId: string, values: string[], updateURLStorage: boolean = false): void {
-        const tabs = Cache.getTabsById(tabsId);
+        const tabs = tabsCache.getById(tabsId);
         tabs.values = values;
 
         if (updateURLStorage) {
@@ -161,11 +137,11 @@ namespace Page.Tabs {
     }
 
     export function storeState(tabsId: string): void {
-        const tabs = Cache.getTabsById(tabsId);
+        const tabs = tabsCache.getById(tabsId);
         Storage.storeState(tabs);
     }
     export function clearStoredState(tabsIdd: string): void {
-        const tabs = Cache.getTabsById(tabsIdd);
+        const tabs = tabsCache.getById(tabsIdd);
         Storage.clearStoredState(tabs);
     }
 }

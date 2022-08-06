@@ -162,34 +162,15 @@ namespace Page.ColorPicker {
         }
     }
 
-    namespace Cache {
-        type ColorPickersCache = { [id: string]: ColorPicker };
-
-        function loadCache(): ColorPickersCache {
-            const result: ColorPickersCache = {};
-
-            const containers = document.querySelectorAll(".color-picker[id]") as NodeListOf<HTMLElement>;
-            for (let i = 0; i < containers.length; i++) {
-                const coloPicker = new ColorPicker(containers[i]);
-                result[containers[i].id] = coloPicker;
-            }
-
-            return result;
+    const colorPickersCache = new Page.Helpers.Cache<ColorPicker>("ColorPicker", () => {
+        const colorPickersList: ColorPicker[] = [];
+        const containers = document.querySelectorAll(".color-picker[id]") as NodeListOf<HTMLElement>;
+        for (let i = 0; i < containers.length; i++) {
+            const colorPicker = new ColorPicker(containers[i]);
+            colorPickersList.push(colorPicker);
         }
-
-        let colorPickersCache: ColorPickersCache;
-
-        export function getColorPickerById(id: string): ColorPicker | null {
-            Cache.load();
-            return colorPickersCache[id] || null;
-        }
-
-        export function load(): void {
-            if (typeof colorPickersCache === "undefined") {
-                colorPickersCache = loadCache();
-            }
-        }
-    }
+        return colorPickersList;
+    });
 
     namespace Storage {
         const PREFIX = "color-picker";
@@ -204,7 +185,7 @@ namespace Page.ColorPicker {
 
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
-                const colorPicker = Cache.getColorPickerById(controlId);
+                const colorPicker = colorPickersCache.getByIdSafe(controlId);
                 const hexValue = ColorSpace.parseHexa(value);
 
                 if (!colorPicker || !hexValue) {
@@ -547,26 +528,23 @@ namespace Page.ColorPicker {
     }
 
     Helpers.Events.callAfterDOMLoaded(() => {
-        Cache.load();
+        colorPickersCache.load();
         Storage.applyStoredState();
     });
 
-    export function addObserver(id: string, observer: OnChangeObserver): boolean {
-        const colorPicker = Cache.getColorPickerById(id);
-        if (colorPicker) {
-            colorPicker.observers.push(observer);
-        }
-        return false;
+    export function addObserver(id: string, observer: OnChangeObserver): void {
+        const colorPicker = colorPickersCache.getById(id);
+        colorPicker.observers.push(observer);
     }
 
     export function getValue(id: string): ColorSpace.IRGB {
-        const colorPicker = Cache.getColorPickerById(id);
+        const colorPicker = colorPickersCache.getById(id);
         const hexValue = colorPicker.value;
         return ColorSpace.hexToRgb(hexValue);
     }
 
     export function getValueHex(id: string): ColorSpace.Hexa {
-        const colorPicker = Cache.getColorPickerById(id);
+        const colorPicker = colorPickersCache.getById(id);
         return colorPicker.value;
     }
 
@@ -583,16 +561,16 @@ namespace Page.ColorPicker {
             b: roundAndClamp(b, 0, 255),
         };
         const hexValue = ColorSpace.rgbToHex(rgb);
-        const colorPicker = Cache.getColorPickerById(id);
+        const colorPicker = colorPickersCache.getById(id);
         colorPicker.value = hexValue;
     }
 
     export function storeState(id: string): void {
-        const colorPicker = Cache.getColorPickerById(id);
+        const colorPicker = colorPickersCache.getById(id);
         Storage.storeState(colorPicker);
     }
     export function clearStoredState(id: string): void {
-        const colorPicker = Cache.getColorPickerById(id);
+        const colorPicker = colorPickersCache.getById(id);
         Storage.clearStoredState(colorPicker);
     }
 }

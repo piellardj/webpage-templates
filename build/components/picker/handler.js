@@ -107,30 +107,15 @@ var Page;
             };
             return Picker;
         }());
-        var Cache;
-        (function (Cache) {
-            function loadCache() {
-                var result = {};
-                var containerElements = document.querySelectorAll("div.inline-picker[id]");
-                for (var i = 0; i < containerElements.length; i++) {
-                    var tabs = new Picker(containerElements[i]);
-                    result[tabs.id] = tabs;
-                }
-                return result;
+        var pickersCache = new Page.Helpers.Cache("Picker", function () {
+            var pickersList = [];
+            var containerElements = document.querySelectorAll("div.inline-picker[id]");
+            for (var i = 0; i < containerElements.length; i++) {
+                var picker = new Picker(containerElements[i]);
+                pickersList.push(picker);
             }
-            var pickersCache;
-            function getPickerById(id) {
-                Cache.load();
-                return pickersCache[id] || null;
-            }
-            Cache.getPickerById = getPickerById;
-            function load() {
-                if (typeof pickersCache === "undefined") {
-                    pickersCache = loadCache();
-                }
-            }
-            Cache.load = load;
-        })(Cache || (Cache = {}));
+            return pickersList;
+        });
         var Storage;
         (function (Storage) {
             var PREFIX = "picker";
@@ -146,7 +131,7 @@ var Page;
             Storage.clearStoredState = clearStoredState;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
-                    var picker = Cache.getPickerById(controlId);
+                    var picker = pickersCache.getByIdSafe(controlId);
                     if (!picker) {
                         Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
                     }
@@ -159,31 +144,31 @@ var Page;
             Storage.applyStoredState = applyStoredState;
         })(Storage || (Storage = {}));
         Page.Helpers.Events.callAfterDOMLoaded(function () {
-            Cache.load();
+            pickersCache.load();
             Storage.applyStoredState();
         });
         function addObserver(id, observer) {
-            var picker = Cache.getPickerById(id);
+            var picker = pickersCache.getById(id);
             picker.observers.push(observer);
         }
         Picker_1.addObserver = addObserver;
         function getValue(id) {
-            var picker = Cache.getPickerById(id);
+            var picker = pickersCache.getById(id);
             return picker.value;
         }
         Picker_1.getValue = getValue;
         function setValue(id, value) {
-            var picker = Cache.getPickerById(id);
+            var picker = pickersCache.getById(id);
             picker.value = value;
         }
         Picker_1.setValue = setValue;
         function storeState(id) {
-            var picker = Cache.getPickerById(id);
+            var picker = pickersCache.getById(id);
             Storage.storeState(picker);
         }
         Picker_1.storeState = storeState;
         function clearStoredState(id) {
-            var picker = Cache.getPickerById(id);
+            var picker = pickersCache.getById(id);
             Storage.clearStoredState(picker);
         }
         Picker_1.clearStoredState = clearStoredState;

@@ -25,43 +25,23 @@ var Page;
             });
             return Button;
         }());
-        var Cache;
-        (function (Cache) {
-            function loadCache() {
-                var result = {};
-                var elements = document.querySelectorAll("button[id]");
-                for (var i = 0; i < elements.length; i++) {
-                    var button = new Button(elements[i]);
-                    result[button.id] = button;
-                }
-                return result;
+        var buttonsCache = new Page.Helpers.Cache("Button", function () {
+            var buttonsList = [];
+            var elements = document.querySelectorAll("button[id]");
+            for (var i = 0; i < elements.length; i++) {
+                var button = new Button(elements[i]);
+                buttonsList.push(button);
             }
-            var buttonsCache;
-            function getButtonById(id) {
-                if (typeof buttonsCache === "undefined") {
-                    buttonsCache = loadCache();
-                }
-                return buttonsCache[id] || null;
-            }
-            Cache.getButtonById = getButtonById;
-        })(Cache || (Cache = {}));
-        /**
-         * @return {boolean} Whether or not the observer was added
-         */
+            return buttonsList;
+        });
         function addObserver(buttonId, observer) {
-            var button = Cache.getButtonById(buttonId);
-            if (button) {
-                button.observers.push(observer);
-                return true;
-            }
-            return false;
+            var button = buttonsCache.getById(buttonId);
+            button.observers.push(observer);
         }
         Button_1.addObserver = addObserver;
         function setLabel(buttonId, label) {
-            var button = Cache.getButtonById(buttonId);
-            if (button) {
-                button.label = label;
-            }
+            var button = buttonsCache.getById(buttonId);
+            button.label = label;
         }
         Button_1.setLabel = setLabel;
     })(Button = Page.Button || (Page.Button = {}));

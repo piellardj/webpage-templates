@@ -107,36 +107,17 @@ namespace Page.Range {
         }
     }
 
-    namespace Cache {
-        type RangesCache = { [id: string]: Range };
-
-        function loadCache(): RangesCache {
-            const result: RangesCache = {};
-
-            const selector = ".range-container > input[type='range']";
-            const rangeElements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
-            for (let i = 0; i < rangeElements.length; i++) {
-                const container = rangeElements[i].parentElement;
-                const id = rangeElements[i].id;
-                result[id] = new Range(container);
-            }
-
-            return result;
+    const rangesCache = new Page.Helpers.Cache<Range>("Range", () => {
+        const rangesList: Range[] = [];
+        const selector = ".range-container > input[type='range']";
+        const rangeElements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
+        for (let i = 0; i < rangeElements.length; i++) {
+            const container = rangeElements[i].parentElement;
+            const range = new Range(container);
+            rangesList.push(range);
         }
-
-        let rangesCache: RangesCache;
-
-        export function getRangeById(id: string): Range | null {
-            Cache.load();
-            return rangesCache[id] || null;
-        }
-
-        export function load(): void {
-            if (typeof rangesCache === "undefined") {
-                rangesCache = loadCache();
-            }
-        }
-    }
+        return rangesList;
+    });
 
     namespace Storage {
         const PREFIX = "range";
@@ -152,7 +133,7 @@ namespace Page.Range {
 
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
-                const range = Cache.getRangeById(controlId);
+                const range = rangesCache.getByIdSafe(controlId);
                 if (!range) {
                     console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
                     Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
@@ -165,64 +146,46 @@ namespace Page.Range {
     }
 
     Helpers.Events.callAfterDOMLoaded(() => {
-        Cache.load();
+        rangesCache.load();
         Storage.applyStoredState();
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const isIE11 = !!(window as any).MSInputMethodContext && !! (document as any).documentMode;
+    const isIE11 = !!(window as any).MSInputMethodContext && !!(document as any).documentMode;
 
-    /**
-     * Callback will be called every time the value changes.
-     * @return {boolean} Whether or not the observer was added
-     */
-    export function addObserver(rangeId: string, observer: RangeObserver): boolean {
-        const range = Cache.getRangeById(rangeId);
-        if (range) {
-            if (isIE11) { // bug in IE 11, input event is never fired
-                range.onChangeObservers.push(observer);
-            } else {
-                range.onInputObservers.push(observer);
-            }
-            return true;
+    export function addObserver(rangeId: string, observer: RangeObserver): void {
+        const range = rangesCache.getById(rangeId);
+        if (isIE11) { // bug in IE 11, input event is never fired
+            range.onChangeObservers.push(observer);
+        } else {
+            range.onInputObservers.push(observer);
         }
-        return false;
     }
 
     /**
      * Callback will be called only when the value stops changing.
-     * @return {boolean} Whether or not the observer was added
      */
-    export function addLazyObserver(rangeId: string, observer: RangeObserver): boolean {
-        const range = Cache.getRangeById(rangeId);
-        if (range) {
-            range.onChangeObservers.push(observer);
-            return true;
-        }
-        return false;
+    export function addLazyObserver(rangeId: string, observer: RangeObserver): void {
+        const range = rangesCache.getById(rangeId);
+        range.onChangeObservers.push(observer);
     }
 
-    export function getValue(rangeId: string): number | null {
-        const range = Cache.getRangeById(rangeId);
-        if (!range) {
-            return null;
-        }
+    export function getValue(rangeId: string): number {
+        const range = rangesCache.getById(rangeId);
         return range.value;
     }
 
     export function setValue(rangeId: string, value: number): void {
-        const range = Cache.getRangeById(rangeId);
-        if (range) {
-            range.value = value;
-        }
+        const range = rangesCache.getById(rangeId);
+        range.value = value;
     }
 
     export function storeState(rangeId: string): void {
-        const range = Cache.getRangeById(rangeId);
+        const range = rangesCache.getById(rangeId);
         Storage.storeState(range);
     }
     export function clearStoredState(rangeId: string): void {
-        const range = Cache.getRangeById(rangeId);
+        const range = rangesCache.getById(rangeId);
         Storage.clearStoredState(range);
     }
 }

@@ -122,32 +122,15 @@ namespace Page.Picker {
         }
     }
 
-    namespace Cache {
-        type PickersCache = { [id: string]: Picker };
-
-        function loadCache(): PickersCache {
-            const result: PickersCache = {};
-            const containerElements = document.querySelectorAll("div.inline-picker[id]") as NodeListOf<HTMLElement>;
-            for (let i = 0; i < containerElements.length; i++) {
-                const tabs = new Picker(containerElements[i]);
-                result[tabs.id] = tabs;
-            }
-            return result;
+    const pickersCache = new Page.Helpers.Cache<Picker>("Picker", () => {
+        const pickersList: Picker[] = [];
+        const containerElements = document.querySelectorAll("div.inline-picker[id]") as NodeListOf<HTMLElement>;
+        for (let i = 0; i < containerElements.length; i++) {
+            const picker = new Picker(containerElements[i]);
+            pickersList.push(picker);
         }
-
-        let pickersCache: PickersCache;
-
-        export function getPickerById(id: string): Picker {
-            Cache.load();
-            return pickersCache[id] || null;
-        }
-
-        export function load(): void {
-            if (typeof pickersCache === "undefined") {
-                pickersCache = loadCache();
-            }
-        }
-    }
+        return pickersList;
+    });
 
     namespace Storage {
         const PREFIX = "picker";
@@ -164,7 +147,7 @@ namespace Page.Picker {
 
         export function applyStoredState(): void {
             Page.Helpers.URL.loopOnParameters(PREFIX, (controlId: string, value: string) => {
-                const picker = Cache.getPickerById(controlId);
+                const picker = pickersCache.getByIdSafe(controlId);
                 if (!picker) {
                     Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
                 } else {
@@ -176,31 +159,31 @@ namespace Page.Picker {
     }
 
     Helpers.Events.callAfterDOMLoaded(() => {
-        Cache.load();
+        pickersCache.load();
         Storage.applyStoredState();
     });
 
     export function addObserver(id: string, observer: PickerObserver): void {
-        const picker = Cache.getPickerById(id);
+        const picker = pickersCache.getById(id);
         picker.observers.push(observer);
     }
 
     export function getValue(id: string): string | null {
-        const picker = Cache.getPickerById(id);
+        const picker = pickersCache.getById(id);
         return picker.value;
     }
 
     export function setValue(id: string, value: string): void {
-        const picker = Cache.getPickerById(id);
+        const picker = pickersCache.getById(id);
         picker.value = value;
     }
 
     export function storeState(id: string): void {
-        const picker = Cache.getPickerById(id);
+        const picker = pickersCache.getById(id);
         Storage.storeState(picker);
     }
     export function clearStoredState(id: string): void {
-        const picker = Cache.getPickerById(id);
+        const picker = pickersCache.getById(id);
         Storage.clearStoredState(picker);
     }
 }

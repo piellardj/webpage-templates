@@ -99,32 +99,17 @@ var Page;
             };
             return Range;
         }());
-        var Cache;
-        (function (Cache) {
-            function loadCache() {
-                var result = {};
-                var selector = ".range-container > input[type='range']";
-                var rangeElements = document.querySelectorAll(selector);
-                for (var i = 0; i < rangeElements.length; i++) {
-                    var container = rangeElements[i].parentElement;
-                    var id = rangeElements[i].id;
-                    result[id] = new Range(container);
-                }
-                return result;
+        var rangesCache = new Page.Helpers.Cache("Range", function () {
+            var rangesList = [];
+            var selector = ".range-container > input[type='range']";
+            var rangeElements = document.querySelectorAll(selector);
+            for (var i = 0; i < rangeElements.length; i++) {
+                var container = rangeElements[i].parentElement;
+                var range = new Range(container);
+                rangesList.push(range);
             }
-            var rangesCache;
-            function getRangeById(id) {
-                Cache.load();
-                return rangesCache[id] || null;
-            }
-            Cache.getRangeById = getRangeById;
-            function load() {
-                if (typeof rangesCache === "undefined") {
-                    rangesCache = loadCache();
-                }
-            }
-            Cache.load = load;
-        })(Cache || (Cache = {}));
+            return rangesList;
+        });
         var Storage;
         (function (Storage) {
             var PREFIX = "range";
@@ -139,7 +124,7 @@ var Page;
             Storage.clearStoredState = clearStoredState;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
-                    var range = Cache.getRangeById(controlId);
+                    var range = rangesCache.getByIdSafe(controlId);
                     if (!range) {
                         console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
                         Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
@@ -153,64 +138,46 @@ var Page;
             Storage.applyStoredState = applyStoredState;
         })(Storage || (Storage = {}));
         Page.Helpers.Events.callAfterDOMLoaded(function () {
-            Cache.load();
+            rangesCache.load();
             Storage.applyStoredState();
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         var isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
-        /**
-         * Callback will be called every time the value changes.
-         * @return {boolean} Whether or not the observer was added
-         */
         function addObserver(rangeId, observer) {
-            var range = Cache.getRangeById(rangeId);
-            if (range) {
-                if (isIE11) { // bug in IE 11, input event is never fired
-                    range.onChangeObservers.push(observer);
-                }
-                else {
-                    range.onInputObservers.push(observer);
-                }
-                return true;
+            var range = rangesCache.getById(rangeId);
+            if (isIE11) { // bug in IE 11, input event is never fired
+                range.onChangeObservers.push(observer);
             }
-            return false;
+            else {
+                range.onInputObservers.push(observer);
+            }
         }
         Range_1.addObserver = addObserver;
         /**
          * Callback will be called only when the value stops changing.
-         * @return {boolean} Whether or not the observer was added
          */
         function addLazyObserver(rangeId, observer) {
-            var range = Cache.getRangeById(rangeId);
-            if (range) {
-                range.onChangeObservers.push(observer);
-                return true;
-            }
-            return false;
+            var range = rangesCache.getById(rangeId);
+            range.onChangeObservers.push(observer);
         }
         Range_1.addLazyObserver = addLazyObserver;
         function getValue(rangeId) {
-            var range = Cache.getRangeById(rangeId);
-            if (!range) {
-                return null;
-            }
+            var range = rangesCache.getById(rangeId);
             return range.value;
         }
         Range_1.getValue = getValue;
         function setValue(rangeId, value) {
-            var range = Cache.getRangeById(rangeId);
-            if (range) {
-                range.value = value;
-            }
+            var range = rangesCache.getById(rangeId);
+            range.value = value;
         }
         Range_1.setValue = setValue;
         function storeState(rangeId) {
-            var range = Cache.getRangeById(rangeId);
+            var range = rangesCache.getById(rangeId);
             Storage.storeState(range);
         }
         Range_1.storeState = storeState;
         function clearStoredState(rangeId) {
-            var range = Cache.getRangeById(rangeId);
+            var range = rangesCache.getById(rangeId);
             Storage.clearStoredState(range);
         }
         Range_1.clearStoredState = clearStoredState;

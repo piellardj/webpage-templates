@@ -68,30 +68,15 @@ var Page;
             Tabs.ID_SUFFIX = "-id";
             return Tabs;
         }());
-        var Cache;
-        (function (Cache) {
-            function loadCache() {
-                var result = {};
-                var containerElements = document.querySelectorAll("div.tabs[id]");
-                for (var i = 0; i < containerElements.length; i++) {
-                    var tabs = new Tabs(containerElements[i]);
-                    result[tabs.id] = tabs;
-                }
-                return result;
+        var tabsCache = new Page.Helpers.Cache("Tabs", function () {
+            var tabsList = [];
+            var containerElements = document.querySelectorAll("div.tabs[id]");
+            for (var i = 0; i < containerElements.length; i++) {
+                var tabs = new Tabs(containerElements[i]);
+                tabsList.push(tabs);
             }
-            var tabsCache;
-            function getTabsById(id) {
-                Cache.load();
-                return tabsCache[id] || null;
-            }
-            Cache.getTabsById = getTabsById;
-            function load() {
-                if (typeof tabsCache === "undefined") {
-                    tabsCache = loadCache();
-                }
-            }
-            Cache.load = load;
-        })(Cache || (Cache = {}));
+            return tabsList;
+        });
         var Storage;
         (function (Storage) {
             var PREFIX = "tabs";
@@ -109,7 +94,7 @@ var Page;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
                     var values = value.split(SEPARATOR);
-                    var tabs = Cache.getTabsById(controlId);
+                    var tabs = tabsCache.getByIdSafe(controlId);
                     if (!tabs) {
                         console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
                         Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
@@ -123,29 +108,22 @@ var Page;
             Storage.applyStoredState = applyStoredState;
         })(Storage || (Storage = {}));
         Page.Helpers.Events.callAfterDOMLoaded(function () {
-            Cache.load();
+            tabsCache.load();
             Storage.applyStoredState();
         });
-        /**
-         * @return {boolean} Whether or not the observer was added
-         */
         function addObserver(tabsId, observer) {
-            var tabs = Cache.getTabsById(tabsId);
-            if (tabs) {
-                tabs.observers.push(observer);
-                return true;
-            }
-            return false;
+            var tabs = tabsCache.getById(tabsId);
+            tabs.observers.push(observer);
         }
         Tabs_1.addObserver = addObserver;
         function getValues(tabsId) {
-            var tabs = Cache.getTabsById(tabsId);
+            var tabs = tabsCache.getById(tabsId);
             return tabs.values;
         }
         Tabs_1.getValues = getValues;
         function setValues(tabsId, values, updateURLStorage) {
             if (updateURLStorage === void 0) { updateURLStorage = false; }
-            var tabs = Cache.getTabsById(tabsId);
+            var tabs = tabsCache.getById(tabsId);
             tabs.values = values;
             if (updateURLStorage) {
                 Storage.storeState(tabs);
@@ -153,12 +131,12 @@ var Page;
         }
         Tabs_1.setValues = setValues;
         function storeState(tabsId) {
-            var tabs = Cache.getTabsById(tabsId);
+            var tabs = tabsCache.getById(tabsId);
             Storage.storeState(tabs);
         }
         Tabs_1.storeState = storeState;
         function clearStoredState(tabsIdd) {
-            var tabs = Cache.getTabsById(tabsIdd);
+            var tabs = tabsCache.getById(tabsIdd);
             Storage.clearStoredState(tabs);
         }
         Tabs_1.clearStoredState = clearStoredState;

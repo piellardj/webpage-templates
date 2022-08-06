@@ -8,6 +8,7 @@ var Page;
                 this.observers = [];
                 this.inputElement = container.querySelector("input");
                 this.labelSpanElement = container.querySelector("label > span");
+                this.id = this.inputElement.id;
                 this.inputElement.addEventListener("change", function (event) {
                     event.stopPropagation();
                     var files = _this.inputElement.files;
@@ -39,6 +40,7 @@ var Page;
                 var _this = this;
                 this.observers = [];
                 this.buttonElement = container.querySelector("input");
+                this.id = this.buttonElement.id;
                 this.buttonElement.addEventListener("click", function (event) {
                     event.stopPropagation();
                     for (var _i = 0, _a = _this.observers; _i < _a.length; _i++) {
@@ -49,81 +51,44 @@ var Page;
             }
             return FileDownload;
         }());
-        var Cache;
-        (function (Cache) {
-            function loadFileUploadsCache() {
-                var result = {};
-                var selector = ".file-control.upload > input[id]";
-                var fileUploadInputsElements = document.querySelectorAll(selector);
-                for (var i = 0; i < fileUploadInputsElements.length; i++) {
-                    var container = fileUploadInputsElements[i].parentElement;
-                    var id = fileUploadInputsElements[i].id;
-                    result[id] = new FileUpload(container);
-                }
-                return result;
+        var fileUploadsCache = new Page.Helpers.Cache("FileUpload", function () {
+            var fileUploadsList = [];
+            var selector = ".file-control.upload > input[id]";
+            var fileUploadInputsElements = document.querySelectorAll(selector);
+            for (var i = 0; i < fileUploadInputsElements.length; i++) {
+                var container = fileUploadInputsElements[i].parentElement;
+                var fileUpload = new FileUpload(container);
+                fileUploadsList.push(fileUpload);
             }
-            function loadFileDownloadsCache() {
-                var result = {};
-                var selector = ".file-control.download > input[id]";
-                var fileDownloadInputsElements = document.querySelectorAll(selector);
-                for (var i = 0; i < fileDownloadInputsElements.length; i++) {
-                    var container = fileDownloadInputsElements[i].parentElement;
-                    var id = fileDownloadInputsElements[i].id;
-                    result[id] = new FileDownload(container);
-                }
-                return result;
-            }
-            var fileUploadsCache;
-            var fileDownloadsCache;
-            function getFileUploadById(id) {
-                Cache.load();
-                return fileUploadsCache[id] || null;
-            }
-            Cache.getFileUploadById = getFileUploadById;
-            function getFileDownloadById(id) {
-                Cache.load();
-                return fileDownloadsCache[id] || null;
-            }
-            Cache.getFileDownloadById = getFileDownloadById;
-            function load() {
-                if (typeof fileUploadsCache === "undefined") {
-                    fileUploadsCache = loadFileUploadsCache();
-                }
-                if (typeof fileDownloadsCache === "undefined") {
-                    fileDownloadsCache = loadFileDownloadsCache();
-                }
-            }
-            Cache.load = load;
-        })(Cache || (Cache = {}));
-        Page.Helpers.Events.callAfterDOMLoaded(function () {
-            Cache.load();
+            return fileUploadsList;
         });
-        /**
-         * @return {boolean} Whether or not the observer was added
-         */
-        function addDownloadObserver(id, observer) {
-            var fileDownload = Cache.getFileDownloadById(id);
-            if (fileDownload) {
-                fileDownload.observers.push(observer);
-                return true;
+        var fileDownloadsCache = new Page.Helpers.Cache("FileDownload", function () {
+            var fileDownloadsList = [];
+            var selector = ".file-control.download > input[id]";
+            var fileDownloadInputsElements = document.querySelectorAll(selector);
+            for (var i = 0; i < fileDownloadInputsElements.length; i++) {
+                var container = fileDownloadInputsElements[i].parentElement;
+                var fileDownload = new FileDownload(container);
+                fileDownloadsList.push(fileDownload);
             }
-            return false;
+            return fileDownloadsList;
+        });
+        Page.Helpers.Events.callAfterDOMLoaded(function () {
+            fileUploadsCache.load();
+            fileUploadsCache.load();
+        });
+        function addDownloadObserver(id, observer) {
+            var fileDownload = fileDownloadsCache.getById(id);
+            fileDownload.observers.push(observer);
         }
         FileControl.addDownloadObserver = addDownloadObserver;
-        /**
-         * @return {boolean} Whether or not the observer was added
-         */
-        function addUploadObserver(uploadId, observer) {
-            var fileUpload = Cache.getFileUploadById(uploadId);
-            if (fileUpload) {
-                fileUpload.observers.push(observer);
-                return true;
-            }
-            return false;
+        function addUploadObserver(id, observer) {
+            var fileUpload = fileUploadsCache.getById(id);
+            fileUpload.observers.push(observer);
         }
         FileControl.addUploadObserver = addUploadObserver;
         function clearFileUpload(id) {
-            var fileUpload = Cache.getFileUploadById(id);
+            var fileUpload = fileUploadsCache.getById(id);
             fileUpload.clear();
         }
         FileControl.clearFileUpload = clearFileUpload;

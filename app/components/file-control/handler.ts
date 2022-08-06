@@ -5,12 +5,14 @@ namespace Page.FileControl {
     class FileUpload {
         private readonly inputElement: HTMLInputElement;
         private readonly labelSpanElement: HTMLElement;
+        public readonly id: string;
 
         public readonly observers: FileUploadObserver[] = [];
 
         public constructor(container: HTMLElement) {
             this.inputElement = container.querySelector("input");
             this.labelSpanElement = container.querySelector("label > span");
+            this.id = this.inputElement.id;
 
             this.inputElement.addEventListener("change", (event: Event) => {
                 event.stopPropagation();
@@ -43,11 +45,14 @@ namespace Page.FileControl {
 
     class FileDownload {
         private readonly buttonElement: HTMLInputElement;
+        public readonly id: string;
 
         public readonly observers: FileDownloadObserver[] = [];
 
         public constructor(container: HTMLElement) {
             this.buttonElement = container.querySelector("input");
+            this.id = this.buttonElement.id;
+
             this.buttonElement.addEventListener("click", (event: Event) => {
                 event.stopPropagation();
                 for (const observer of this.observers) {
@@ -57,91 +62,46 @@ namespace Page.FileControl {
         }
     }
 
-    namespace Cache {
-        type FileUploadsCache = { [id: string]: FileUpload };
-        type FileDownloadsCache = { [id: string]: FileDownload };
-
-        function loadFileUploadsCache(): FileUploadsCache {
-            const result: FileUploadsCache = {};
-
-            const selector = ".file-control.upload > input[id]";
-            const fileUploadInputsElements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
-            for (let i = 0; i < fileUploadInputsElements.length; i++) {
-                const container = fileUploadInputsElements[i].parentElement;
-                const id = fileUploadInputsElements[i].id;
-                result[id] = new FileUpload(container);
-            }
-
-            return result;
+    const fileUploadsCache = new Page.Helpers.Cache<FileUpload>("FileUpload", () => {
+        const fileUploadsList: FileUpload[] = [];
+        const selector = ".file-control.upload > input[id]";
+        const fileUploadInputsElements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
+        for (let i = 0; i < fileUploadInputsElements.length; i++) {
+            const container = fileUploadInputsElements[i].parentElement;
+            const fileUpload = new FileUpload(container);
+            fileUploadsList.push(fileUpload);
         }
-
-        function loadFileDownloadsCache(): FileDownloadsCache {
-            const result: FileDownloadsCache = {};
-
-            const selector = ".file-control.download > input[id]";
-            const fileDownloadInputsElements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
-            for (let i = 0; i < fileDownloadInputsElements.length; i++) {
-                const container = fileDownloadInputsElements[i].parentElement;
-                const id = fileDownloadInputsElements[i].id;
-                result[id] = new FileDownload(container);
-            }
-
-            return result;
+        return fileUploadsList;
+    });
+    const fileDownloadsCache = new Page.Helpers.Cache<FileDownload>("FileDownload", () => {
+        const fileDownloadsList: FileDownload[] = [];
+        const selector = ".file-control.download > input[id]";
+        const fileDownloadInputsElements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
+        for (let i = 0; i < fileDownloadInputsElements.length; i++) {
+            const container = fileDownloadInputsElements[i].parentElement;
+            const fileDownload = new FileDownload(container);
+            fileDownloadsList.push(fileDownload);
         }
-
-        let fileUploadsCache: FileUploadsCache;
-        let fileDownloadsCache: FileDownloadsCache;
-
-        export function getFileUploadById(id: string): FileUpload | null {
-            Cache.load();
-            return fileUploadsCache[id] || null;
-        }
-
-        export function getFileDownloadById(id: string): FileDownload | null {
-            Cache.load();
-            return fileDownloadsCache[id] || null;
-        }
-
-        export function load(): void {
-            if (typeof fileUploadsCache === "undefined") {
-                fileUploadsCache = loadFileUploadsCache();
-            }
-            if (typeof fileDownloadsCache === "undefined") {
-                fileDownloadsCache = loadFileDownloadsCache();
-            }
-        }
-    }
-
-    Helpers.Events.callAfterDOMLoaded(() => {
-        Cache.load();
+        return fileDownloadsList;
     });
 
-    /**
-     * @return {boolean} Whether or not the observer was added
-     */
-    export function addDownloadObserver(id: string, observer: FileDownloadObserver): boolean {
-        const fileDownload = Cache.getFileDownloadById(id);
-        if (fileDownload) {
-            fileDownload.observers.push(observer);
-            return true;
-        }
-        return false;
+    Helpers.Events.callAfterDOMLoaded(() => {
+        fileUploadsCache.load();
+        fileUploadsCache.load();
+    });
+
+    export function addDownloadObserver(id: string, observer: FileDownloadObserver): void {
+        const fileDownload = fileDownloadsCache.getById(id);
+        fileDownload.observers.push(observer);
     }
 
-    /**
-     * @return {boolean} Whether or not the observer was added
-     */
-    export function addUploadObserver(uploadId: string, observer: FileUploadObserver): boolean {
-        const fileUpload = Cache.getFileUploadById(uploadId);
-        if (fileUpload) {
-            fileUpload.observers.push(observer);
-            return true;
-        }
-        return false;
+    export function addUploadObserver(id: string, observer: FileUploadObserver): void {
+        const fileUpload = fileUploadsCache.getById(id);
+        fileUpload.observers.push(observer);
     }
 
     export function clearFileUpload(id: string): void {
-        const fileUpload = Cache.getFileUploadById(id);
+        const fileUpload = fileUploadsCache.getById(id);
         fileUpload.clear();
     }
 }

@@ -107,30 +107,15 @@ var Page;
             Select.EXPANDED_CLASS = "expanded";
             return Select;
         }());
-        var Cache;
-        (function (Cache) {
-            function loadCache() {
-                var result = {};
-                var containerElements = document.querySelectorAll(".select-container[id]");
-                for (var i = 0; i < containerElements.length; i++) {
-                    var select = new Select(containerElements[i]);
-                    result[select.id] = select;
-                }
-                return result;
+        var selectsCache = new Page.Helpers.Cache("Select", function () {
+            var selectsList = [];
+            var containerElements = document.querySelectorAll(".select-container[id]");
+            for (var i = 0; i < containerElements.length; i++) {
+                var select = new Select(containerElements[i]);
+                selectsList.push(select);
             }
-            var selectsCache;
-            function getSelectById(id) {
-                Cache.load();
-                return selectsCache[id] || null;
-            }
-            Cache.getSelectById = getSelectById;
-            function load() {
-                if (typeof selectsCache === "undefined") {
-                    selectsCache = loadCache();
-                }
-            }
-            Cache.load = load;
-        })(Cache || (Cache = {}));
+            return selectsList;
+        });
         var Storage;
         (function (Storage) {
             var PREFIX = "select";
@@ -144,7 +129,7 @@ var Page;
             Storage.clearStoredState = clearStoredState;
             function applyStoredState() {
                 Page.Helpers.URL.loopOnParameters(PREFIX, function (controlId, value) {
-                    var select = Cache.getSelectById(controlId);
+                    var select = selectsCache.getByIdSafe(controlId);
                     if (!select) {
                         console.log("Removing invalid query parameter '" + controlId + "=" + value + "'.");
                         Page.Helpers.URL.removeQueryParameter(PREFIX, controlId);
@@ -158,31 +143,31 @@ var Page;
             Storage.applyStoredState = applyStoredState;
         })(Storage || (Storage = {}));
         Page.Helpers.Events.callAfterDOMLoaded(function () {
-            Cache.load();
+            selectsCache.load();
             Storage.applyStoredState();
         });
         function addObserver(id, observer) {
-            var select = Cache.getSelectById(id);
+            var select = selectsCache.getById(id);
             select.observers.push(observer);
         }
         Select_1.addObserver = addObserver;
         function getValue(id) {
-            var select = Cache.getSelectById(id);
+            var select = selectsCache.getById(id);
             return select.value;
         }
         Select_1.getValue = getValue;
         function setValue(id, value) {
-            var select = Cache.getSelectById(id);
+            var select = selectsCache.getById(id);
             select.value = value;
         }
         Select_1.setValue = setValue;
         function storeState(id) {
-            var select = Cache.getSelectById(id);
+            var select = selectsCache.getById(id);
             Storage.storeState(select);
         }
         Select_1.storeState = storeState;
         function clearStoredState(id) {
-            var select = Cache.getSelectById(id);
+            var select = selectsCache.getById(id);
             Storage.clearStoredState(select);
         }
         Select_1.clearStoredState = clearStoredState;
