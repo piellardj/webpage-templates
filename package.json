@@ -1,6 +1,6 @@
 {
   "name": "webpage-templates",
-  "version": "3.9.1",
+  "version": "3.9.2",
   "description": "Static webpage generator based on EJS/SASS/TS",
   "repository": "github:piellardj/webpage-templates",
   "main": "build/script/index.js",
@@ -14,7 +14,7 @@
     "build-sass": "sass \"app/components:build/components\" --load-path=app/components --style=compressed --no-source-map",
     "build-ts-package": "tsc -p app/config/tsconfig.json",
     "lint": "npm run lint-ts && npm run lint-sass",
-    "lint-sass": "sass-lint -c app/config/.sass-lint.yml -v",
+    "lint-sass": "stylelint **/*.scss --config=app/config/.stylelintrc.json",
     "lint-ts": "eslint -c app/config/.eslintrc.json app/**/*.ts",
     "check-components": "node app/build-tools/check-components.js",
     "test": "npm run rebuild && npm run test-demopage && npm run test-homepage && npm run test-demopage-empty",
@@ -40,7 +40,8 @@
     "eslint": "^8.21.0",
     "minimist": "^1.2.6",
     "sass": "^1.54.3",
-    "sass-lint": "^1.13.1",
+    "stylelint": "^14.9.1",
+    "stylelint-config-recommended-scss": "^7.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4",
     "uglify-js": "^3.16.3"

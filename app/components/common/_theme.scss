@@ -1,3 +1,5 @@
+@use "sass:map";
+
 // @import 'colors/colors-blue';
 // @import 'colors/colors-green';
 // @import 'colors/colors-indigo';
@@ -103,8 +105,8 @@ $vars: (
 
 @mixin list-vars-values($attribute-name) {
     @each $var-map-name, $var-map in $vars {
-        $var-value: map-get($var-map, $attribute-name);
-        @if ($var-value == null) {
+        $var-value: map.get($var-map, $attribute-name);
+        @if not $var-value {
             @error 'ERROR: missing property "' + $attribute-name + '" was in variable "' + $var-map-name + '".';
         }
 
@@ -129,12 +131,12 @@ $vars: (
 
 @mixin use-css-variable($property, $variable-name) {
     $default-property: light;
-    $variable-map: map-get($vars, $variable-name);
-    @if ($variable-map == null) {
+    $variable-map: map.get($vars, $variable-name);
+    @if not $variable-map {
         @error 'ERROR: missing variable "' + $variable-name + '".';
     }
-    $default-value: map-get(map-get($vars, $variable-name), $default-property);
-    @if ($default-value == null) {
+    $default-value: map.get(map.get($vars, $variable-name), $default-property);
+    @if not $default-value {
         @error 'ERROR: missing default property "' + $default-property + '" was in variable "' + $variable-name + '".';
     }
 

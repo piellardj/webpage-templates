@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @import 'common/theme';
 @import 'common/utils';
 
@@ -46,7 +48,7 @@ $range-transition-time: .1s ease-in-out;
         position: relative;
         flex-grow: 0;
         flex-shrink: 0;
-        width: floor(0.5 * $range-handle-size);
+        width: math.floor(0.5 * $range-handle-size);
     }
 
     .range-progress {
@@ -74,12 +76,12 @@ $range-transition-time: .1s ease-in-out;
         z-index: 0;
 
         &.range-bar-left {
-            top: round(0.5 * ($control-height - $range-bar-left-thickness));
+            top: math.round(0.5 * ($control-height - $range-bar-left-thickness));
             height: $range-bar-left-thickness;
         }
 
         &.range-bar-right {
-            top: round(0.5 * ($control-height - $range-bar-right-thickness));
+            top: math.round(0.5 * ($control-height - $range-bar-right-thickness));
             height: $range-bar-right-thickness;
             @include color-control-neutral(background);
         }
