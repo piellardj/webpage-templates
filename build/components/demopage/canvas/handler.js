@@ -18,7 +18,7 @@ var Page;
         }
         var canvasContainer = Page.Helpers.Utils.selector(document, "#canvas-container");
         var canvas = getCanvasById("canvas");
-        var buttonsColumn = Page.Helpers.Utils.selector(document, "canvas-buttons-column");
+        var buttonsColumn = Page.Helpers.Utils.selector(document, "#canvas-buttons-column");
         var fullscreenCheckbox = getCheckboxFromId("fullscreen-checkbox-id");
         var sidePaneCheckbox = getCheckboxFromId("side-pane-checkbox-id");
         var loader = Page.Helpers.Utils.selector(canvasContainer, ".loader");

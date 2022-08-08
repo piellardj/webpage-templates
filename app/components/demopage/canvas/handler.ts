@@ -19,7 +19,7 @@ namespace Page.Canvas {
 
     const canvasContainer = Page.Helpers.Utils.selector(document, "#canvas-container");
     const canvas = getCanvasById("canvas");
-    const buttonsColumn = Page.Helpers.Utils.selector(document, "canvas-buttons-column");
+    const buttonsColumn = Page.Helpers.Utils.selector(document, "#canvas-buttons-column");
     const fullscreenCheckbox = getCheckboxFromId("fullscreen-checkbox-id");
     const sidePaneCheckbox = getCheckboxFromId("side-pane-checkbox-id");
     const loader = Page.Helpers.Utils.selector(canvasContainer, ".loader");
