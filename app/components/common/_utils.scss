@@ -3,7 +3,7 @@
     -webkit-transition: $time;
 }
 
-@mixin box-sizing ($sizing) {
+@mixin box-sizing($sizing) {
     box-sizing:         $sizing;
     -moz-box-sizing:    $sizing;
     -webkit-box-sizing: $sizing;

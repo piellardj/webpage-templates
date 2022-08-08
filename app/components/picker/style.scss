@@ -1,5 +1,5 @@
-@import 'common/theme';
-@import 'common/utils';
+@use'common/theme';
+@use 'common/utils';
 
 .inline-picker {
     $height: 32px;
@@ -35,7 +35,7 @@
 
             &::after {
                 left: 13px;
-                @include transform(rotate(135deg));
+                @include utils.transform(rotate(135deg));
             }
         }
 
@@ -44,7 +44,7 @@
 
             &::after {
                 right: 13px;
-                @include transform(rotate(-45deg));
+                @include utils.transform(rotate(-45deg));
             }
         }
 
@@ -55,23 +55,23 @@
             height: 12px;
             border-width: 0 3px 3px 0;
             border-style: solid;
-            @include color-control-accent(border-color);
+            @include theme.color-control-accent(border-color);
             background: none;
             content: '';
-            @include box-sizing(border-box);
+            @include utils.box-sizing(border-box);
         }
 
         &:hover::after,
         &:focus::after {
-            @include color-control-accent-hover(border-color);
+            @include theme.color-control-accent-hover(border-color);
         }
 
         &:active::after {
-            @include color-control-accent-active(border-color);
+            @include theme.color-control-accent-active(border-color);
         }
 
         &:disabled::after {
-            @include color-control-accent-disabled(border-color);
+            @include theme.color-control-accent-disabled(border-color);
         }
     }
 

@@ -1,5 +1,6 @@
-$declare-css-variables: 1;
-@import 'common/theme';
+@use'common/theme';
+
+@include theme.declare-css-variables();
 
 :root {
     color-scheme: light dark;
@@ -19,7 +20,7 @@ body {
     margin: 0px;
     background-attachment: fixed;
 
-    @include page-theme;
+    @include theme.page-theme;
 }
 
 main {
@@ -31,5 +32,5 @@ main {
 h1,
 h2,
 h3 {
-    @include color-title(color);
+    @include theme.color-title(color);
 }

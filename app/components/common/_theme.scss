@@ -1,11 +1,11 @@
 @use "sass:map";
 
-// @import 'colors/colors-blue';
-// @import 'colors/colors-green';
-// @import 'colors/colors-indigo';
-// @import 'colors/colors-orange';
-// @import 'colors/colors-red';
-@import 'colors/colors-teal';
+// @use 'colors/colors-blue' as color-theme;
+// @use 'colors/colors-green' as color-theme;
+// @use 'colors/colors-indigo' as color-theme;
+// @use 'colors/colors-orange' as color-theme;
+// @use 'colors/colors-red' as color-theme;
+@use 'colors/colors-teal' as color-theme;
 
 $grey-lighten-5: #eeeeee;
 $grey-lighten-4: #dbdbdb;
@@ -19,8 +19,8 @@ $grey-darken-3:  #5e5e5e;
 $grey-darken-4:  #535353;
 $grey-darken-5:  #202020;
 
-$color-accent-transparent-medium: rgba($color-teal-medium, 0.1);
-$color-accent-transparent-light: rgba($color-teal-medium, 0.05);
+$color-accent-transparent-medium: rgba(color-theme.$medium, 0.1);
+$color-accent-transparent-light: rgba(color-theme.$medium, 0.05);
 
 $vars: (
     color-theme: (
@@ -86,16 +86,16 @@ $vars: (
         dark: #{$grey-darken-3},
     ),
     color-control-accent: (
-        light: #{$color-teal-medium},
-        dark: #{$color-teal-lighten-1},
+        light: #{color-theme.$medium},
+        dark: #{color-theme.$lighten-1},
     ),
     color-control-accent-hover: (
-        light: #{$color-teal-lighten-1},
-        dark: #{$color-teal-lighten-2},
+        light: #{color-theme.$lighten-1},
+        dark: #{color-theme.$lighten-2},
     ),
     color-control-accent-active: (
-        light: #{$color-teal-darken-1},
-        dark: #{$color-teal-medium},
+        light: #{color-theme.$darken-1},
+        dark: #{color-theme.$medium},
     ),
 );
 
@@ -115,7 +115,7 @@ $vars: (
     }
 }
 
-@if variable-exists(declare-css-variables) {
+@mixin declare-css-variables() {
     :root {
         @include list-vars-values(light);
 
@@ -126,7 +126,7 @@ $vars: (
 }
 
 @mixin color-accent-transparent($property, $opacity) {
-    #{$property}: rgba($color-teal-medium, $opacity);
+    #{$property}: rgba(color-theme.$medium, $opacity);
 }
 
 @mixin use-css-variable($property, $variable-name) {

@@ -1,5 +1,5 @@
-@import 'common/theme';
-@import 'common/utils';
+@use'common/theme';
+@use 'common/utils';
 
 .file-control {
     position: relative;
@@ -24,7 +24,7 @@
         font-weight: bold;
         cursor: pointer;
 
-        @include box-sizing(border-box);
+        @include utils.box-sizing(border-box);
 
         & > svg {
             position: absolute;
@@ -43,40 +43,40 @@
 
 .file-control > input.file-input {
     & + .file-control-button {
-        @include color-control-accent(border-color);
-        @include color-control-accent(color);
+        @include theme.color-control-accent(border-color);
+        @include theme.color-control-accent(color);
 
         & > svg {
-            @include color-control-accent(fill);
+            @include theme.color-control-accent(fill);
         }
     }
 
     &:focus + .file-control-button,
     &:hover:not(:disabled) + .file-control-button {
-        @include color-control-accent-hover(border-color);
-        @include color-control-accent-hover(color);
+        @include theme.color-control-accent-hover(border-color);
+        @include theme.color-control-accent-hover(color);
 
         & > svg {
-            @include color-control-accent-hover(fill);
+            @include theme.color-control-accent-hover(fill);
         }
     }
 
     &:active:not(:disabled) + .file-control-button {
-        @include color-control-accent-active(border-color);
-        @include color-control-accent-active(color);
-        background: $color-accent-transparent-medium;
+        @include theme.color-control-accent-active(border-color);
+        @include theme.color-control-accent-active(color);
+        background: theme.$color-accent-transparent-medium;
 
         & > svg {
-            @include color-control-accent-active(fill);
+            @include theme.color-control-accent-active(fill);
         }
     }
 
     &:disabled + .file-control-button {
-        @include color-control-accent-disabled(border-color);
-        @include color-control-accent-disabled(color);
+        @include theme.color-control-accent-disabled(border-color);
+        @include theme.color-control-accent-disabled(color);
 
         & > svg {
-            @include color-control-accent-disabled(fill);
+            @include theme.color-control-accent-disabled(fill);
         }
     }
 }

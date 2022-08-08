@@ -1,11 +1,11 @@
-@import 'common/theme';
+@use'common/theme';
 
 .intro {
     margin: auto;
     padding: 16px;
     border-radius: 8px;
-    @include block-border(border);
-    @include block-background-color(background);
+    @include theme.block-border(border);
+    @include theme.block-background-color(background);
 
     & h1 {
         margin-top: 0;

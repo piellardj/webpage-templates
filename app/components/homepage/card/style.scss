@@ -1,5 +1,5 @@
-@import 'common/theme';
-@import 'common/utils';
+@use'common/theme';
+@use 'common/utils';
 
 $card-max-width: 512px;
 $card-height: 256px;
@@ -21,7 +21,7 @@ $card-transition-time: .1s ease-in-out;
     padding: $card-padding;
 
     border-radius: $card-border-radius;
-    @include color-theme(background-color);
+    @include theme.color-theme(background-color);
     background-position: center;
     background-size: cover;
     box-shadow: 0px 1px 6px -1px $shadow-color;
@@ -43,7 +43,7 @@ $card-transition-time: .1s ease-in-out;
 }
 
 picture.card-background {
-    @include transition(opacity $card-transition-time);
+    @include utils.transition(opacity $card-transition-time);
 
     .card-frame:hover > & {
         opacity: 0;
@@ -67,7 +67,7 @@ picture.card-background {
     margin: auto;
     border: 1px solid rgba(150,150,150, 0.6);
     border-radius: 8px;
-    @include color-theme(background-color);
+    @include theme.color-theme(background-color);
     box-shadow: 0 0 10px $shadow-color;
     z-index: 2;
     box-sizing: border-box;
@@ -80,7 +80,7 @@ picture.card-background {
             opacity: 1;
         }
 
-        @include transition($card-transition-time)
+        @include utils.transition($card-transition-time)
     }
 }
 
@@ -108,15 +108,15 @@ picture.card-background {
 
     &::-webkit-scrollbar-track {
         border-radius: 8px;
-        @include color-theme(background-color);
+        @include theme.color-theme(background-color);
     }
 
     &::-webkit-scrollbar-thumb {
         border-width: $scrollbar-thumb-margin;
         border-style: solid;
-        @include color-theme(border-color);
+        @include theme.color-theme(border-color);
         border-radius: 6px;
-        @include scrollbar-color(background-color);
+        @include theme.scrollbar-color(background-color);
     }
 }
 
@@ -136,12 +136,12 @@ a.card-link {
     line-height: $card-link-line-height;
     text-decoration: none;
 
-    @include color-control-accent(border-color);
-    @include color-control-accent(color);
+    @include theme.color-control-accent(border-color);
+    @include theme.color-control-accent(color);
 
     &:active {
-        @include color-control-accent-active(border-color);
-        @include color-control-accent-active(color);
+        @include theme.color-control-accent-active(border-color);
+        @include theme.color-control-accent-active(color);
     }
 }
 
@@ -152,7 +152,7 @@ a.card-link {
     display: block;
     position: relative;
     user-select: none;
-    @include transition($shift-transition-time);
+    @include utils.transition($shift-transition-time);
 
     &::after {
         position: absolute;
@@ -163,8 +163,8 @@ a.card-link {
         transform: translate(-$lateral-shift, -50%) rotate(45deg);
         border-width: 2px 2px 0 0;
         border-style: solid;
-        @include color-control-accent(border-color);
-        @include transition($shift-transition-time);
+        @include theme.color-control-accent(border-color);
+        @include utils.transition($shift-transition-time);
         content: '';
         opacity: 0;
     }
@@ -181,7 +181,7 @@ a.card-link {
     }
 
     a.card-link:active &::after {
-        @include color-control-accent-active(border-color);
+        @include theme.color-control-accent-active(border-color);
     }
 }
 

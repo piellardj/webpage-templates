@@ -1,4 +1,4 @@
-@import 'common/theme';
+@use'common/theme';
 
 .color-picker-container {
     position: relative;
@@ -20,7 +20,7 @@
     margin-right: 12px;
     border-width: 2px;
     border-style: solid;
-    @include color-control-neutral(border-color);
+    @include theme.color-control-neutral(border-color);
     border-radius: 50%;
     line-height: $preview-size;
     box-sizing: border-box;
@@ -34,11 +34,11 @@
 
     .color-picker:hover &,
     .color-picker:focus & {
-        @include color-control-accent-hover(border-color);
+        @include theme.color-control-accent-hover(border-color);
     }
 
     .color-picker:active & {
-        @include color-control-accent-active(border-color);
+        @include theme.color-control-accent-active(border-color);
     }
 }
 
@@ -138,7 +138,7 @@
             background: none;
             color: inherit;
             font-size: inherit;
-            @include color-control-neutral(border-color);
+            @include theme.color-control-neutral(border-color);
 
             &:invalid {
                 border-color: red;
@@ -150,7 +150,7 @@
     .outlined {
         border-width: 1px;
         border-style: solid;
-        @include color-control-neutral(border-color);
+        @include theme.color-control-neutral(border-color);
         border-radius: 4px;
     }
 }
@@ -160,8 +160,8 @@
 
     padding: $half-padding;
 
-    @include color-theme(background);
-    @include block-border(border);
+    @include theme.color-theme(background);
+    @include theme.block-border(border);
     border-radius: 8px;
 
     box-shadow: 0 0 10px rgba(50, 50, 50, 0.6);

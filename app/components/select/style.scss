@@ -1,4 +1,4 @@
-@import 'common/theme';
+@use'common/theme';
 
 $select-border-width: 2px;
 $select-border-radius: 4px;
@@ -21,7 +21,7 @@ $select-border-radius: 4px;
         padding-right: 24px;
         border-width: $select-border-width;
         border-style: solid;
-        @include color-control-neutral(border-color);
+        @include theme.color-control-neutral(border-color);
         border-radius: $select-border-radius;
         font-size: 87.5%;
         font-weight: bold;
@@ -37,20 +37,20 @@ $select-border-radius: 4px;
             border-style: solid;
             border-color: transparent;
             content: '';
-            @include color-control-accent(border-top-color);
+            @include theme.color-control-accent(border-top-color);
         }
     }
 
     &.expanded .select-current-value {
         border-radius: 4px 4px 0 0;
 
-        @include color-control-accent-hover(border-color);
-        @include color-control-neutral(border-bottom-color);
+        @include theme.color-control-accent-hover(border-color);
+        @include theme.color-control-neutral(border-bottom-color);
 
         &::after {
             top: 5px;
             border-color: transparent;
-            @include color-control-accent-hover(border-bottom-color);
+            @include theme.color-control-accent-hover(border-bottom-color);
         }
     }
 
@@ -75,18 +75,18 @@ $select-border-radius: 4px;
         }
 
         &:hover .select-current-value {
-            @include color-control-accent-hover(border-color);
+            @include theme.color-control-accent-hover(border-color);
 
             &::after {
-                @include color-control-accent-hover(border-top-color);
+                @include theme.color-control-accent-hover(border-top-color);
             }
         }
 
         &:active .select-current-value {
-            @include color-control-accent-active(border-color);
+            @include theme.color-control-accent-active(border-color);
 
             &::after {
-                @include color-control-accent-active(border-top-color);
+                @include theme.color-control-accent-active(border-top-color);
             }
         }
     }
@@ -99,14 +99,14 @@ $select-border-radius: 4px;
         width: 100%;
         border-width: 0 $select-border-width $select-border-width;
         border-style: solid;
-        @include color-control-accent-hover(border-color);
+        @include theme.color-control-accent-hover(border-color);
         border-radius: 0 0 $select-border-radius $select-border-radius;
         font-size: 87.5%;
         line-height: 32px;
         box-shadow: 0 10px 16px rgba(0, 0, 0, 0.2);
         z-index: 3;
         box-sizing: border-box;
-        @include color-theme(background);
+        @include theme.color-theme(background);
 
         &::before {
             $safety-margin: 2px;
@@ -119,7 +119,7 @@ $select-border-radius: 4px;
             border-width: 0 $select-border-width;
             border-style: solid;
             content: '';
-            @include color-control-accent-hover(border-color);
+            @include theme.color-control-accent-hover(border-color);
         }
     }
 
@@ -130,7 +130,7 @@ $select-border-radius: 4px;
             cursor: pointer;
 
             &:hover {
-                background: $color-accent-transparent-medium;
+                background: theme.$color-accent-transparent-medium;
             }
         }
     }

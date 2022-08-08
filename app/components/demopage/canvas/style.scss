@@ -1,5 +1,5 @@
-@import 'common/utils';
-@import 'demopage/controls-pane';
+@use 'common/utils';
+@use 'demopage/controls-pane';
 
 #canvas-container {
     position: relative;
@@ -46,7 +46,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: $canvas-button-size;
+    width: controls-pane.$canvas-button-size;
     z-index: 30;
 }
 
@@ -64,15 +64,15 @@
 #side-pane-toggle-id {
     display: none;
     background-image: url('../images/gear.svg');
-    @include transition(transform .1s ease-in-out);
+    @include utils.transition(transform .1s ease-in-out);
 
     &:hover {
-        @include transform(rotate(-30deg));
+        @include utils.transform(rotate(-30deg));
     }
 }
 
 #side-pane-checkbox-id:checked +  #canvas-container #side-pane-toggle-id:hover {
-    @include transform(rotate(30deg));
+    @include utils.transform(rotate(30deg));
 }
 
 .hidden {
@@ -94,7 +94,7 @@
         z-index: 5;
 
         & #canvas-buttons-column {
-            @include transition(transform $controls-pane-transition-time);
+            @include utils.transition(transform controls-pane.$controls-pane-transition-time);
         }
 
         & #fullscreen-toggle-id {
@@ -109,6 +109,6 @@
     }
 
     & #side-pane-checkbox-id:checked + #canvas-container #canvas-buttons-column {
-        transform: translateX(-$controls-pane-width);
+        transform: translateX(-#{controls-pane.$controls-pane-width});
     }
 }

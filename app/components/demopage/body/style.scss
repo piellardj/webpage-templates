@@ -1,4 +1,4 @@
-@import 'common/utils';
+@use 'common/utils';
 
 body {
     text-align: center;
@@ -16,5 +16,5 @@ body {
     align-items: flex-start;
     justify-content: center;
 
-    @include user-select(none);
+    @include utils.user-select(none);
 }

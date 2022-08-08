@@ -1,16 +1,16 @@
-@import 'common/theme';
-@import 'common/utils';
+@use'common/theme';
+@use 'common/utils';
 
 a {
-    @include color-control-accent(color);
+    @include theme.color-control-accent(color);
     font-weight: bold;
     text-decoration: none;
-    @include box-sizing(border-box);
+    @include utils.box-sizing(border-box);
 
     &:focus,
     &:hover {
         border-width: 0 0 2px;
         border-style: solid;
-        @include color-control-accent(border-color);
+        @include theme.color-control-accent(border-color);
     }
 }

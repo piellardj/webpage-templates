@@ -1,5 +1,5 @@
-@import 'common/theme';
-@import 'common/utils';
+@use'common/theme';
+@use 'common/utils';
 
 $button-flat-border: 2px;
 
@@ -21,7 +21,7 @@ $button-transition: .1s ease-in-out;
         font-size: 87.5%;
         font-weight: bold;
         cursor: pointer;
-        // @include transition($button-transition);
+        // @include utils.transition($button-transition);
     }
 
     &.compact {
@@ -34,7 +34,7 @@ $button-transition: .1s ease-in-out;
     padding: #{$button-padding-y - $button-flat-border} #{$button-padding-x - $button-flat-border};
     border-width: $button-flat-border;
     border-style: solid;
-    @include box-sizing(border-box);
+    @include utils.box-sizing(border-box);
 
     &.compact {
         padding: #{$button-compact-padding-y - $button-flat-border} #{$button-padding-x - $button-flat-border};
@@ -43,50 +43,50 @@ $button-transition: .1s ease-in-out;
 
 .button {
     & {
-        @include color-control-accent(background);
+        @include theme.color-control-accent(background);
         color: white;
     }
 
     &:focus,
     &:hover:not(:disabled) {
         outline: 0px;
-        @include color-control-accent-hover(background);
+        @include theme.color-control-accent-hover(background);
     }
 
     &:active:not(:disabled) {
         outline: 0px;
-        @include color-control-accent-active(background);
+        @include theme.color-control-accent-active(background);
     }
 
     &:disabled {
-        @include color-control-accent-disabled(background);
+        @include theme.color-control-accent-disabled(background);
         cursor: default;
     }
 }
 
 .button.flat {
     & {
-        @include color-control-accent(border-color);
+        @include theme.color-control-accent(border-color);
         background: none;
-        @include color-control-accent(color);
+        @include theme.color-control-accent(color);
     }
 
     &:focus,
     &:hover:not(:disabled) {
-        @include color-control-accent-hover(border-color);
+        @include theme.color-control-accent-hover(border-color);
         background: none;
-        @include color-control-accent-hover(color);
+        @include theme.color-control-accent-hover(color);
     }
 
     &:active:not(:disabled) {
-        @include color-control-accent-active(border-color);
-        background: $color-accent-transparent-medium;
-        @include color-control-accent-active(color);
+        @include theme.color-control-accent-active(border-color);
+        background: theme.$color-accent-transparent-medium;
+        @include theme.color-control-accent-active(color);
     }
 
     &:disabled {
-        @include color-control-accent-disabled(border-color);
+        @include theme.color-control-accent-disabled(border-color);
         background: none;
-        @include color-control-accent-disabled(color);
+        @include theme.color-control-accent-disabled(color);
     }
 }

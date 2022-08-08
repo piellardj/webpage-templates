@@ -1,5 +1,5 @@
-@import 'common/theme';
-@import 'common/utils';
+@use'common/theme';
+@use 'common/utils';
 
 $checkbox-size: 20px;
 $checkbox-vertical-padding: 3px;
@@ -17,7 +17,7 @@ $checkbox-transition: .1s ease-in-out;
     display: block;
     position: relative;
     text-align: left;
-    @include user-select(none);
+    @include utils.user-select(none);
 
     & > input[type=checkbox] {
         width: 1px;
@@ -41,7 +41,7 @@ $checkbox-transition: .1s ease-in-out;
 }
 
 @mixin checkmark-transform($scale) {
-    @include transform(translate(0, -0.05 * $checkbox-size) scale($scale) rotate(45deg));
+    @include utils.transform(translate(0, -0.05 * $checkbox-size) scale($scale) rotate(45deg));
 }
 
 $checkmark-length-right: 0.7 * $checkbox-size;
@@ -63,8 +63,8 @@ $checkmark-length-left: 0.35 * $checkbox-size;
             background: none;
             content: '';
 
-            @include box-sizing(border-box);
-            // @include transition($checkbox-transition);  
+            @include utils.box-sizing(border-box);
+            // @include utils.transition($checkbox-transition);  
         }
 
         & + label.checkmark::after {
@@ -80,8 +80,8 @@ $checkmark-length-left: 0.35 * $checkbox-size;
             background: none;
             content: '';
 
-            @include box-sizing(border-box);
-            // @include transition($checkbox-transition);
+            @include utils.box-sizing(border-box);
+            // @include utils.transition($checkbox-transition);
             @include checkmark-transform(0);
         }
 
@@ -92,42 +92,42 @@ $checkmark-length-left: 0.35 * $checkbox-size;
         // COLORS
         & {
             & + label.checkmark::before {
-                @include color-control-accent(border-color);
+                @include theme.color-control-accent(border-color);
             }
 
             &:checked + label.checkmark::before {
-                @include color-control-accent(background);
+                @include theme.color-control-accent(background);
             }
         }
 
         &:hover,
         &:focus {
             & + label.checkmark::before {
-                @include color-control-accent-hover(border-color);
+                @include theme.color-control-accent-hover(border-color);
             }
 
             &:checked + label.checkmark::before {
-                @include color-control-accent-hover(background);
+                @include theme.color-control-accent-hover(background);
             }
         }
 
         &:active {
             & + label.checkmark::before {
-                @include color-control-accent-active(border-color);
+                @include theme.color-control-accent-active(border-color);
             }
 
             &:checked + label.checkmark::before {
-                @include color-control-accent-active(background);
+                @include theme.color-control-accent-active(background);
             }
         }
 
         &:disabled {
             & + label.checkmark::before {
-                @include color-control-accent-disabled(border-color);
+                @include theme.color-control-accent-disabled(border-color);
             }
 
             &:checked + label.checkmark::before {
-                @include color-control-accent-disabled(background);
+                @include theme.color-control-accent-disabled(background);
             }
         }
     }

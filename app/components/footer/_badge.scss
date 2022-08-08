@@ -1,5 +1,5 @@
-@import 'common/theme';
-@import 'common/utils';
+@use'common/theme';
+@use 'common/utils';
 
 $badge-size: 32px;
 
@@ -22,7 +22,7 @@ $badge-size: 32px;
     }
 
     svg {
-        @include block-actionitem(fill);
+        @include theme.block-actionitem(fill);
     }
 }
 

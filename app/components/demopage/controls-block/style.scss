@@ -1,6 +1,6 @@
-@import 'common/theme';
-@import 'common/utils';
-@import 'demopage/controls-pane';
+@use'common/theme';
+@use 'common/utils';
+@use 'demopage/controls-pane';
 
 $border-radius: 8px;
 $max-width: 36em;
@@ -12,8 +12,8 @@ $section-margin: 12px;
     margin: 16px 0;
     padding: $section-margin 0;
     border-radius: $border-radius;
-    @include block-border(border);
-    @include block-background-color(background);
+    @include theme.block-border(border);
+    @include theme.block-background-color(background);
     z-index: 0;
 
     @media only screen and (min-width: 540px) {
@@ -25,7 +25,7 @@ $section-margin: 12px;
         clear: both;
         
         border: none;
-        @include block-border(border-top);
+        @include theme.block-border(border-top);
     }
 }
 
@@ -75,7 +75,7 @@ $section-margin: 12px;
         position: fixed;
         top: 0;
         left: 100%;
-        width: $controls-pane-width;
+        width: controls-pane.$controls-pane-width;
         max-height: calc(100% - 48px);
         margin: 0;
         border-width: 0 0 1px 1px;
@@ -90,29 +90,29 @@ $section-margin: 12px;
 
         &::-webkit-scrollbar-track {
             border-radius: 8px;
-            @include block-background-color(background-color);
+            @include theme.block-background-color(background-color);
         }
 
         &::-webkit-scrollbar-thumb {
             border-width: 3px 5px;
             border-style: solid;
             border-radius: 8px;
-            @include block-background-color(border-color);
-            @include scrollbar-color(background-color);
+            @include theme.block-background-color(border-color);
+            @include theme.scrollbar-color(background-color);
         }
 
         &:hover::-webkit-scrollbar-thumb {
             border-width: 3px;
         }
 
-        @include transition(transform $controls-pane-transition-time)
+        @include utils.transition(transform controls-pane.$controls-pane-transition-time)
     }
 
     &:checked ~ .controls-block {
-        @include transform(translateX(-100%));
+        @include utils.transform(translateX(-100%));
 
         & .tooltip {
-            @include transform(translateX(-100vw) translateX(400px));
+            @include utils.transform(translateX(-100vw) translateX(400px));
         }
 
         & > #side-pane-close-toggle-id {
@@ -128,6 +128,6 @@ $section-margin: 12px;
     right: 0;
 
     svg {
-        @include block-actionitem(stroke);
+        @include theme.block-actionitem(stroke);
     }
 }

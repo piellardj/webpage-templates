@@ -1,10 +1,10 @@
-@import 'common/theme';
-@import 'badge';
+@use'common/theme';
+@use 'badge';
 
 footer {
     align-items: center;
     padding: 8px;
     text-align: center;
-    @include block-border(border-top);
-    @include block-background-color(background);
+    @include theme.block-border(border-top);
+    @include theme.block-background-color(background);
 }

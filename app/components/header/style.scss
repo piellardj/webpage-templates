@@ -1,5 +1,5 @@
-@import 'common/theme';
-@import 'common/utils';
+@use'common/theme';
+@use 'common/utils';
 
 $logo-size: 64px;
 $logo-border-width: 1px;
@@ -20,7 +20,7 @@ $logo-border-width: 1px;
     &:active {
         border-width: $logo-border-width;
         border-style: solid;
-        @include color-control-accent(border-color);
+        @include theme.color-control-accent(border-color);
     }
 
     &::before,
@@ -36,33 +36,33 @@ $logo-border-width: 1px;
     }
 
     svg.logo-icon {
-        @include color-control-accent(stroke);
-        @include color-control-accent(fill);
+        @include theme.color-control-accent(stroke);
+        @include theme.color-control-accent(fill);
     }
 
     &::before {
         content: '';
-        @include transform(scale(0));
-        @include transition(.1s ease);
+        @include utils.transform(scale(0));
+        @include utils.transition(.1s ease);
     }
 
     &.logo-animate-fill
     &::before {
         content: '';
-        @include transform(scale(0));
-        @include transition(.1s ease);
+        @include utils.transform(scale(0));
+        @include utils.transition(.1s ease);
     }
 
     &:hover::before {
-        @include transform(scale(1));
+        @include utils.transform(scale(1));
     }
 }
 
 .logo.logo-animate-fill {
-    @include block-background-color(background);
+    @include theme.block-background-color(background);
 
     &::before {
-        @include color-control-accent(background);
+        @include theme.color-control-accent(background);
     }
 
     &:hover svg.logo-icon {
@@ -72,13 +72,13 @@ $logo-border-width: 1px;
 }
 
 .logo.logo-animate-empty {
-    @include color-control-accent(background);
+    @include theme.color-control-accent(background);
 
     &::before {
         top: 0;
         left: 0;
         width: #{$logo-size - 2 * $logo-border-width};
         height: #{$logo-size - 2 * $logo-border-width};
-        @include block-background-color(background);
+        @include theme.block-background-color(background);
     }
 }

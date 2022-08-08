@@ -1,13 +1,13 @@
 @use "sass:math";
 
-@import 'common/theme';
-@import 'common/utils';
+@use'common/theme';
+@use 'common/utils';
 
 $control-height: 26px;
 $range-bar-left-thickness: 3px;
 $range-bar-right-thickness: 3px;
 $range-handle-size: 15px;
-$range-tooltip-color: $grey-darken-4;
+$range-tooltip-color: theme.$grey-darken-4;
 
 $range-transition-time: .1s ease-in-out;
 
@@ -83,7 +83,7 @@ $range-transition-time: .1s ease-in-out;
         &.range-bar-right {
             top: math.round(0.5 * ($control-height - $range-bar-right-thickness));
             height: $range-bar-right-thickness;
-            @include color-control-neutral(background);
+            @include theme.color-control-neutral(background);
         }
 
         &.range-stub-left {
@@ -107,22 +107,22 @@ $range-transition-time: .1s ease-in-out;
 
     .range-bar-left,
     .range-handle {
-        @include color-control-accent(background);
+        @include theme.color-control-accent(background);
     }
 
     input[type='range']:not(:disabled):hover + .range-skin-container .range-handle,
     input[type='range']:not(:disabled):focus + .range-skin-container .range-handle {
-        @include color-control-accent-hover(background);
+        @include theme.color-control-accent-hover(background);
     }
 
     input[type='range']:not(:disabled):active + .range-skin-container .range-handle {
-        @include color-control-accent-active(background);
+        @include theme.color-control-accent-active(background);
     }
 
     input[type='range']:disabled + .range-skin-container {
         .range-bar-left,
         .range-handle {
-            @include color-control-accent-disabled(background);
+            @include theme.color-control-accent-disabled(background);
         }
     }
 
@@ -136,7 +136,7 @@ $range-transition-time: .1s ease-in-out;
         transition: opacity $range-transition-time;
         border-radius: 4px;
         background: $range-tooltip-color;
-        color: $grey-lighten-5;
+        color: theme.$grey-lighten-5;
         font-size: 87.5%;
         text-align: center;
         opacity: 0;
