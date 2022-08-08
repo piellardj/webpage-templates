@@ -39,14 +39,11 @@ var Page;
             return Checkbox;
         }());
         var checkboxesCache = new Page.Helpers.Cache("Checkbox", function () {
-            var checkboxesList = [];
             var selector = "div.checkbox > input[type=checkbox][id]";
-            var elements = document.querySelectorAll(selector);
-            for (var i = 0; i < elements.length; i++) {
-                var checkbox = new Checkbox(elements[i]);
-                checkboxesList.push(checkbox);
-            }
-            return checkboxesList;
+            var elements = Page.Helpers.Utils.selectorAll(document, selector);
+            return elements.map(function (element) {
+                return new Checkbox(element);
+            });
         });
         var checkboxesStorage = new Page.Helpers.Storage("checkbox", function (checkbox) {
             return checkbox.checked ? "true" : "false";

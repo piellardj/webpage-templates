@@ -10,15 +10,15 @@ namespace Page.FileControl {
         public readonly observers: FileUploadObserver[] = [];
 
         public constructor(container: HTMLElement) {
-            this.inputElement = container.querySelector("input");
-            this.labelSpanElement = container.querySelector("label > span");
+            this.inputElement = Page.Helpers.Utils.selector(container, "input");
+            this.labelSpanElement = Page.Helpers.Utils.selector(container, "label > span");
             this.id = this.inputElement.id;
 
             this.inputElement.addEventListener("change", (event: Event) => {
                 event.stopPropagation();
                 const files = this.inputElement.files;
-                if (files.length === 1) {
-                    this.labelSpanElement.innerText = FileUpload.truncate(files[0].name);
+                if (files && files.length === 1) {
+                    this.labelSpanElement.innerText = FileUpload.truncate(files[0]!.name);
 
                     for (const observer of this.observers) {
                         observer(files);
@@ -29,7 +29,7 @@ namespace Page.FileControl {
 
         public clear(): void {
             this.inputElement.value = "";
-            this.labelSpanElement.innerText = this.labelSpanElement.dataset["placeholder"];
+            this.labelSpanElement.innerText = this.labelSpanElement.dataset["placeholder"] || "Upload";
         }
 
         private static readonly filenameMaxSize: number = 16;
@@ -50,7 +50,7 @@ namespace Page.FileControl {
         public readonly observers: FileDownloadObserver[] = [];
 
         public constructor(container: HTMLElement) {
-            this.buttonElement = container.querySelector("input");
+            this.buttonElement = Page.Helpers.Utils.selector(container, "input");
             this.id = this.buttonElement.id;
 
             this.buttonElement.addEventListener("click", (event: Event) => {
@@ -63,26 +63,21 @@ namespace Page.FileControl {
     }
 
     const fileUploadsCache = new Page.Helpers.Cache<FileUpload>("FileUpload", () => {
-        const fileUploadsList: FileUpload[] = [];
         const selector = ".file-control.upload > input[id]";
-        const fileUploadInputsElements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
-        for (let i = 0; i < fileUploadInputsElements.length; i++) {
-            const container = fileUploadInputsElements[i].parentElement;
+        const fileUploadInputsElements = Page.Helpers.Utils.selectorAll<HTMLInputElement>(document, selector);
+        return fileUploadInputsElements.map((fileUploadInputsElement: HTMLInputElement) => {
+            const container = fileUploadInputsElement.parentElement!;
             const fileUpload = new FileUpload(container);
-            fileUploadsList.push(fileUpload);
-        }
-        return fileUploadsList;
+            return fileUpload;
+        });
     });
     const fileDownloadsCache = new Page.Helpers.Cache<FileDownload>("FileDownload", () => {
-        const fileDownloadsList: FileDownload[] = [];
         const selector = ".file-control.download > input[id]";
-        const fileDownloadInputsElements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
-        for (let i = 0; i < fileDownloadInputsElements.length; i++) {
-            const container = fileDownloadInputsElements[i].parentElement;
-            const fileDownload = new FileDownload(container);
-            fileDownloadsList.push(fileDownload);
-        }
-        return fileDownloadsList;
+        const fileDownloadInputsElements = Page.Helpers.Utils.selectorAll<HTMLInputElement>(document, selector);
+        return fileDownloadInputsElements.map((fileDownloadInputsElement: HTMLInputElement) => {
+            const container = fileDownloadInputsElement.parentElement!;
+            return new FileDownload(container);
+        });
     });
 
     Helpers.Events.callAfterDOMLoaded(() => {

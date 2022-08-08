@@ -17,9 +17,9 @@ namespace Page.Range {
         public readonly onChangeObservers: RangeObserver[] = [];
 
         public constructor(container: HTMLElement) {
-            this.inputElement = container.querySelector("input[type='range']");
-            this.progressLeftElement = container.querySelector(".range-progress-left");
-            this.tooltipElement = container.querySelector("output.range-tooltip");
+            this.inputElement = Page.Helpers.Utils.selector(container, "input[type='range']");
+            this.progressLeftElement = Page.Helpers.Utils.selector(container, ".range-progress-left");
+            this.tooltipElement = Page.Helpers.Utils.selector(container, "output.range-tooltip");
 
             this.id = this.inputElement.id;
             const inputMin = +this.inputElement.min;
@@ -108,15 +108,12 @@ namespace Page.Range {
     }
 
     const rangesCache = new Page.Helpers.Cache<Range>("Range", () => {
-        const rangesList: Range[] = [];
         const selector = ".range-container > input[type='range']";
-        const rangeElements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
-        for (let i = 0; i < rangeElements.length; i++) {
-            const container = rangeElements[i].parentElement;
-            const range = new Range(container);
-            rangesList.push(range);
-        }
-        return rangesList;
+        const rangeElements = Page.Helpers.Utils.selectorAll<HTMLInputElement>(document, selector);
+        return rangeElements.map((rangeElement: HTMLInputElement) => {
+            const container = rangeElement.parentElement!;
+            return new Range(container);
+        });
     });
 
     const rangesStorage = new Page.Helpers.Storage<Range>("range",

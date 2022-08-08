@@ -13,21 +13,17 @@ namespace Page.Picker {
         private readonly spanElement: HTMLSpanElement;
         private readonly radioInputs: HTMLInputElement[];
 
-        private _value: string;
+        private _value: string | null = null;
 
         public constructor(container: HTMLElement) {
             this.id = container.id;
 
             this.container = container;
-            this.leftButton = container.querySelector(".picker-button.left");
-            this.rightButton = container.querySelector(".picker-button.right");
-            this.spanElement = container.querySelector("span");
+            this.leftButton = Page.Helpers.Utils.selector(container, ".picker-button.left");
+            this.rightButton = Page.Helpers.Utils.selector(container, ".picker-button.right");
+            this.spanElement = Page.Helpers.Utils.selector(container, "span");
 
-            this.radioInputs = [];
-            const radioInputs = container.querySelectorAll("input");
-            for (let i = 0; i < radioInputs.length; i++) {
-                this.radioInputs.push(radioInputs[i]);
-            }
+            this.radioInputs = Page.Helpers.Utils.selectorAll(container, "input");
 
             this.leftButton.addEventListener("click", () => {
                 const index = this.getIndexOfCheckedInput();
@@ -48,11 +44,11 @@ namespace Page.Picker {
             this.updateValue();
         }
 
-        public get value(): string {
+        public get value(): string | null {
             return this._value;
         }
 
-        public set value(newValue: string) {
+        public set value(newValue: string | null) {
             for (const radioInput of this.radioInputs) {
                 radioInput.checked = (radioInput.value === newValue);
             }
@@ -67,18 +63,15 @@ namespace Page.Picker {
         }
 
         private getIndexOfCheckedInput(): number {
-            for (let i = 0; i < this.radioInputs.length; i++) {
-                if (this.radioInputs[i].checked) {
-                    return i;
-                }
-            }
-            return -1;
+            return Page.Helpers.Utils.findFirst(this.radioInputs,
+                (radio: HTMLInputElement) => radio.checked);
         }
 
         private updateValue(): void {
             const indexOfSelected = this.getIndexOfCheckedInput();
-            if (indexOfSelected >= 0) {
-                this._value = this.radioInputs[indexOfSelected].value;
+            const checkedInput = this.radioInputs[indexOfSelected];
+            if (checkedInput) {
+                this._value = checkedInput.value;
             } else {
                 this._value = null;
             }
@@ -87,21 +80,24 @@ namespace Page.Picker {
 
         private updateAppearance(): void {
             const index = this.getIndexOfCheckedInput();
+            const checkedInput = this.radioInputs[index];
             let selectedLabel: string;
-            if (index >= 0) {
-                selectedLabel = this.radioInputs[index].dataset["label"];
+            if (checkedInput) {
+                selectedLabel = checkedInput.dataset["label"] || "<no label>";
             } else {
                 selectedLabel = this.container.dataset["placeholder"] || "";
             }
 
             this.spanElement.innerText = selectedLabel;
 
-            if (this.radioInputs.length < 0) {
+            const firstRadio = this.radioInputs[0];
+            const lastRadio = this.radioInputs[this.radioInputs.length - 1];
+            if (firstRadio && lastRadio) {
+                this.enableButton(this.leftButton, !firstRadio.checked);
+                this.enableButton(this.rightButton, !lastRadio.checked);
+            } else {
                 this.enableButton(this.leftButton, false);
                 this.enableButton(this.rightButton, false);
-            } else {
-                this.enableButton(this.leftButton, !this.radioInputs[0].checked);
-                this.enableButton(this.rightButton, !this.radioInputs[this.radioInputs.length - 1].checked);
             }
         }
 
@@ -114,22 +110,25 @@ namespace Page.Picker {
                 radioInput.checked = false;
             }
 
+            let inputToCheck: HTMLInputElement | undefined;
             if (index >= 0 && index < this.radioInputs.length) {
-                this.radioInputs[index].checked = true;
-            } else {
-                this.radioInputs[defaultIndex].checked = true;
+                inputToCheck = this.radioInputs[index];
+            } else if (defaultIndex >= 0 && defaultIndex < this.radioInputs.length) {
+                inputToCheck = this.radioInputs[defaultIndex];
             }
+
+            if (!inputToCheck) {
+                throw new Error(`No input to check: index=${index} and defaultIndex=${defaultIndex}.`);
+            }
+            inputToCheck.checked = true;
         }
     }
 
     const pickersCache = new Page.Helpers.Cache<Picker>("Picker", () => {
-        const pickersList: Picker[] = [];
-        const containerElements = document.querySelectorAll("div.inline-picker[id]") as NodeListOf<HTMLElement>;
-        for (let i = 0; i < containerElements.length; i++) {
-            const picker = new Picker(containerElements[i]);
-            pickersList.push(picker);
-        }
-        return pickersList;
+        const containerElements = Page.Helpers.Utils.selectorAll(document, "div.inline-picker[id]");
+        return containerElements.map((containerElement: HTMLElement) => {
+            return new Picker(containerElement);
+        });
     });
 
     const pickersStorage = new Page.Helpers.Storage<Picker>("picker",

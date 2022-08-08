@@ -2,11 +2,14 @@ namespace Page.Demopage {
     const errorsBlockId = "error-messages";
     const errorsBlock = document.getElementById(errorsBlockId);
     if (!errorsBlock) {
-        console.error("Cannot find element '" + errorsBlockId + "'.");
+        throw new Error("Cannot find element '" + errorsBlockId + "'.");
     }
 
-    function getErrorById(id: string): Element {
-        return errorsBlock.querySelector("span[id=error-message-" + id + "]");
+    function getErrorById(id: string): Element | null {
+        if (errorsBlock) {
+            return errorsBlock.querySelector("span[id=error-message-" + id + "]");
+        }
+        return null;
     }
 
     export function setErrorMessage(id: string, message: string): void {

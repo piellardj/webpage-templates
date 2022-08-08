@@ -7,16 +7,13 @@ var Page;
             function Picker(container) {
                 var _this = this;
                 this.observers = [];
+                this._value = null;
                 this.id = container.id;
                 this.container = container;
-                this.leftButton = container.querySelector(".picker-button.left");
-                this.rightButton = container.querySelector(".picker-button.right");
-                this.spanElement = container.querySelector("span");
-                this.radioInputs = [];
-                var radioInputs = container.querySelectorAll("input");
-                for (var i = 0; i < radioInputs.length; i++) {
-                    this.radioInputs.push(radioInputs[i]);
-                }
+                this.leftButton = Page.Helpers.Utils.selector(container, ".picker-button.left");
+                this.rightButton = Page.Helpers.Utils.selector(container, ".picker-button.right");
+                this.spanElement = Page.Helpers.Utils.selector(container, "span");
+                this.radioInputs = Page.Helpers.Utils.selectorAll(container, "input");
                 this.leftButton.addEventListener("click", function () {
                     var index = _this.getIndexOfCheckedInput();
                     _this.checkOnlyRadio(index - 1, _this.radioInputs.length - 1);
@@ -54,17 +51,13 @@ var Page;
                 }
             };
             Picker.prototype.getIndexOfCheckedInput = function () {
-                for (var i = 0; i < this.radioInputs.length; i++) {
-                    if (this.radioInputs[i].checked) {
-                        return i;
-                    }
-                }
-                return -1;
+                return Page.Helpers.Utils.findFirst(this.radioInputs, function (radio) { return radio.checked; });
             };
             Picker.prototype.updateValue = function () {
                 var indexOfSelected = this.getIndexOfCheckedInput();
-                if (indexOfSelected >= 0) {
-                    this._value = this.radioInputs[indexOfSelected].value;
+                var checkedInput = this.radioInputs[indexOfSelected];
+                if (checkedInput) {
+                    this._value = checkedInput.value;
                 }
                 else {
                     this._value = null;
@@ -73,21 +66,24 @@ var Page;
             };
             Picker.prototype.updateAppearance = function () {
                 var index = this.getIndexOfCheckedInput();
+                var checkedInput = this.radioInputs[index];
                 var selectedLabel;
-                if (index >= 0) {
-                    selectedLabel = this.radioInputs[index].dataset["label"];
+                if (checkedInput) {
+                    selectedLabel = checkedInput.dataset["label"] || "<no label>";
                 }
                 else {
                     selectedLabel = this.container.dataset["placeholder"] || "";
                 }
                 this.spanElement.innerText = selectedLabel;
-                if (this.radioInputs.length < 0) {
-                    this.enableButton(this.leftButton, false);
-                    this.enableButton(this.rightButton, false);
+                var firstRadio = this.radioInputs[0];
+                var lastRadio = this.radioInputs[this.radioInputs.length - 1];
+                if (firstRadio && lastRadio) {
+                    this.enableButton(this.leftButton, !firstRadio.checked);
+                    this.enableButton(this.rightButton, !lastRadio.checked);
                 }
                 else {
-                    this.enableButton(this.leftButton, !this.radioInputs[0].checked);
-                    this.enableButton(this.rightButton, !this.radioInputs[this.radioInputs.length - 1].checked);
+                    this.enableButton(this.leftButton, false);
+                    this.enableButton(this.rightButton, false);
                 }
             };
             Picker.prototype.enableButton = function (button, enable) {
@@ -98,23 +94,25 @@ var Page;
                     var radioInput = _a[_i];
                     radioInput.checked = false;
                 }
+                var inputToCheck;
                 if (index >= 0 && index < this.radioInputs.length) {
-                    this.radioInputs[index].checked = true;
+                    inputToCheck = this.radioInputs[index];
                 }
-                else {
-                    this.radioInputs[defaultIndex].checked = true;
+                else if (defaultIndex >= 0 && defaultIndex < this.radioInputs.length) {
+                    inputToCheck = this.radioInputs[defaultIndex];
                 }
+                if (!inputToCheck) {
+                    throw new Error("No input to check: index=".concat(index, " and defaultIndex=").concat(defaultIndex, "."));
+                }
+                inputToCheck.checked = true;
             };
             return Picker;
         }());
         var pickersCache = new Page.Helpers.Cache("Picker", function () {
-            var pickersList = [];
-            var containerElements = document.querySelectorAll("div.inline-picker[id]");
-            for (var i = 0; i < containerElements.length; i++) {
-                var picker = new Picker(containerElements[i]);
-                pickersList.push(picker);
-            }
-            return pickersList;
+            var containerElements = Page.Helpers.Utils.selectorAll(document, "div.inline-picker[id]");
+            return containerElements.map(function (containerElement) {
+                return new Picker(containerElement);
+            });
         });
         var pickersStorage = new Page.Helpers.Storage("picker", function (picker) {
             return (picker.value === null) ? "__null__" : picker.value;

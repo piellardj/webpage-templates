@@ -24,13 +24,10 @@ namespace Page.Button {
     }
 
     const buttonsCache = new Page.Helpers.Cache<Button>("Button", () => {
-        const buttonsList: Button[] = [];
-        const elements = document.querySelectorAll("button[id]") as NodeListOf<HTMLButtonElement>;
-        for (let i = 0; i < elements.length; i++) {
-            const button = new Button(elements[i]);
-            buttonsList.push(button);
-        }
-        return buttonsList;
+        const elements = Page.Helpers.Utils.selectorAll<HTMLButtonElement>(document, "button[id]");
+        return elements.map((element: HTMLButtonElement) => {
+            return new Button(element);
+        });
     });
 
     export function addObserver(buttonId: string, observer: ButtonObserver): void {

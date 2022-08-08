@@ -24,10 +24,10 @@ namespace Page.Tabs {
             this.id = Tabs.computeShortId(container.id);
             this.inputElements = [];
 
-            const inputElements = container.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
-            for (let i = 0; i < inputElements.length; i++) {
-                this.inputElements.push(inputElements[i]);
-                inputElements[i].addEventListener("change", (event) => {
+            const inputElements = Page.Helpers.Utils.selectorAll<HTMLInputElement>(container, "input");
+            for (const inputElement of inputElements) {
+                this.inputElements.push(inputElement);
+                inputElement.addEventListener("change", (event) => {
                     event.stopPropagation();
                     this.reloadValues();
                     tabsStorage.storeState(this);
@@ -74,13 +74,10 @@ namespace Page.Tabs {
     }
 
     const tabsCache = new Page.Helpers.Cache<Tabs>("Tabs", () => {
-        const tabsList: Tabs[] = [];
-        const containerElements = document.querySelectorAll("div.tabs[id]") as NodeListOf<HTMLElement>;
-        for (let i = 0; i < containerElements.length; i++) {
-            const tabs = new Tabs(containerElements[i]);
-            tabsList.push(tabs);
-        }
-        return tabsList;
+        const containerElements = Page.Helpers.Utils.selectorAll(document, "div.tabs[id]");
+        return containerElements.map((containerElement: HTMLElement) => {
+            return new Tabs(containerElement);
+        });
     });
 
     const tabsStorage = new Page.Helpers.Storage<Tabs>("tabs",

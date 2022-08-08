@@ -9,10 +9,10 @@ var Page;
                 this.observers = [];
                 this.id = container.id;
                 this.containerElement = container;
-                this.currentValueElement = container.querySelector(".select-current-value");
-                this.valuesListElement = container.querySelector(".select-values-list");
-                this.placeholder = this.valuesListElement.dataset["placeholder"];
-                this.currentValue = this.currentValueElement.dataset["value"];
+                this.currentValueElement = Page.Helpers.Utils.selector(container, ".select-current-value");
+                this.valuesListElement = Page.Helpers.Utils.selector(container, ".select-values-list");
+                this.placeholder = this.valuesListElement.dataset["placeholder"] || "";
+                this.currentValue = this.currentValueElement.dataset["value"] || null;
                 this.valueElements = [];
                 var elements = this.valuesListElement.querySelectorAll(".select-value[data-value]");
                 for (var i = 0; i < elements.length; i++) {
@@ -28,8 +28,8 @@ var Page;
                             for (var _i = 0, _a = _this.valueElements; _i < _a.length; _i++) {
                                 var valueElement = _a[_i];
                                 if (valueElement.contains(clickedElement)) {
-                                    _this.currentValue = valueElement.dataset["value"];
-                                    _this.currentValueElement.dataset["value"] = _this.currentValue;
+                                    _this.currentValue = valueElement.dataset["value"] || null;
+                                    _this.currentValueElement.dataset["value"] = _this.currentValue || undefined;
                                     _this.currentValueElement.textContent = valueElement.textContent;
                                     selectStorage.storeState(_this);
                                     _this.callObservers();
@@ -90,6 +90,9 @@ var Page;
                 placeholderValue.textContent = this.placeholder;
                 this.valuesListElement.appendChild(placeholderValue);
                 var parentNode = this.containerElement.parentNode;
+                if (!parentNode) {
+                    throw new Error("Select in not attached");
+                }
                 var nextSiblingNode = this.containerElement.nextSibling;
                 parentNode.removeChild(this.containerElement);
                 document.body.appendChild(this.containerElement);
@@ -108,13 +111,10 @@ var Page;
             return Select;
         }());
         var selectsCache = new Page.Helpers.Cache("Select", function () {
-            var selectsList = [];
-            var containerElements = document.querySelectorAll(".select-container[id]");
-            for (var i = 0; i < containerElements.length; i++) {
-                var select = new Select(containerElements[i]);
-                selectsList.push(select);
-            }
-            return selectsList;
+            var containerElements = Page.Helpers.Utils.selectorAll(document, ".select-container[id]");
+            return containerElements.map(function (containerElement) {
+                return new Select(containerElement);
+            });
         });
         var selectStorage = new Page.Helpers.Storage("select", function (select) {
             return select.value;

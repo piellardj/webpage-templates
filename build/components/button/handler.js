@@ -26,13 +26,10 @@ var Page;
             return Button;
         }());
         var buttonsCache = new Page.Helpers.Cache("Button", function () {
-            var buttonsList = [];
-            var elements = document.querySelectorAll("button[id]");
-            for (var i = 0; i < elements.length; i++) {
-                var button = new Button(elements[i]);
-                buttonsList.push(button);
-            }
-            return buttonsList;
+            var elements = Page.Helpers.Utils.selectorAll(document, "button[id]");
+            return elements.map(function (element) {
+                return new Button(element);
+            });
         });
         function addObserver(buttonId, observer) {
             var button = buttonsCache.getById(buttonId);

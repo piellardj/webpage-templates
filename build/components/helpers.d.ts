@@ -1,4 +1,12 @@
 declare namespace Page.Helpers {
+    type SelectionBase = Document | HTMLElement;
+    export namespace Utils {
+        function selectorAll<T extends HTMLElement>(base: SelectionBase, selector: string): T[];
+        /** @throws if no element was found */
+        function selector<T extends HTMLElement>(base: SelectionBase, selector: string): T;
+        function touchArray(touchList: TouchList): Touch[];
+        function findFirst<T>(array: T[], predicate: (e: T) => boolean): number;
+    }
     export namespace URL {
         function loopOnParameters(prefix: string, callback: (name: string, value: string) => unknown): void;
         function setQueryParameter(prefix: string, name: string, value: string | null): void;

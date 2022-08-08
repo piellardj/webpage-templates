@@ -20,9 +20,14 @@ namespace Page.Homepage {
     function shuffleList<T>(list: T[]): void {
         function swap(index1: number, index2: number): void {
             if (index1 !== index2) {
-                const tmp = list[index1];
-                list[index1] = list[index2];
-                list[index2] = tmp;
+                const list1 = list[index1];
+                const list2 = list[index2];
+
+                if (typeof list1 === "undefined" || typeof list2 === "undefined") {
+                    throw new Error(`Out of bound indices: ${index1} and ${index2}.`);
+                }
+                list[index1] = list2;
+                list[index2] = list1;
             }
         }
 
@@ -45,7 +50,7 @@ namespace Page.Homepage {
                 shuffleList(projectsUrls);
             }
 
-            logo.href = projectsUrls[nextIndex];
+            logo.href = projectsUrls[nextIndex]!;
             nextIndex = (nextIndex + 1) % projectsUrls.length;
         };
 

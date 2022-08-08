@@ -9,20 +9,20 @@ namespace Page.Canvas {
         return elt as HTMLElement;
     }
 
-    function getCanvasById(id: string): HTMLCanvasElement | null {
-        return getElementBySelector("canvas[id=" + id + "]") as HTMLCanvasElement;
+    function getCanvasById(id: string): HTMLCanvasElement {
+        return Page.Helpers.Utils.selector(document, "canvas[id=" + id + "]");
     }
 
-    function getCheckboxFromId(id: string): HTMLInputElement | null {
-        return getElementBySelector("input[type=checkbox][id=" + id + "]") as HTMLInputElement;
+    function getCheckboxFromId(id: string): HTMLInputElement {
+        return Page.Helpers.Utils.selector(document, "input[type=checkbox][id=" + id + "]");
     }
 
-    const canvasContainer = document.getElementById("canvas-container");
+    const canvasContainer = Page.Helpers.Utils.selector(document, "#canvas-container");
     const canvas = getCanvasById("canvas");
-    const buttonsColumn = document.getElementById("canvas-buttons-column");
+    const buttonsColumn = Page.Helpers.Utils.selector(document, "canvas-buttons-column");
     const fullscreenCheckbox = getCheckboxFromId("fullscreen-checkbox-id");
     const sidePaneCheckbox = getCheckboxFromId("side-pane-checkbox-id");
-    const loader = canvasContainer.querySelector(".loader") as HTMLElement;
+    const loader = Page.Helpers.Utils.selector(canvasContainer, ".loader");
 
     let maxWidth = 512;
     let maxHeight = 512;
@@ -56,7 +56,7 @@ namespace Page.Canvas {
         return [Math.floor(rect.width), Math.floor(rect.height)];
     }
 
-    let lastCanvasSize = [0, 0];
+    let lastCanvasSize: [number, number] = [0, 0];
 
     type CanvasResizeObserver = (newWidth: number, newHeight: number) => unknown;
     const canvasResizeObservers: CanvasResizeObserver[] = [];
@@ -84,8 +84,7 @@ namespace Page.Canvas {
             canvasContainer.style.maxHeight = inPx(maxHeight);
         }
 
-        if (size[0] !== lastCanvasSize[0] ||
-            size[1] !== lastCanvasSize[1]) {
+        if (size[0] !== lastCanvasSize[0] || size[1] !== lastCanvasSize[1]) {
             lastCanvasSize = getCanvasSize();
 
             for (const observer of canvasResizeObservers) {
@@ -246,7 +245,7 @@ namespace Page.Canvas {
                 }
             });
 
-            canvasResizeObservers.push(function() {
+            canvasResizeObservers.push(function () {
                 mouseMove(clientMousePosition[0], clientMousePosition[1]);
             });
         }
@@ -271,8 +270,8 @@ namespace Page.Canvas {
         function handleTouchStart(event: TouchEvent): void {
             const isFirstTouch = (currentTouches.length === 0);
 
-            for (let i = 0; i < event.changedTouches.length; ++i) {
-                const touch = event.changedTouches[i];
+            const changedTouches = Helpers.Utils.touchArray(event.changedTouches);
+            for (const touch of changedTouches) {
                 let alreadyRegistered = false;
                 for (const knownTouch of currentTouches) {
                     if (touch.identifier === knownTouch.id) {
@@ -291,20 +290,20 @@ namespace Page.Canvas {
             }
 
             if (isFirstTouch && currentTouches.length > 0) {
-                const currentTouch = currentTouches[0];
+                const currentTouch = currentTouches[0]!;
                 Mouse.mouseDown(currentTouch.clientX, currentTouch.clientY);
             } else if (currentTouches.length === 2) {
-                currentDistance = computeDistance(currentTouches[0], currentTouches[1]);
+                currentDistance = computeDistance(currentTouches[0]!, currentTouches[1]!);
             }
         }
 
         function handleTouchEnd(event: TouchEvent): void {
             const knewAtLeastOneTouch = (currentTouches.length > 0);
 
-            for (let i = 0; i < event.changedTouches.length; ++i) {
-                const touch = event.changedTouches[i];
+            const changedTouches = Helpers.Utils.touchArray(event.changedTouches);
+            for (const touch of changedTouches) {
                 for (let iC = 0; iC < currentTouches.length; ++iC) {
-                    if (touch.identifier === currentTouches[iC].id) {
+                    if (touch.identifier === currentTouches[iC]!.id) {
                         currentTouches.splice(iC, 1);
                         iC--;
                     }
@@ -312,7 +311,8 @@ namespace Page.Canvas {
             }
 
             if (currentTouches.length === 1) {
-                const newPos = clientToRelative(currentTouches[0].clientX, currentTouches[0].clientY);
+                const firstTouch = currentTouches[0]!;
+                const newPos = clientToRelative(firstTouch.clientX, firstTouch.clientY);
                 Mouse.setMousePosition(newPos[0], newPos[1]);
             } else if (knewAtLeastOneTouch && currentTouches.length === 0) {
                 Mouse.mouseUp();
@@ -320,9 +320,8 @@ namespace Page.Canvas {
         }
 
         function handleTouchMove(event: TouchEvent): void {
-            const touches = event.changedTouches;
-            for (let i = 0; i < touches.length; ++i) {
-                const touch = touches[i];
+            const touches = Helpers.Utils.touchArray(event.changedTouches);
+            for (const touch of touches) {
                 for (const knownTouch of currentTouches) {
                     if (touch.identifier === knownTouch.id) {
                         knownTouch.clientX = touch.clientX;
@@ -337,16 +336,19 @@ namespace Page.Canvas {
             }
 
             if (currentTouches.length === 1) {
-                Mouse.mouseMove(currentTouches[0].clientX, currentTouches[0].clientY);
+                const firstTouch = currentTouches[0]!;
+                Mouse.mouseMove(firstTouch.clientX, firstTouch.clientY);
             } else if (currentTouches.length === 2) {
-                const newDistance = computeDistance(currentTouches[0], currentTouches[1]);
+                const firstTouch = currentTouches[0]!;
+                const secondTouch = currentTouches[1]!;
+                const newDistance = computeDistance(firstTouch, secondTouch);
 
                 const deltaDistance = (currentDistance - newDistance);
                 const zoomFactor = deltaDistance / currentDistance;
                 currentDistance = newDistance;
 
-                const zoomCenterXClient = 0.5 * (currentTouches[0].clientX + currentTouches[1].clientX);
-                const zoomCenterYClient = 0.5 * (currentTouches[0].clientY + currentTouches[1].clientY);
+                const zoomCenterXClient = 0.5 * (firstTouch.clientX + secondTouch.clientX);
+                const zoomCenterYClient = 0.5 * (firstTouch.clientY + secondTouch.clientY);
                 const zoomCenter = clientToRelative(zoomCenterXClient, zoomCenterYClient);
 
                 for (const observer of mouseWheelObservers) {
@@ -370,15 +372,24 @@ namespace Page.Canvas {
         const suffix = "-indicator-id";
 
         export function getIndicator(id: string): HTMLElement {
-            return getElementBySelector("#" + id + suffix);
+            const element = getElementBySelector("#" + id + suffix);
+            if (!element) {
+                throw new Error(`Could not find indicator '${id}'.`);
+            }
+            return element;
         }
 
         export function getIndicatorSpan(id: string): HTMLSpanElement {
             if (!indicatorSpansCache[id]) { // not yet in cache
                 const fullId = id + suffix;
-                indicatorSpansCache[id] = getElementBySelector("#" + fullId + " span");
+
+                const element = getElementBySelector("#" + fullId + " span");
+                if (!element) {
+                    throw new Error(`Could not find indicator span '${id}'.`);
+                }
+                indicatorSpansCache[id] = element;
             }
-            return indicatorSpansCache[id];
+            return indicatorSpansCache[id]!;
         }
     }
 
@@ -486,7 +497,7 @@ namespace Page.Canvas {
     }
 
     export function setIndicatorsVisibility(visible: boolean): void {
-        const indicators = document.getElementById("indicators");
+        const indicators = document.getElementById("indicators")!;
         indicators.style.display = visible ? "" : "none";
     }
 
@@ -503,7 +514,7 @@ namespace Page.Canvas {
 
     export function setLoaderText(text: string): void {
         if (loader) {
-            loader.querySelector("span").innerText = text;
+            loader.querySelector("span")!.innerText = text;
         }
     }
 

@@ -1,3 +1,5 @@
+/// <reference path="../../helpers.ts"/>
+
 namespace Page.Controls {
     function getElementBySelector(selector: string): HTMLElement | null {
         const elt = document.querySelector(selector);
@@ -32,33 +34,34 @@ namespace Page.Sections {
             return element.style.display !== "none";
         }
 
-        const sectionsOrHr = controlsBlockElement.querySelectorAll("section, hr") as NodeListOf<HTMLElement>;
+        const sectionsOrHr = Page.Helpers.Utils.selectorAll(controlsBlockElement, "section, hr");
 
         //remove duplicate HRs
         let lastWasHr = false;
-        for (let i = 0; i < sectionsOrHr.length; i++) {
-            if (isHr(sectionsOrHr[i])) {
-                sectionsOrHr[i].style.display = lastWasHr ? "none" : "";
+        for (const sectionOrHr of sectionsOrHr) {
+            if (isHr(sectionOrHr)) {
+                sectionOrHr.style.display = lastWasHr ? "none" : "";
                 lastWasHr = true;
-            } else if (isVisible(sectionsOrHr[i])) {
+            } else if (isVisible(sectionOrHr)) {
                 lastWasHr = false;
             }
         }
 
         // remove leading HRs
-        for (let i = 0; i < sectionsOrHr.length; i++) {
-            if (isHr(sectionsOrHr[i])) {
-                sectionsOrHr[i].style.display = "none";
-            } else if (isVisible(sectionsOrHr[i])) {
+        for (const sectionOrHr of sectionsOrHr) {
+            if (isHr(sectionOrHr)) {
+                sectionOrHr.style.display = "none";
+            } else if (isVisible(sectionOrHr)) {
                 break;
             }
         }
 
         // remove trailing HRs
         for (let i = sectionsOrHr.length - 1; i >= 0; i--) {
-            if (isHr(sectionsOrHr[i])) {
-                sectionsOrHr[i].style.display = "none";
-            } else if (isVisible(sectionsOrHr[i])) {
+            const sectionOrHr = sectionsOrHr[i]!;
+            if (isHr(sectionOrHr)) {
+                sectionOrHr.style.display = "none";
+            } else if (isVisible(sectionOrHr)) {
                 break;
             }
         }
@@ -66,7 +69,7 @@ namespace Page.Sections {
 
     export function setVisibility(id: string, visible: boolean): void {
         const section = getElementBySelector("section#section-" + id);
-        if (section) {
+        if (section && section.parentElement) {
             section.style.display = visible ? "" : "none";
             reevaluateSeparatorsVisibility(section.parentElement);
         }

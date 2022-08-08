@@ -43,14 +43,11 @@ namespace Page.Checkbox {
     }
 
     const checkboxesCache = new Page.Helpers.Cache<Checkbox>("Checkbox", () => {
-        const checkboxesList: Checkbox[] = [];
         const selector = "div.checkbox > input[type=checkbox][id]";
-        const elements = document.querySelectorAll(selector) as NodeListOf<HTMLInputElement>;
-        for (let i = 0; i < elements.length; i++) {
-            const checkbox = new Checkbox(elements[i]);
-            checkboxesList.push(checkbox);
-        }
-        return checkboxesList;
+        const elements = Page.Helpers.Utils.selectorAll<HTMLInputElement>(document, selector);
+        return elements.map((element: HTMLInputElement) => {
+            return new Checkbox(element);
+        });
     });
 
     const checkboxesStorage = new Page.Helpers.Storage<Checkbox>("checkbox",

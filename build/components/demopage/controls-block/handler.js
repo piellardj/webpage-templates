@@ -1,3 +1,4 @@
+/// <reference path="../../helpers.ts"/>
 var Page;
 (function (Page) {
     var Controls;
@@ -35,40 +36,43 @@ var Page;
             function isVisible(element) {
                 return element.style.display !== "none";
             }
-            var sectionsOrHr = controlsBlockElement.querySelectorAll("section, hr");
+            var sectionsOrHr = Page.Helpers.Utils.selectorAll(controlsBlockElement, "section, hr");
             //remove duplicate HRs
             var lastWasHr = false;
-            for (var i = 0; i < sectionsOrHr.length; i++) {
-                if (isHr(sectionsOrHr[i])) {
-                    sectionsOrHr[i].style.display = lastWasHr ? "none" : "";
+            for (var _i = 0, sectionsOrHr_1 = sectionsOrHr; _i < sectionsOrHr_1.length; _i++) {
+                var sectionOrHr = sectionsOrHr_1[_i];
+                if (isHr(sectionOrHr)) {
+                    sectionOrHr.style.display = lastWasHr ? "none" : "";
                     lastWasHr = true;
                 }
-                else if (isVisible(sectionsOrHr[i])) {
+                else if (isVisible(sectionOrHr)) {
                     lastWasHr = false;
                 }
             }
             // remove leading HRs
-            for (var i = 0; i < sectionsOrHr.length; i++) {
-                if (isHr(sectionsOrHr[i])) {
-                    sectionsOrHr[i].style.display = "none";
+            for (var _a = 0, sectionsOrHr_2 = sectionsOrHr; _a < sectionsOrHr_2.length; _a++) {
+                var sectionOrHr = sectionsOrHr_2[_a];
+                if (isHr(sectionOrHr)) {
+                    sectionOrHr.style.display = "none";
                 }
-                else if (isVisible(sectionsOrHr[i])) {
+                else if (isVisible(sectionOrHr)) {
                     break;
                 }
             }
             // remove trailing HRs
             for (var i = sectionsOrHr.length - 1; i >= 0; i--) {
-                if (isHr(sectionsOrHr[i])) {
-                    sectionsOrHr[i].style.display = "none";
+                var sectionOrHr = sectionsOrHr[i];
+                if (isHr(sectionOrHr)) {
+                    sectionOrHr.style.display = "none";
                 }
-                else if (isVisible(sectionsOrHr[i])) {
+                else if (isVisible(sectionOrHr)) {
                     break;
                 }
             }
         }
         function setVisibility(id, visible) {
             var section = getElementBySelector("section#section-" + id);
-            if (section) {
+            if (section && section.parentElement) {
                 section.style.display = visible ? "" : "none";
                 reevaluateSeparatorsVisibility(section.parentElement);
             }

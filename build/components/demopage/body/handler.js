@@ -5,10 +5,13 @@ var Page;
         var errorsBlockId = "error-messages";
         var errorsBlock = document.getElementById(errorsBlockId);
         if (!errorsBlock) {
-            console.error("Cannot find element '" + errorsBlockId + "'.");
+            throw new Error("Cannot find element '" + errorsBlockId + "'.");
         }
         function getErrorById(id) {
-            return errorsBlock.querySelector("span[id=error-message-" + id + "]");
+            if (errorsBlock) {
+                return errorsBlock.querySelector("span[id=error-message-" + id + "]");
+            }
+            return null;
         }
         function setErrorMessage(id, message) {
             if (errorsBlock) {

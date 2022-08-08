@@ -16,16 +16,16 @@ namespace Page.Select {
 
         private readonly placeholder: string;
 
-        private currentValue: string | undefined;
+        private currentValue: string | null;
 
         public constructor(container: HTMLElement) {
             this.id = container.id;
 
             this.containerElement = container;
-            this.currentValueElement = container.querySelector(".select-current-value");
-            this.valuesListElement = container.querySelector(".select-values-list");
-            this.placeholder = this.valuesListElement.dataset["placeholder"];
-            this.currentValue = this.currentValueElement.dataset["value"];
+            this.currentValueElement = Page.Helpers.Utils.selector(container, ".select-current-value");
+            this.valuesListElement = Page.Helpers.Utils.selector(container, ".select-values-list");
+            this.placeholder = this.valuesListElement.dataset["placeholder"] || "";
+            this.currentValue = this.currentValueElement.dataset["value"] || null;
 
             this.valueElements = [];
             const elements = this.valuesListElement.querySelectorAll(".select-value[data-value]");
@@ -45,8 +45,8 @@ namespace Page.Select {
                     if (clickedOnValuesList) {
                         for (const valueElement of this.valueElements) {
                             if (valueElement.contains(clickedElement)) {
-                                this.currentValue = valueElement.dataset["value"];
-                                this.currentValueElement.dataset["value"] = this.currentValue;
+                                this.currentValue = valueElement.dataset["value"] || null;
+                                this.currentValueElement.dataset["value"] = this.currentValue || undefined;
                                 this.currentValueElement.textContent = valueElement.textContent;
                                 selectStorage.storeState(this);
                                 this.callObservers();
@@ -106,6 +106,9 @@ namespace Page.Select {
             this.valuesListElement.appendChild(placeholderValue);
 
             const parentNode = this.containerElement.parentNode;
+            if (!parentNode) {
+                throw new Error("Select in not attached");
+            }
             const nextSiblingNode = this.containerElement.nextSibling;
             parentNode.removeChild(this.containerElement);
             document.body.appendChild(this.containerElement);
@@ -128,13 +131,10 @@ namespace Page.Select {
     }
 
     const selectsCache = new Page.Helpers.Cache<Select>("Select", () => {
-        const selectsList: Select[] = [];
-        const containerElements = document.querySelectorAll(".select-container[id]") as NodeListOf<HTMLElement>;
-        for (let i = 0; i < containerElements.length; i++) {
-            const select = new Select(containerElements[i]);
-            selectsList.push(select);
-        }
-        return selectsList;
+        const containerElements = Page.Helpers.Utils.selectorAll(document, ".select-container[id]");
+        return containerElements.map((containerElement: HTMLElement) => {
+            return new Select(containerElement);
+        });
     });
 
     const selectStorage = new Page.Helpers.Storage<Select>("select",

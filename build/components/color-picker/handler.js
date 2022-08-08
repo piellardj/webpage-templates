@@ -110,7 +110,11 @@ var Page;
             }
             Object.defineProperty(ColorPicker.prototype, "value", {
                 get: function () {
-                    return this.element.dataset["currentColor"];
+                    var fromDataset = this.element.dataset["currentColor"];
+                    if (!fromDataset) {
+                        throw new Error("No current color on ColorPicker '".concat(this.id, "'."));
+                    }
+                    return fromDataset;
                 },
                 set: function (newValue) {
                     var previousValue = this.value;
@@ -128,7 +132,11 @@ var Page;
                 configurable: true
             });
             ColorPicker.prototype.attachPopup = function (popup) {
-                this.element.parentElement.appendChild(popup);
+                var parentElement = this.element.parentElement;
+                if (!parentElement) {
+                    throw new Error("ColorPicker '".concat(this.id, "' is not attached."));
+                }
+                parentElement.appendChild(popup);
             };
             ColorPicker.prototype.updateVisiblePart = function () {
                 var hexValue = this.value;
@@ -138,13 +146,10 @@ var Page;
             return ColorPicker;
         }());
         var colorPickersCache = new Page.Helpers.Cache("ColorPicker", function () {
-            var colorPickersList = [];
-            var containers = document.querySelectorAll(".color-picker[id]");
-            for (var i = 0; i < containers.length; i++) {
-                var colorPicker = new ColorPicker(containers[i]);
-                colorPickersList.push(colorPicker);
-            }
-            return colorPickersList;
+            var containers = Page.Helpers.Utils.selectorAll(document, ".color-picker[id]");
+            return containers.map(function (container) {
+                return new ColorPicker(container);
+            });
         });
         var colorPickersStorage = new Page.Helpers.Storage("color-picker", function (colorPicker) {
             return colorPicker.value;
@@ -351,11 +356,12 @@ var Page;
                 container.addEventListener("touchstart", function onTouchStart(event) {
                     isBeingDragged = true;
                     var isFirstTouch = (currentTouchIds.length === 0);
-                    for (var i = 0; i < event.changedTouches.length; ++i) {
-                        var touch = event.changedTouches[i];
+                    var changedTouches = Page.Helpers.Utils.touchArray(event.changedTouches);
+                    for (var _i = 0, changedTouches_1 = changedTouches; _i < changedTouches_1.length; _i++) {
+                        var touch = changedTouches_1[_i];
                         var alreadyRegistered = false;
-                        for (var _i = 0, currentTouchIds_1 = currentTouchIds; _i < currentTouchIds_1.length; _i++) {
-                            var knownTouchId = currentTouchIds_1[_i];
+                        for (var _a = 0, currentTouchIds_1 = currentTouchIds; _a < currentTouchIds_1.length; _a++) {
+                            var knownTouchId = currentTouchIds_1[_a];
                             if (touch.identifier === knownTouchId) {
                                 alreadyRegistered = true;
                                 break;
@@ -366,14 +372,21 @@ var Page;
                         }
                     }
                     if (isFirstTouch && currentTouchIds.length > 0) {
-                        var coords = absoluteToRelative(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
-                        callback(coords);
+                        var changedTouch = changedTouches[0];
+                        if (!changedTouch) {
+                            console.error("Should not happen: ColorPicker missed first touch.");
+                        }
+                        else {
+                            var coords = absoluteToRelative(changedTouch.clientX, changedTouch.clientY);
+                            callback(coords);
+                        }
                     }
                 }, false);
                 window.addEventListener("touchend", function onTouchEnd(event) {
                     var knewAtLeastOneTouch = (currentTouchIds.length > 0);
-                    for (var i = 0; i < event.changedTouches.length; ++i) {
-                        var touch = event.changedTouches[i];
+                    var changedTouches = Page.Helpers.Utils.touchArray(event.changedTouches);
+                    for (var _i = 0, changedTouches_2 = changedTouches; _i < changedTouches_2.length; _i++) {
+                        var touch = changedTouches_2[_i];
                         for (var iC = 0; iC < currentTouchIds.length; ++iC) {
                             if (touch.identifier === currentTouchIds[iC]) {
                                 currentTouchIds.splice(iC, 1);
@@ -387,11 +400,11 @@ var Page;
                 });
                 window.addEventListener("touchmove", function onTouchMove(event) {
                     if (currentTouchIds.length > 0 && isBeingDragged) {
-                        var touches = event.changedTouches;
-                        for (var i = 0; i < touches.length; ++i) {
-                            var touch = touches[i];
-                            for (var _i = 0, currentTouchIds_2 = currentTouchIds; _i < currentTouchIds_2.length; _i++) {
-                                var knownTouch = currentTouchIds_2[_i];
+                        var touches = Page.Helpers.Utils.touchArray(event.changedTouches);
+                        for (var _i = 0, touches_1 = touches; _i < touches_1.length; _i++) {
+                            var touch = touches_1[_i];
+                            for (var _a = 0, currentTouchIds_2 = currentTouchIds; _a < currentTouchIds_2.length; _a++) {
+                                var knownTouch = currentTouchIds_2[_a];
                                 if (touch.identifier === knownTouch) {
                                     var coords = absoluteToRelative(touch.clientX, touch.clientY);
                                     callback(coords);

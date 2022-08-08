@@ -1,4 +1,46 @@
 namespace Page.Helpers {
+    type SelectionBase = Document | HTMLElement;
+    export namespace Utils {
+        export function selectorAll<T extends HTMLElement>(base: SelectionBase, selector: string): T[] {
+            const elements = base.querySelectorAll<T>(selector);
+            const result: T[] = [];
+            for (let i = 0; i < elements.length; i++) {
+                result.push(elements[i]!);
+            }
+            return result;
+        }
+
+        /** @throws if no element was found */
+        export function selector<T extends HTMLElement>(base: SelectionBase, selector: string): T {
+            const element = base.querySelector<T>(selector);
+            if (!element) {
+                throw new Error(`No element matching '${selector}'.`);
+            }
+            return element;
+        }
+
+        export function touchArray(touchList: TouchList): Touch[] {
+            const result: Touch[] = [];
+            for (let i = 0; i < touchList.length; i++) {
+                result.push(touchList[i]!);
+            }
+            return result;
+        }
+
+        export function findFirst<T>(array: T[], predicate: (e: T) => boolean): number {
+            if (typeof Array.prototype.findIndex === "function") {
+                return array.findIndex(predicate);
+            } else {
+                for (let i = 0; i < array.length; i++) {
+                    if (predicate(array[i]!)) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+        }
+    }
+
     export namespace URL {
         const PARAMETERS_PREFIX = "page";
 
@@ -26,8 +68,8 @@ namespace Page.Helpers {
                     for (const parameter of splitParameters) {
                         const keyValue = parameter.split(URLBuilder.keyValueDelimiter);
                         if (keyValue.length === 2) {
-                            const key = decodeURIComponent(keyValue[0]);
-                            const value = decodeURIComponent(keyValue[1]);
+                            const key = decodeURIComponent(keyValue[0]!);
+                            const value = decodeURIComponent(keyValue[1]!);
                             this.queryParameters[key] = value;
                         } else {
                             console.log("Unable to parse query string parameter '" + parameter + "'.");
@@ -47,7 +89,7 @@ namespace Page.Helpers {
             public loopOnParameters(prefix: string, callback: (name: string, value: string) => unknown): void {
                 for (const parameterName of Object.keys(this.queryParameters)) {
                     if (parameterName.indexOf(prefix) === 0 && parameterName.length > prefix.length) {
-                        const parameterValue = this.queryParameters[parameterName];
+                        const parameterValue = this.queryParameters[parameterName]!;
 
                         const shortParameterName = parameterName.substring(prefix.length);
                         callback(shortParameterName, parameterValue);
@@ -59,7 +101,7 @@ namespace Page.Helpers {
             public buildUrl(): string {
                 const parameters: string[] = [];
                 for (const parameterName of Object.keys(this.queryParameters)) {
-                    const parameterValue = this.queryParameters[parameterName];
+                    const parameterValue = this.queryParameters[parameterName]!;
                     const encodedName = encodeURIComponent(parameterName);
                     const encodedValue = encodeURIComponent(parameterValue);
                     parameters.push(encodedName + URLBuilder.keyValueDelimiter + encodedValue);
@@ -150,7 +192,7 @@ namespace Page.Helpers {
             if (!this.cacheObject) {
                 this.load();
             }
-            return this.cacheObject!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+            return this.cacheObject!;
         }
 
         private loadCacheObject(): InternalCacheType<T> {

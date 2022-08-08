@@ -148,11 +148,19 @@ namespace Page.ColorPicker {
         }
 
         public get value(): ColorSpace.Hexa {
-            return this.element.dataset["currentColor"];
+            const fromDataset = this.element.dataset["currentColor"];
+            if (!fromDataset) {
+                throw new Error(`No current color on ColorPicker '${this.id}'.`);
+            }
+            return fromDataset;
         }
 
         public attachPopup(popup: HTMLElement): void {
-            this.element.parentElement.appendChild(popup);
+            const parentElement = this.element.parentElement;
+            if (!parentElement) {
+                throw new Error(`ColorPicker '${this.id}' is not attached.`);
+            }
+            parentElement.appendChild(popup);
         }
 
         private updateVisiblePart(): void {
@@ -163,13 +171,10 @@ namespace Page.ColorPicker {
     }
 
     const colorPickersCache = new Page.Helpers.Cache<ColorPicker>("ColorPicker", () => {
-        const colorPickersList: ColorPicker[] = [];
-        const containers = document.querySelectorAll(".color-picker[id]") as NodeListOf<HTMLElement>;
-        for (let i = 0; i < containers.length; i++) {
-            const colorPicker = new ColorPicker(containers[i]);
-            colorPickersList.push(colorPicker);
-        }
-        return colorPickersList;
+        const containers = Page.Helpers.Utils.selectorAll(document, ".color-picker[id]");
+        return containers.map((container: HTMLElement) => {
+            return new ColorPicker(container);
+        });
     });
 
     const colorPickersStorage = new Page.Helpers.Storage<ColorPicker>("color-picker",
@@ -436,8 +441,8 @@ namespace Page.ColorPicker {
                 isBeingDragged = true;
                 const isFirstTouch = (currentTouchIds.length === 0);
 
-                for (let i = 0; i < event.changedTouches.length; ++i) {
-                    const touch = event.changedTouches[i];
+                const changedTouches = Helpers.Utils.touchArray(event.changedTouches);
+                for (const touch of changedTouches) {
                     let alreadyRegistered = false;
                     for (const knownTouchId of currentTouchIds) {
                         if (touch.identifier === knownTouchId) {
@@ -452,15 +457,20 @@ namespace Page.ColorPicker {
                 }
 
                 if (isFirstTouch && currentTouchIds.length > 0) {
-                    const coords = absoluteToRelative(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
-                    callback(coords);
+                    const changedTouch = changedTouches[0];
+                    if (!changedTouch) {
+                        console.error("Should not happen: ColorPicker missed first touch.");
+                    } else {
+                        const coords = absoluteToRelative(changedTouch.clientX, changedTouch.clientY);
+                        callback(coords);
+                    }
                 }
             }, false);
             window.addEventListener("touchend", function onTouchEnd(event: TouchEvent): void {
                 const knewAtLeastOneTouch = (currentTouchIds.length > 0);
 
-                for (let i = 0; i < event.changedTouches.length; ++i) {
-                    const touch = event.changedTouches[i];
+                const changedTouches = Helpers.Utils.touchArray(event.changedTouches);
+                for (const touch of changedTouches) {
                     for (let iC = 0; iC < currentTouchIds.length; ++iC) {
                         if (touch.identifier === currentTouchIds[iC]) {
                             currentTouchIds.splice(iC, 1);
@@ -475,9 +485,8 @@ namespace Page.ColorPicker {
             });
             window.addEventListener("touchmove", function onTouchMove(event: TouchEvent): void {
                 if (currentTouchIds.length > 0 && isBeingDragged) {
-                    const touches = event.changedTouches;
-                    for (let i = 0; i < touches.length; ++i) {
-                        const touch = touches[i];
+                    const touches = Helpers.Utils.touchArray(event.changedTouches);
+                    for (const touch of touches) {
                         for (const knownTouch of currentTouchIds) {
                             if (touch.identifier === knownTouch) {
                                 const coords = absoluteToRelative(touch.clientX, touch.clientY);
@@ -487,8 +496,6 @@ namespace Page.ColorPicker {
                             }
                         }
                     }
-
-
                 }
             }, { passive: false });
         }

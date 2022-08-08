@@ -11,17 +11,17 @@ var Page;
             return elt;
         }
         function getCanvasById(id) {
-            return getElementBySelector("canvas[id=" + id + "]");
+            return Page.Helpers.Utils.selector(document, "canvas[id=" + id + "]");
         }
         function getCheckboxFromId(id) {
-            return getElementBySelector("input[type=checkbox][id=" + id + "]");
+            return Page.Helpers.Utils.selector(document, "input[type=checkbox][id=" + id + "]");
         }
-        var canvasContainer = document.getElementById("canvas-container");
+        var canvasContainer = Page.Helpers.Utils.selector(document, "#canvas-container");
         var canvas = getCanvasById("canvas");
-        var buttonsColumn = document.getElementById("canvas-buttons-column");
+        var buttonsColumn = Page.Helpers.Utils.selector(document, "canvas-buttons-column");
         var fullscreenCheckbox = getCheckboxFromId("fullscreen-checkbox-id");
         var sidePaneCheckbox = getCheckboxFromId("side-pane-checkbox-id");
-        var loader = canvasContainer.querySelector(".loader");
+        var loader = Page.Helpers.Utils.selector(canvasContainer, ".loader");
         var maxWidth = 512;
         var maxHeight = 512;
         function bindCanvasButtons() {
@@ -71,8 +71,7 @@ var Page;
                 canvasContainer.style.maxWidth = inPx(maxWidth);
                 canvasContainer.style.maxHeight = inPx(maxHeight);
             }
-            if (size[0] !== lastCanvasSize[0] ||
-                size[1] !== lastCanvasSize[1]) {
+            if (size[0] !== lastCanvasSize[0] || size[1] !== lastCanvasSize[1]) {
                 lastCanvasSize = getCanvasSize();
                 for (var _i = 0, canvasResizeObservers_1 = canvasResizeObservers; _i < canvasResizeObservers_1.length; _i++) {
                     var observer = canvasResizeObservers_1[_i];
@@ -226,11 +225,12 @@ var Page;
             }
             function handleTouchStart(event) {
                 var isFirstTouch = (currentTouches.length === 0);
-                for (var i = 0; i < event.changedTouches.length; ++i) {
-                    var touch = event.changedTouches[i];
+                var changedTouches = Page.Helpers.Utils.touchArray(event.changedTouches);
+                for (var _i = 0, changedTouches_1 = changedTouches; _i < changedTouches_1.length; _i++) {
+                    var touch = changedTouches_1[_i];
                     var alreadyRegistered = false;
-                    for (var _i = 0, currentTouches_1 = currentTouches; _i < currentTouches_1.length; _i++) {
-                        var knownTouch = currentTouches_1[_i];
+                    for (var _a = 0, currentTouches_1 = currentTouches; _a < currentTouches_1.length; _a++) {
+                        var knownTouch = currentTouches_1[_a];
                         if (touch.identifier === knownTouch.id) {
                             alreadyRegistered = true;
                             break;
@@ -254,8 +254,9 @@ var Page;
             }
             function handleTouchEnd(event) {
                 var knewAtLeastOneTouch = (currentTouches.length > 0);
-                for (var i = 0; i < event.changedTouches.length; ++i) {
-                    var touch = event.changedTouches[i];
+                var changedTouches = Page.Helpers.Utils.touchArray(event.changedTouches);
+                for (var _i = 0, changedTouches_2 = changedTouches; _i < changedTouches_2.length; _i++) {
+                    var touch = changedTouches_2[_i];
                     for (var iC = 0; iC < currentTouches.length; ++iC) {
                         if (touch.identifier === currentTouches[iC].id) {
                             currentTouches.splice(iC, 1);
@@ -264,7 +265,8 @@ var Page;
                     }
                 }
                 if (currentTouches.length === 1) {
-                    var newPos = clientToRelative(currentTouches[0].clientX, currentTouches[0].clientY);
+                    var firstTouch = currentTouches[0];
+                    var newPos = clientToRelative(firstTouch.clientX, firstTouch.clientY);
                     Mouse.setMousePosition(newPos[0], newPos[1]);
                 }
                 else if (knewAtLeastOneTouch && currentTouches.length === 0) {
@@ -272,11 +274,11 @@ var Page;
                 }
             }
             function handleTouchMove(event) {
-                var touches = event.changedTouches;
-                for (var i = 0; i < touches.length; ++i) {
-                    var touch = touches[i];
-                    for (var _i = 0, currentTouches_2 = currentTouches; _i < currentTouches_2.length; _i++) {
-                        var knownTouch = currentTouches_2[_i];
+                var touches = Page.Helpers.Utils.touchArray(event.changedTouches);
+                for (var _i = 0, touches_1 = touches; _i < touches_1.length; _i++) {
+                    var touch = touches_1[_i];
+                    for (var _a = 0, currentTouches_2 = currentTouches; _a < currentTouches_2.length; _a++) {
+                        var knownTouch = currentTouches_2[_a];
                         if (touch.identifier === knownTouch.id) {
                             knownTouch.clientX = touch.clientX;
                             knownTouch.clientY = touch.clientY;
@@ -288,18 +290,21 @@ var Page;
                     event.preventDefault();
                 }
                 if (currentTouches.length === 1) {
-                    Mouse.mouseMove(currentTouches[0].clientX, currentTouches[0].clientY);
+                    var firstTouch = currentTouches[0];
+                    Mouse.mouseMove(firstTouch.clientX, firstTouch.clientY);
                 }
                 else if (currentTouches.length === 2) {
-                    var newDistance = computeDistance(currentTouches[0], currentTouches[1]);
+                    var firstTouch = currentTouches[0];
+                    var secondTouch = currentTouches[1];
+                    var newDistance = computeDistance(firstTouch, secondTouch);
                     var deltaDistance = (currentDistance - newDistance);
                     var zoomFactor = deltaDistance / currentDistance;
                     currentDistance = newDistance;
-                    var zoomCenterXClient = 0.5 * (currentTouches[0].clientX + currentTouches[1].clientX);
-                    var zoomCenterYClient = 0.5 * (currentTouches[0].clientY + currentTouches[1].clientY);
+                    var zoomCenterXClient = 0.5 * (firstTouch.clientX + secondTouch.clientX);
+                    var zoomCenterYClient = 0.5 * (firstTouch.clientY + secondTouch.clientY);
                     var zoomCenter = clientToRelative(zoomCenterXClient, zoomCenterYClient);
-                    for (var _a = 0, mouseWheelObservers_2 = mouseWheelObservers; _a < mouseWheelObservers_2.length; _a++) {
-                        var observer = mouseWheelObservers_2[_a];
+                    for (var _b = 0, mouseWheelObservers_2 = mouseWheelObservers; _b < mouseWheelObservers_2.length; _b++) {
+                        var observer = mouseWheelObservers_2[_b];
                         observer(5 * zoomFactor, zoomCenter);
                     }
                 }
@@ -315,13 +320,21 @@ var Page;
             var indicatorSpansCache = {};
             var suffix = "-indicator-id";
             function getIndicator(id) {
-                return getElementBySelector("#" + id + suffix);
+                var element = getElementBySelector("#" + id + suffix);
+                if (!element) {
+                    throw new Error("Could not find indicator '".concat(id, "'."));
+                }
+                return element;
             }
             Indicators.getIndicator = getIndicator;
             function getIndicatorSpan(id) {
                 if (!indicatorSpansCache[id]) { // not yet in cache
                     var fullId = id + suffix;
-                    indicatorSpansCache[id] = getElementBySelector("#" + fullId + " span");
+                    var element = getElementBySelector("#" + fullId + " span");
+                    if (!element) {
+                        throw new Error("Could not find indicator span '".concat(id, "'."));
+                    }
+                    indicatorSpansCache[id] = element;
                 }
                 return indicatorSpansCache[id];
             }

@@ -8,9 +8,9 @@ var Page;
                 var _this = this;
                 this.onInputObservers = [];
                 this.onChangeObservers = [];
-                this.inputElement = container.querySelector("input[type='range']");
-                this.progressLeftElement = container.querySelector(".range-progress-left");
-                this.tooltipElement = container.querySelector("output.range-tooltip");
+                this.inputElement = Page.Helpers.Utils.selector(container, "input[type='range']");
+                this.progressLeftElement = Page.Helpers.Utils.selector(container, ".range-progress-left");
+                this.tooltipElement = Page.Helpers.Utils.selector(container, "output.range-tooltip");
                 this.id = this.inputElement.id;
                 var inputMin = +this.inputElement.min;
                 var inputMax = +this.inputElement.max;
@@ -100,15 +100,12 @@ var Page;
             return Range;
         }());
         var rangesCache = new Page.Helpers.Cache("Range", function () {
-            var rangesList = [];
             var selector = ".range-container > input[type='range']";
-            var rangeElements = document.querySelectorAll(selector);
-            for (var i = 0; i < rangeElements.length; i++) {
-                var container = rangeElements[i].parentElement;
-                var range = new Range(container);
-                rangesList.push(range);
-            }
-            return rangesList;
+            var rangeElements = Page.Helpers.Utils.selectorAll(document, selector);
+            return rangeElements.map(function (rangeElement) {
+                var container = rangeElement.parentElement;
+                return new Range(container);
+            });
         });
         var rangesStorage = new Page.Helpers.Storage("range", function (range) {
             return "" + range.value;

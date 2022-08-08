@@ -9,10 +9,11 @@ var Page;
                 this.observers = [];
                 this.id = Tabs.computeShortId(container.id);
                 this.inputElements = [];
-                var inputElements = container.querySelectorAll("input");
-                for (var i = 0; i < inputElements.length; i++) {
-                    this.inputElements.push(inputElements[i]);
-                    inputElements[i].addEventListener("change", function (event) {
+                var inputElements = Page.Helpers.Utils.selectorAll(container, "input");
+                for (var _i = 0, inputElements_1 = inputElements; _i < inputElements_1.length; _i++) {
+                    var inputElement = inputElements_1[_i];
+                    this.inputElements.push(inputElement);
+                    inputElement.addEventListener("change", function (event) {
                         event.stopPropagation();
                         _this.reloadValues();
                         tabsStorage.storeState(_this);
@@ -69,13 +70,10 @@ var Page;
             return Tabs;
         }());
         var tabsCache = new Page.Helpers.Cache("Tabs", function () {
-            var tabsList = [];
-            var containerElements = document.querySelectorAll("div.tabs[id]");
-            for (var i = 0; i < containerElements.length; i++) {
-                var tabs = new Tabs(containerElements[i]);
-                tabsList.push(tabs);
-            }
-            return tabsList;
+            var containerElements = Page.Helpers.Utils.selectorAll(document, "div.tabs[id]");
+            return containerElements.map(function (containerElement) {
+                return new Tabs(containerElement);
+            });
         });
         var tabsStorage = new Page.Helpers.Storage("tabs", function (tabs) {
             var valuesList = tabs.values;
