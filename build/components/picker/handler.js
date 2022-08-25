@@ -120,6 +120,7 @@ var Page;
             var picker = pickersCache.getByIdSafe(id);
             if (picker) {
                 picker.value = serializedValue;
+                picker.callObservers();
                 return true;
             }
             return false;
