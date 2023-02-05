@@ -28,6 +28,7 @@ $card-transition-time: .1s ease-in-out;
     overflow: hidden;
     box-sizing: border-box;
 
+    &.active .card-background.blurred,
     &:hover .card-background.blurred {
         filter: saturate(1.5);
     }
@@ -45,6 +46,7 @@ $card-transition-time: .1s ease-in-out;
 picture.card-background {
     @include utils.transition(opacity $card-transition-time);
 
+    .card-frame.active > &,
     .card-frame:hover > & {
         opacity: 0;
     }
@@ -76,6 +78,7 @@ picture.card-background {
     &.card-reveal {
         opacity: 0;
 
+        .card-frame.active > &,
         .card-frame:hover > & {
             opacity: 1;
         }
