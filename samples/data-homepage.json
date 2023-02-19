@@ -7,6 +7,7 @@
             "cards": [
                 {
                     "background": "images/projects/pool.jpg",
+                    "background_blurred": "images/projects/pool_blurred.jpg",
                     "title": "Pool",
                     "body": [
                         "This project is a WebGL water simulation running entirely on your GPU.\nYou can interact with the water, and visualize it both in 2D and 3D.",
@@ -19,6 +20,7 @@
                 },
                 {
                     "background": "images/projects/navier-stokes.jpg",
+                    "background_blurred": "images/projects/navier-stokes_blurred.jpg",
                     "title": "Navier-Stokes",
                     "body": [
                         "This project is a WebGL incompressible fluid simulation running entirely on your GPU.\nYou can interact with the fluid with the left mouse button and visualize both the velocity and the pressure of the fluid.",
@@ -30,6 +32,7 @@
                 },
                 {
                     "background": "images/projects/waterfall.jpg",
+                    "background_blurred": "images/projects/waterfall_blurred.jpg",
                     "title": "Waterfall",
                     "body": [
                         "'Waterfall' is a simple waterfall simulation, based on a particle system.\nThe particles bounce off obstacles, creating water streams and droplets.",
@@ -41,6 +44,7 @@
                 },
                 {
                     "background": "images/projects/paint.jpg",
+                    "background_blurred": "images/projects/paint_blurred.jpg",
                     "title": "Paint",
                     "body": [
                         "'Paint' is a dynamic painting simulation.\nThe moving paint strokes highlight the geometry, and you can interact with them to shape the painting.",
@@ -57,6 +61,7 @@
             "cards": [
                 {
                     "background": "images/projects/voxelizer.jpg",
+                    "background_blurred": "images/projects/voxelizer_blurred.jpg",
                     "title": "Voxelizer",
                     "body": [
                         "'Voxelizer' is a project that efficiently turns any 3D mesh into a grid of voxels.\nThe voxels are stored as a compact bit array.",
@@ -68,6 +73,7 @@
                 },
                 {
                     "background": "images/projects/parallax_256.jpg",
+                    "background_blurred": "images/projects/parallax_blurred.jpg",
                     "title": "Parallax mapping",
                     "body": [
                         "'Parallax' is a simple demonstration of parallax mapping, with a comparison to other techniques such as normal mapping."
@@ -78,6 +84,7 @@
                 },
                 {
                     "background": "images/projects/fractal.jpg",
+                    "background_blurred": "images/projects/fractals_blurred.jpg",
                     "title": "Fractal navigator",
                     "body": [
                         "'Fractal' is a Mandelbrot and Julia fractal navigator.",
@@ -94,6 +101,7 @@
             "cards": [
                 {
                     "background": "images/projects/bomberman.jpg",
+                    "background_blurred": "images/projects/bomberman_blurred.jpg",
                     "title": "Bomberman",
                     "body": [
                         "'Bomberman' is one of my first projects.\nIt is my take on the 80's classic."
