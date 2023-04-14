@@ -1,6 +1,6 @@
 {
   "name": "webpage-templates",
-  "version": "3.9.7",
+  "version": "3.9.8",
   "description": "Static webpage generator based on EJS/SASS/TS",
   "repository": "github:piellardj/webpage-templates",
   "main": "build/script/index.js",
@@ -25,8 +25,8 @@
   "author": "“Jérémie PIELLARD <jeremie.piellard@gmail.com> (https://github.com/piellardj)",
   "license": "ISC",
   "dependencies": {
-    "ejs": "^3.1.8",
-    "fs-extra": "^11.1.0",
+    "ejs": "^3.1.9",
+    "fs-extra": "^11.1.1",
     "pretty": "^2.0.0",
     "shx": "^0.3.4"
   },
@@ -34,16 +34,16 @@
     "@types/ejs": "^3.1.2",
     "@types/fs-extra": "^11.0.1",
     "@types/minimist": "^1.2.2",
-    "@types/node": "^18.14.0",
-    "@typescript-eslint/eslint-plugin": "^5.52.0",
-    "@typescript-eslint/parser": "^5.52.0",
-    "eslint": "^8.34.0",
+    "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
+    "eslint": "^8.38.0",
     "minimist": "^1.2.8",
-    "sass": "^1.58.3",
-    "stylelint": "^15.1.0",
-    "stylelint-config-recommended-scss": "^9.0.1",
+    "sass": "^1.62.0",
+    "stylelint": "^15.4.0",
+    "stylelint-config-recommended-scss": "^10.0.0",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.5",
+    "typescript": "^5.0.4",
     "uglify-js": "^3.17.4"
   }
 }
