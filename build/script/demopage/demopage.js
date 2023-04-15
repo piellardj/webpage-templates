@@ -45,7 +45,7 @@ function buildPageData(demopageData, destinationDir) {
     if (demopageData.readme) {
         var readmeFolder = "readme";
         var readmeDestFolder = path.join(destinationDir, readmeFolder);
-        demopageBodyData.readmeLink = "/".concat(readmeFolder);
+        demopageBodyData.readmeLink = "https://piellardj.github.io/".concat(demopageData.githubProjectName, "/").concat(readmeFolder);
         Readmepage.build({
             readmeFilepath: demopageData.readme.filepath,
             branchName: demopageData.readme.branchName,

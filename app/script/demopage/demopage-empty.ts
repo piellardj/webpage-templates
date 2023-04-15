@@ -13,7 +13,7 @@ function buildPageData(demopageEmptyData: IDemopageEmptyData, destinationDir: st
     if (demopageEmptyData.readme) {
         const readmeFolder = "readme";
         const readmeDestFolder = path.join(destinationDir, readmeFolder);
-        demopageBodyEmptyData.readmeLink = `/${readmeFolder}`;
+        demopageBodyEmptyData.readmeLink = `https://piellardj.github.io/${demopageEmptyData.githubProjectName}/${readmeFolder}`;
 
         Readmepage.build({
             readmeFilepath: demopageEmptyData.readme.filepath,
