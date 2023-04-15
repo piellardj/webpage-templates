@@ -1,0 +1,76 @@
+@use 'common/theme';
+@use '../../link/style.scss';
+
+$border-radius: 8px;
+
+:root {
+    --color-code: #e0e0e0;
+
+    @media (prefers-color-scheme: dark) {
+        --color-code: #343434;
+    }
+}
+
+$color-code: var(--color-code);
+
+body {
+    max-width: 100%;
+}
+
+.contents {
+    max-width: 900px;
+    margin: auto;
+    padding: 16px;
+    border-radius: $border-radius;
+    @include theme.block-border(border);
+    @include theme.block-background-color(background);
+}
+
+h1 {
+    text-align: center;
+}
+
+pre {
+    overflow-x: auto;
+    background: $color-code;
+    padding: 4px 16px;
+    border-radius: $border-radius;
+    line-height: 1.45;
+
+    &::-webkit-scrollbar {
+        width: 16px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-width: 6px;
+        border-style: solid;
+        border-radius: 8px;
+        border-color: $color-code;
+        @include theme.scrollbar-color(background-color);
+    }
+
+    &:hover::-webkit-scrollbar-thumb {
+        border-width: 5px;
+    }
+
+    code {
+        padding: 0;
+    }
+}
+
+code {
+    background: $color-code;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 85%;
+}
+
+video,
+img {
+    max-width: 100%;
+    border-radius: $border-radius;
+}

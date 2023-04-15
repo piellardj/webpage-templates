@@ -23,10 +23,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Homepage = exports.DemopageEmpty = exports.Demopage = void 0;
+exports.Readmepage = exports.Homepage = exports.DemopageEmpty = exports.Demopage = void 0;
 var Demopage = __importStar(require("./demopage/demopage"));
 exports.Demopage = Demopage;
 var DemopageEmpty = __importStar(require("./demopage/demopage-empty"));
 exports.DemopageEmpty = DemopageEmpty;
 var Homepage = __importStar(require("./homepage/homepage"));
 exports.Homepage = Homepage;
+var Readmepage = __importStar(require("./readmepage/readmepage"));
+exports.Readmepage = Readmepage;
