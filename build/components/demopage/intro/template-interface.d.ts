@@ -5,4 +5,5 @@ export interface IIntro {
     introduction: IParagraphs["paragraphs"];
     githubProjectName: string;
     additionalLinks: ILink[];
+    readmeLink: string | null;
 }

@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -26,10 +37,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.supportedControls = exports.build = void 0;
 var path = require("path");
 var Builder = __importStar(require("../page-builder"));
+var Readmepage = __importStar(require("../readmepage/readmepage"));
 var template_interface_1 = require("../../components/demopage/controls-block/template-interface");
 Object.defineProperty(exports, "supportedControls", { enumerable: true, get: function () { return template_interface_1.supportedControls; } });
-function buildPageData(demopageData) {
-    var demopageBodyData = demopageData;
+function buildPageData(demopageData, destinationDir) {
+    var demopageBodyData = __assign(__assign({}, demopageData), { readmeLink: null });
+    if (demopageData.readme) {
+        var readmeFolder = "readme";
+        var readmeDestFolder = path.join(destinationDir, readmeFolder);
+        demopageBodyData.readmeLink = "/".concat(readmeFolder);
+        Readmepage.build({
+            readmeFilepath: demopageData.readme.filepath,
+            branchName: demopageData.readme.branchName,
+            description: demopageData.description,
+            projectName: demopageData.title,
+            repoName: demopageData.githubProjectName,
+        }, readmeDestFolder);
+    }
     var demopageBodyEjs = Builder.CustomEjs.loadComponent(path.join("demopage", "body"));
     var demopageBodyStr = Builder.CustomEjs.render(demopageBodyEjs, demopageBodyData);
     return {
@@ -46,7 +70,7 @@ function buildPageData(demopageData) {
  * @param options Optional build options
  */
 function build(data, destinationDir, options) {
-    var pageData = buildPageData(data);
+    var pageData = buildPageData(data, destinationDir);
     var adjustCanvasScript = "Page.Canvas.setMaxSize(".concat(data.canvas.width, ",").concat(data.canvas.height, ");");
     var minifyScript = (typeof options !== "undefined") ? !options.debug : false;
     return Builder.buildPage(destinationDir, pageData, {

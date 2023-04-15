@@ -24,3 +24,10 @@
     text-align: justify;
     text-indent: 1em;
 }
+
+.project-links {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    text-indent: 0;
+}

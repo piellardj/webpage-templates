@@ -52,9 +52,9 @@ function buildPageData(readmepageData) {
     return {
         bodyStr: readmepageBodyStr,
         cssFiles: [],
-        description: "TODO DESCRIPTION",
+        description: "Readme page of my project '".concat(readmepageData.projectName, "'. ").concat(readmepageData.description),
         scriptFiles: [],
-        title: "TODO TITLE", // TODO
+        title: "".concat(readmepageData.projectName, " - Readme"),
     };
 }
 /**

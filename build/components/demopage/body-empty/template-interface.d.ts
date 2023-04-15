@@ -4,5 +4,6 @@ export interface IBodyEmpty {
     introduction: IIntro["introduction"];
     githubProjectName: IIntro["githubProjectName"];
     additionalLinks: IIntro["additionalLinks"];
+    readmeLink: string | null;
     body: string;
 }

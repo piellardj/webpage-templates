@@ -4,9 +4,13 @@ interface IDemopageEmptyData {
     title: string;
     introduction: IDemopageBody["introduction"];
     githubProjectName: IDemopageBody["githubProjectName"];
+    readme?: {
+        filepath: string;
+        branchName: string;
+    };
     additionalLinks: IDemopageBody["additionalLinks"];
+    styleFiles: string[];
     scriptFiles: string[];
-    cssFiles: string[];
     body: string;
 }
 export type { IDemopageEmptyData };

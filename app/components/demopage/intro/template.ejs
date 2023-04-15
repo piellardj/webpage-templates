@@ -6,7 +6,13 @@
 
         <br>
 
-        #include('link', {href: "https://github.com/piellardj/" + githubProjectName, text: "More on GitHub"})
+        <div class="project-links">
+            #include('link', {href: "https://github.com/piellardj/" + githubProjectName, text: "More on GitHub"})
+
+            # if (typeof readmeLink === "string") {
+                #include('link', {href: readmeLink, text: "Explanations"})
+            # }
+        </div>
 
         # if (typeof additionalLinks !== "undefined" && additionalLinks.length > 0) {
             <br/>

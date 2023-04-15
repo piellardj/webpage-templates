@@ -3,6 +3,7 @@
 
     # const date = new Date();
     # const version = encodeURIComponent(date.toISOString());
+    # if (description.includes("\"")) { throw new Error("No quotes allowed in description."); }
   <head>
     <meta charset="utf-8">
     <meta name="description" content="#=(description)" />

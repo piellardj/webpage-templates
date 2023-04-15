@@ -1,5 +1,7 @@
 {
     "readmeFilepath": "samples\\README.md",
+    "projectName": "Water",
+    "description": "WebGPU water simulation handling a million particles",
     "repoName": "water-webgpu",
     "branchName": "main"
 }

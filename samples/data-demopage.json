@@ -6,6 +6,10 @@
         "It can be split into several paragraphs if needed."
     ],
     "githubProjectName": "GITHUB_PROJECTNAME",
+    "readme": {
+        "filepath": "./README.md",
+        "branchName": "BRANCH"
+    },
     "additionalLinks": [
         {
             "href": "link1",

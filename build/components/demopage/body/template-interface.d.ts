@@ -6,6 +6,7 @@ export interface IBody {
     introduction: IIntro["introduction"];
     githubProjectName: IIntro["githubProjectName"];
     additionalLinks: IIntro["additionalLinks"];
+    readmeLink: string | null;
     indicators: ICanvas["indicators"];
     canvas: {
         enableFullscreen: ICanvas["enableFullscreen"];

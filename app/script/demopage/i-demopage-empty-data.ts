@@ -6,6 +6,10 @@ interface IDemopageEmptyData {
     introduction: IDemopageBody["introduction"];
 
     githubProjectName: IDemopageBody["githubProjectName"];
+    readme?: {
+        filepath: string;
+        branchName: string;
+    },
     additionalLinks: IDemopageBody["additionalLinks"];
 
     styleFiles: string[];

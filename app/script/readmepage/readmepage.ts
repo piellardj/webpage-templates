@@ -36,9 +36,9 @@ function buildPageData(readmepageData: IReadmePageData): IPage {
     return {
         bodyStr: readmepageBodyStr,
         cssFiles: [],
-        description: "TODO DESCRIPTION", // TODO
+        description: `Readme page of my project '${readmepageData.projectName}'. ${readmepageData.description}`,
         scriptFiles: [],
-        title: "TODO TITLE", // TODO
+        title: `${readmepageData.projectName} - Readme`,
     };
 }
 

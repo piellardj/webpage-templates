@@ -6,11 +6,12 @@ a {
     font-weight: bold;
     text-decoration: none;
     @include utils.box-sizing(border-box);
+    border-width: 0 0 2px;
+    border-style: solid;
+    border-color: transparent;
 
     &:focus,
     &:hover {
-        border-width: 0 0 2px;
-        border-style: solid;
         @include theme.color-control-accent(border-color);
     }
 }
