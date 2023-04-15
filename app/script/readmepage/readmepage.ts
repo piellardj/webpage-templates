@@ -53,6 +53,7 @@ function build(data: IReadmePageData, destinationDir: string): void {
     Builder.buildPage(destinationDir, pageData, {
         noScript: true,
     });
+    Builder.CustomEjs.clearLoadedComponents();
 }
 
 export { build };

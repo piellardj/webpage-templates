@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.render = exports.loadedComponents = exports.loadComponent = void 0;
+exports.render = exports.loadedComponents = exports.loadComponent = exports.clearLoadedComponents = void 0;
 var ejs = require("ejs");
 var fs = require("fs");
 var path = require("path");
@@ -11,6 +11,10 @@ exports.loadedComponents = loadedComponents;
 function registerComponent(componentName) {
     loadedComponents.add(componentName);
 }
+function clearLoadedComponents() {
+    loadedComponents.clear();
+}
+exports.clearLoadedComponents = clearLoadedComponents;
 function resolvePartialPath(name) {
     /* Custom components */
     if (path.extname(name) === "") {

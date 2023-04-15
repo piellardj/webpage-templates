@@ -9,6 +9,9 @@ const loadedComponents: Set<string> = new Set();
 function registerComponent(componentName: string): void {
     loadedComponents.add(componentName);
 }
+function clearLoadedComponents(): void {
+    loadedComponents.clear();
+}
 
 function resolvePartialPath(name: string): string {
     /* Custom components */
@@ -73,6 +76,7 @@ function render(ejsStr: string, data: ejs.Data): string {
 }
 
 export {
+    clearLoadedComponents,
     loadComponent,
     loadedComponents,
     render,

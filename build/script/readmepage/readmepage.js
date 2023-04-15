@@ -67,5 +67,6 @@ function build(data, destinationDir) {
     Builder.buildPage(destinationDir, pageData, {
         noScript: true,
     });
+    Builder.CustomEjs.clearLoadedComponents();
 }
 exports.build = build;
