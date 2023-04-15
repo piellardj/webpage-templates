@@ -21,7 +21,7 @@ function buildPageData(readmepageData: IReadmePageData): IPage {
 </div>`;
     });
     const baseImageUrl = `https://github.com/${user}/${readmepageData.repoName}/raw/${readmepageData.branchName}`;
-    readmeHtml = readmeHtml.replace(/<img [^>]+src="([^"]+)"\s*\/>/gm, (match: string, p1: string) => {
+    readmeHtml = readmeHtml.replace(/<img[^>]+src="([^"]+)"[^>]*\/>/gm, (match: string, p1: string) => {
         return match.replace(p1, `${baseImageUrl}/${p1}`);
     });
 
@@ -38,7 +38,7 @@ function buildPageData(readmepageData: IReadmePageData): IPage {
         cssFiles: [],
         description: `Readme page of my project '${readmepageData.projectName}'. ${readmepageData.description}`,
         scriptFiles: [],
-        title: `${readmepageData.projectName} - Readme`,
+        title: `${readmepageData.projectName} - Explanations`,
     };
 }
 

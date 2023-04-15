@@ -40,7 +40,7 @@ function buildPageData(readmepageData) {
         return "<div style=\"text-align:center\">\n    <video controls muted><source src=\"".concat(match, "\" type=\"video/mp4\"></video>\n</div>");
     });
     var baseImageUrl = "https://github.com/".concat(user, "/").concat(readmepageData.repoName, "/raw/").concat(readmepageData.branchName);
-    readmeHtml = readmeHtml.replace(/<img [^>]+src="([^"]+)"\s*\/>/gm, function (match, p1) {
+    readmeHtml = readmeHtml.replace(/<img[^>]+src="([^"]+)"[^>]*\/>/gm, function (match, p1) {
         return match.replace(p1, "".concat(baseImageUrl, "/").concat(p1));
     });
     var readmepageBodyData = {
@@ -54,7 +54,7 @@ function buildPageData(readmepageData) {
         cssFiles: [],
         description: "Readme page of my project '".concat(readmepageData.projectName, "'. ").concat(readmepageData.description),
         scriptFiles: [],
-        title: "".concat(readmepageData.projectName, " - Readme"),
+        title: "".concat(readmepageData.projectName, " - Explanations"),
     };
 }
 /**
