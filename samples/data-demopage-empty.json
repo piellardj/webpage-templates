@@ -16,7 +16,7 @@
             "text": "second link"
         }
     ],
-    "cssFiles": [
+    "styleFiles": [
         "css/additionalCss.css"
     ],
     "body": "<div>This is my body<button>Button</button></div>"

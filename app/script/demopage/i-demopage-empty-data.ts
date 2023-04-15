@@ -8,9 +8,8 @@ interface IDemopageEmptyData {
     githubProjectName: IDemopageBody["githubProjectName"];
     additionalLinks: IDemopageBody["additionalLinks"];
 
+    styleFiles: string[];
     scriptFiles: string[];
-
-    cssFiles: string[];
 
     body: string;
 }
