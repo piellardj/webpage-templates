@@ -15,6 +15,8 @@ namespace Page.Homepage.Card {
                 if (current.classList.contains("card-frame")) {
                     current.classList.add(ACTIVE_CLASS);
                     break;
+                } else if (current.classList.contains("card-title")) {
+                    current?.nextElementSibling?.classList.add(ACTIVE_CLASS);
                 }
                 current = current.parentElement;
             }
@@ -23,6 +25,9 @@ namespace Page.Homepage.Card {
         for (let i = 0; i < allCardFrames.length; i++) {
             const cardFrame = allCardFrames[i]!;
             cardFrame.addEventListener("mouseleave", () => {
+                cardFrame.classList.remove(ACTIVE_CLASS);
+            });
+            cardFrame.parentElement?.addEventListener("mouseleave", () => {
                 cardFrame.classList.remove(ACTIVE_CLASS);
             });
         }
