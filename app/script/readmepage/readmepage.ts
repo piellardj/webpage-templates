@@ -22,6 +22,9 @@ function buildPageData(readmepageData: IReadmePageData): IPage {
     });
     const baseImageUrl = `https://github.com/${user}/${readmepageData.repoName}/raw/${readmepageData.branchName}`;
     readmeHtml = readmeHtml.replace(/<img[^>]+src="([^"]+)"[^>]*\/>/gm, (match: string, p1: string) => {
+        if (p1.startsWith("https://")) {
+            return match; // nothing to change
+        }
         return match.replace(p1, `${baseImageUrl}/${p1}`);
     });
 

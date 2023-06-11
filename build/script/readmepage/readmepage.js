@@ -41,6 +41,9 @@ function buildPageData(readmepageData) {
     });
     var baseImageUrl = "https://github.com/".concat(user, "/").concat(readmepageData.repoName, "/raw/").concat(readmepageData.branchName);
     readmeHtml = readmeHtml.replace(/<img[^>]+src="([^"]+)"[^>]*\/>/gm, function (match, p1) {
+        if (p1.startsWith("https://")) {
+            return match; // nothing to change
+        }
         return match.replace(p1, "".concat(baseImageUrl, "/").concat(p1));
     });
     var readmepageBodyData = {
