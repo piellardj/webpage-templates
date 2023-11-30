@@ -131,13 +131,6 @@ var Page;
                 enumerable: false,
                 configurable: true
             });
-            ColorPicker.prototype.attachPopup = function (popup) {
-                var parentElement = this.element.parentElement;
-                if (!parentElement) {
-                    throw new Error("ColorPicker '".concat(this.id, "' is not attached."));
-                }
-                parentElement.appendChild(popup);
-            };
             ColorPicker.prototype.updateVisiblePart = function () {
                 var hexValue = this.value;
                 this.colorPreview.style.background = hexValue;
@@ -245,6 +238,12 @@ var Page;
                     }
                     isActive = false;
                 });
+                window.addEventListener("resize", function () {
+                    _this.fitPopupToContainer();
+                });
+                window.addEventListener("scroll", function () {
+                    _this.fitPopupToContainer();
+                });
             }
             Popup.assignPopup = function (colorPicker) {
                 if (!Popup.popup) {
@@ -294,26 +293,31 @@ var Page;
                 // reset placement to avoid flickering due to the popup being temporarily out of screen
                 this.popupElement.style.top = "";
                 this.popupElement.style.left = "";
-                this.currentControl.attachPopup(this.popupElement);
+                document.body.appendChild(this.popupElement);
                 this.fitPopupToContainer();
             };
             Popup.prototype.fitPopupToContainer = function () {
-                if (this.popupElement.parentElement) {
-                    var container = document.querySelector(".controls-block") || document.body;
-                    var containerBox = container.getBoundingClientRect();
-                    var margin = 16;
-                    var containerRight = containerBox.left + containerBox.width - margin;
-                    var containerBottom = containerBox.top + containerBox.height - margin;
-                    this.popupElement.style.maxWidth = (containerBox.width - 2 * margin) + "px";
-                    this.popupElement.style.maxHeight = (containerBox.height - 2 * margin) + "px";
-                    var parentBox = this.popupElement.parentElement.getBoundingClientRect();
-                    var popupBox = this.popupElement.getBoundingClientRect();
-                    var leftOffset = Math.max(0, (containerBox.left + margin) - parentBox.left);
-                    var rightOffset = Math.min(0, containerRight - (parentBox.left + popupBox.width));
-                    var topOffset = Math.max(0, (containerBox.top + margin) - parentBox.top);
-                    var bottomOffset = Math.min(0, containerBottom - (parentBox.top + popupBox.height));
-                    this.popupElement.style.left = (leftOffset + rightOffset) + "px";
-                    this.popupElement.style.top = (topOffset + bottomOffset) + "px";
+                if (this.popupElement.parentElement && this.currentControl) {
+                    var currentControlBox = this.currentControl.colorPreview.getBoundingClientRect();
+                    var popupElementBox = this.popupElement.getBoundingClientRect();
+                    var idealLeft = currentControlBox.left + window.scrollX;
+                    var idealTop = currentControlBox.top + window.scrollY;
+                    var left = idealLeft;
+                    var top_1 = idealTop;
+                    var minMargin = 8; // pixels
+                    var plannedRight = idealLeft + popupElementBox.width;
+                    var rightShiftNeeded = plannedRight - (document.body.clientWidth - minMargin);
+                    if (rightShiftNeeded > 0) {
+                        left -= rightShiftNeeded;
+                    }
+                    var plannedBottom = idealTop + popupElementBox.height;
+                    var bottomShiftNeeded = plannedBottom - (window.scrollY + window.innerHeight - minMargin);
+                    if (bottomShiftNeeded > 0) {
+                        top_1 -= bottomShiftNeeded;
+                    }
+                    top_1 = Math.max(window.scrollY + minMargin, top_1);
+                    this.popupElement.style.left = left + "px";
+                    this.popupElement.style.top = top_1 + "px";
                 }
             };
             Popup.prototype.registerCursorEvent = function (container, callback) {

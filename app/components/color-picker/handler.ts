@@ -119,7 +119,7 @@ namespace Page.ColorPicker {
         public readonly id: string;
 
         private readonly element: HTMLElement;
-        private readonly colorPreview: HTMLElement;
+        public readonly colorPreview: HTMLElement;
         private readonly colorPreviewText: HTMLElement;
 
         public constructor(element: HTMLElement) {
@@ -153,14 +153,6 @@ namespace Page.ColorPicker {
                 throw new Error(`No current color on ColorPicker '${this.id}'.`);
             }
             return fromDataset;
-        }
-
-        public attachPopup(popup: HTMLElement): void {
-            const parentElement = this.element.parentElement;
-            if (!parentElement) {
-                throw new Error(`ColorPicker '${this.id}' is not attached.`);
-            }
-            parentElement.appendChild(popup);
         }
 
         private updateVisiblePart(): void {
@@ -317,6 +309,12 @@ namespace Page.ColorPicker {
                 }
                 isActive = false;
             });
+            window.addEventListener("resize", () => {
+                this.fitPopupToContainer();
+            });
+            window.addEventListener("scroll", () => {
+                this.fitPopupToContainer();
+            });
         }
 
         private updateAppearance(): void {
@@ -370,29 +368,35 @@ namespace Page.ColorPicker {
             // reset placement to avoid flickering due to the popup being temporarily out of screen
             this.popupElement.style.top = "";
             this.popupElement.style.left = "";
-            this.currentControl.attachPopup(this.popupElement);
+            document.body.appendChild(this.popupElement);
             this.fitPopupToContainer();
         }
 
         private fitPopupToContainer(): void {
-            if (this.popupElement.parentElement) {
-                const container = document.querySelector(".controls-block") || document.body;
-                const containerBox = container.getBoundingClientRect();
-                const margin = 16;
-                const containerRight = containerBox.left + containerBox.width - margin;
-                const containerBottom = containerBox.top + containerBox.height - margin;
+            if (this.popupElement.parentElement && this.currentControl) {
+                const currentControlBox = this.currentControl.colorPreview.getBoundingClientRect();
+                const popupElementBox = this.popupElement.getBoundingClientRect();
 
-                this.popupElement.style.maxWidth = (containerBox.width - 2 * margin) + "px";
-                this.popupElement.style.maxHeight = (containerBox.height - 2 * margin) + "px";
+                const idealLeft = currentControlBox.left + window.scrollX;
+                const idealTop = currentControlBox.top + window.scrollY;
+                let left = idealLeft;
+                let top = idealTop;
 
-                const parentBox = this.popupElement.parentElement.getBoundingClientRect();
-                const popupBox = this.popupElement.getBoundingClientRect();
-                const leftOffset = Math.max(0, (containerBox.left + margin) - parentBox.left);
-                const rightOffset = Math.min(0, containerRight - (parentBox.left + popupBox.width));
-                const topOffset = Math.max(0, (containerBox.top + margin) - parentBox.top);
-                const bottomOffset = Math.min(0, containerBottom - (parentBox.top + popupBox.height));
-                this.popupElement.style.left = (leftOffset + rightOffset) + "px";
-                this.popupElement.style.top = (topOffset + bottomOffset) + "px";
+                const minMargin = 8; // pixels
+                const plannedRight = idealLeft + popupElementBox.width;
+                const rightShiftNeeded = plannedRight - (document.body.clientWidth - minMargin);
+                if (rightShiftNeeded > 0) {
+                    left -= rightShiftNeeded;
+                }
+
+                const plannedBottom = idealTop + popupElementBox.height;
+                const bottomShiftNeeded = plannedBottom - (window.scrollY + window.innerHeight - minMargin);
+                if (bottomShiftNeeded > 0) {
+                    top -= bottomShiftNeeded;
+                }
+                top = Math.max(window.scrollY + minMargin, top);
+                this.popupElement.style.left = left + "px";
+                this.popupElement.style.top = top + "px";
             }
         }
 
