@@ -1,6 +1,6 @@
 {
   "name": "webpage-templates",
-  "version": "3.10.8",
+  "version": "3.10.9",
   "description": "Static webpage generator based on EJS/SASS/TS",
   "repository": "github:piellardj/webpage-templates",
   "main": "build/script/index.js",
