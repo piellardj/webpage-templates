@@ -1,6 +1,6 @@
 import * as fs from "fs";
-import minimist = require("minimist");
-import { Demopage, DemopageEmpty, Homepage, Readmepage} from "../../build/script/index";
+import minimist from "minimist";
+import { Demopage, DemopageEmpty, Homepage, Readmepage } from "../../build/script/index";
 
 function IsStringNullOrEmpty(str: unknown): boolean {
     return typeof str !== "string" || str.length === 0;
