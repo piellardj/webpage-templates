@@ -41,7 +41,8 @@ ejs.fileLoader = function (filepath) {
     var rawStr = fs.readFileSync(resolvedPath).toString();
     return processEjs(rawStr);
 };
-ejs.resolveInclude = function (name) {
+var originalResolveInclude = ejs.resolveInclude;
+ejs.resolveInclude = function (name, filename, isDir) {
     /* Check if it's a custom component, and if so, remember its name */
     var dirname = path.dirname(name);
     var i = name.indexOf(COMPONENTS_DIR);
@@ -49,7 +50,7 @@ ejs.resolveInclude = function (name) {
         var componentName = dirname.slice(i + COMPONENTS_DIR.length + 1);
         registerComponent(componentName);
     }
-    return name;
+    return originalResolveInclude(name, filename, isDir);
 };
 function loadComponent(componentName) {
     registerComponent(componentName);

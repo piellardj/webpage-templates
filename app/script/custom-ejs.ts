@@ -50,7 +50,8 @@ ejs.fileLoader = (filepath: string): string => {
     return processEjs(rawStr);
 };
 
-ejs.resolveInclude = (name: string): string => {
+const originalResolveInclude = ejs.resolveInclude;
+ejs.resolveInclude = (name: string, filename: string, isDir?: boolean | undefined): string => {
     /* Check if it's a custom component, and if so, remember its name */
     const dirname = path.dirname(name);
     const i = name.indexOf(COMPONENTS_DIR);
@@ -59,7 +60,7 @@ ejs.resolveInclude = (name: string): string => {
         registerComponent(componentName);
     }
 
-    return name;
+    return originalResolveInclude(name, filename, isDir);
 };
 
 function loadComponent(componentName: string): string {
