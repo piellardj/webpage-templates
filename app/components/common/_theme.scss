@@ -149,6 +149,10 @@ $vars: (
     @include use-css-variable($property, color-theme);
 }
 
+@mixin color-text($property) {
+    @include use-css-variable($property, color-text);
+}
+
 @mixin color-control-neutral($property) {
     @include use-css-variable($property, color-control-neutral);
 }

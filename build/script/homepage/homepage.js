@@ -27,7 +27,7 @@ exports.build = void 0;
 var path = require("path");
 var Builder = __importStar(require("../page-builder"));
 function buildPageData(homepageData) {
-    var homepageBodyData = { sections: homepageData.sections };
+    var homepageBodyData = { about: homepageData.about, sections: homepageData.sections };
     var homepageBodyEjs = Builder.CustomEjs.loadComponent(path.join("homepage", "body"));
     var homepageBodyStr = Builder.CustomEjs.render(homepageBodyEjs, homepageBodyData);
     return {

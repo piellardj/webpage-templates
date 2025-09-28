@@ -7,7 +7,7 @@ import { IBody as IHomepageBody } from "../../components/homepage/body/template-
 import { IHomepageData } from "./i-homepage-data";
 
 function buildPageData(homepageData: IHomepageData): IPage {
-    const homepageBodyData: IHomepageBody = { sections: homepageData.sections };
+    const homepageBodyData: IHomepageBody = { about: homepageData.about, sections: homepageData.sections };
     const homepageBodyEjs = Builder.CustomEjs.loadComponent(path.join("homepage", "body"));
     const homepageBodyStr = Builder.CustomEjs.render(homepageBodyEjs, homepageBodyData);
 

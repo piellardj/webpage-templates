@@ -1,6 +1,21 @@
 #include('header', {icon: "dice", href: "#", label: "Random project", id: "random-project-button", animation: "logo-animate-empty"})
 
 <main>
+    <section class="about">
+        <div class="about-toggle-container">
+            <button id="about-toggle">About</button>
+        </div>
+        <div id="about-container">
+            <div class="about-block-container">
+                <div class="about-block">
+                    # for (let text of about) {
+                        <p>#=(text)</p>
+                    # }
+                </div>
+            </div>
+        </div>
+    </section>
+
     # for (let section of sections) {
         #include('homepage/section', section)
     # }

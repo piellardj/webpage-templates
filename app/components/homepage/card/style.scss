@@ -1,4 +1,4 @@
-@use'common/theme';
+@use 'common/theme';
 @use 'common/utils';
 
 $card-max-width: 512px;
@@ -69,7 +69,7 @@ picture.card-background {
     margin: auto;
     border: 1px solid rgba(150,150,150, 0.6);
     border-radius: 8px;
-    @include theme.color-theme(background-color);
+    @include theme.block-background-color(background-color);
     box-shadow: 0 0 10px $shadow-color;
     z-index: 2;
     box-sizing: border-box;
@@ -111,15 +111,24 @@ picture.card-background {
 
     &::-webkit-scrollbar-track {
         border-radius: 8px;
-        @include theme.color-theme(background-color);
+        @include theme.block-background-color(background-color);
     }
 
     &::-webkit-scrollbar-thumb {
         border-width: $scrollbar-thumb-margin;
         border-style: solid;
-        @include theme.color-theme(border-color);
+        @include theme.block-background-color(border-color);
         border-radius: 6px;
         @include theme.scrollbar-color(background-color);
+    }
+
+    a {
+        @include theme.color-control-accent(color);
+        text-decoration: none;
+        
+        &:active {
+            @include theme.color-control-accent-active(color);
+        }
     }
 }
 

@@ -60,4 +60,12 @@ namespace Page.Homepage {
         logo.onauxclick = randomizeLogoHref;
         randomizeLogoHref();
     }
+
+    const aboutToggle = document.getElementById("about-toggle");
+    const contents = document.getElementById("about-container");
+    if (aboutToggle && contents) {
+        aboutToggle.addEventListener("click", () => {
+            contents.classList.toggle("visible");
+        });
+    }
 }
